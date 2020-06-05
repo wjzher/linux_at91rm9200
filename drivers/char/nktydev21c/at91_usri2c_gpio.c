@@ -1,25 +1,25 @@
 /*
  * Copyright (c) 2007, NKTY Company
  * All rights reserved.
- * �ļ����ƣ�at91_usri2c.c
- * ժ    Ҫ����I2C�ӿڱ��, Ŀǰֻ֧�������ʱ��оƬDS1337
- *			 ������Ĳ�����read��writeʵ��, ��DS1337�Ĳ�����ioctlʵ��
- *			 1.1 ʹ��semaphore�����ٽ���
- *			 1.1.1 �ڴ���ʱ��ֹ�ж�
- * 			 1.2.1 ���������ZLG7290B��֧��
- *			 1.3 ����GPIO��ʽ��дI2C
+ * 文件名称：at91_usri2c.c
+ * 摘    要：对I2C接口编程, 目前只支持铁电和时钟芯片DS1337
+ *			 对铁电的操作用read和write实现, 对DS1337的操作用ioctl实现
+ *			 1.1 使用semaphore保护临界区
+ *			 1.1.1 在传输时禁止中断
+ * 			 1.2.1 加入对器件ZLG7290B的支持
+ *			 1.3 采用GPIO方式读写I2C
  *
- * ��ǰ�汾��1.2.1
- * ��    �ߣ�wjzhe
- * ������ڣ�2007��10��29��
+ * 当前版本：1.2.1
+ * 作    者：wjzhe
+ * 完成日期：2007年10月29日
  *
- * ȡ���汾��1.1.1
- * ��    �ߣ�wjzhe
- * ������ڣ�2007��8��14��
+ * 取代版本：1.1.1
+ * 作    者：wjzhe
+ * 完成日期：2007年8月14日
  *
- * ȡ���汾��1.0 
- * ԭ����  ��wjzhe
- * ������ڣ�2007��2��6��
+ * 取代版本：1.0 
+ * 原作者  ：wjzhe
+ * 完成日期：2007年2月6日
  */
 #include <linux/unistd.h>   
 #include <linux/ioport.h>  
@@ -261,7 +261,7 @@ static inline int bit_doAddress(unsigned char addr, int flag)
 	int ret, retries;
 
 	//retries = nak_ok ? 0 : i2c_adap->retries;
-	retries = 2;		// ��������
+	retries = 2;		// 重试两次
 
 	if (0) {	// ten bit address
 		/* a ten bit address */
@@ -276,7 +276,7 @@ static inline int bit_doAddress(unsigned char addr, int flag)
 	return 0;
 }
 
-// i2c ��������
+// i2c 发送数据
 static inline int sendbytes(unsigned char *data, int count)
 {
 	const unsigned char *temp = data;
@@ -384,23 +384,23 @@ static int msg_xfer(int flag, unsigned int addr, char *buf, int count)
 		}
 #endif
 	}
-	// I2C��ʼ
+	// I2C开始
 	i2c_start();
-	// ���͵�ַ
+	// 发送地址
 	ret = bit_doAddress(dev_addr, 0);
 	if (ret) {
 		pr_debug("bit_doAddress = %d\n", ret);
 		goto bailout;
 	}
-	// д���ڲ���ַ
+	// 写入内部地址
 	ret = sendbytes((unsigned char *)&addr, 1);
 	if (ret != 1) {
 		pr_debug("send addr %d error\n", addr);
 		goto bailout;
 	}
-	// ��ʼ����д
+	// 开始读或写
 	if (flag & 0x1) {		// read
-		// ����restart�ź�
+		// 发送restart信号
 		i2c_repstart();
 		ret = bit_doAddress(dev_addr, flag);
 		if (ret) {
@@ -457,18 +457,18 @@ static int tmbin2bcd(struct dstime *tm)
 }
 
 /*
-������zlg7290_download()
-���ܣ��������ݲ�����
-������
-addr��ȡֵ0��7����ʾ����DpRam0��DpRam7 �ı��
-dp���Ƿ������λ��С���㣬0��Ϩ��1������
-flash�����Ƹ�λ�Ƿ���˸��0������˸��1����˸
-data��ȡֵ0��31����ʾҪ��ʾ������
-���أ�
-0������
-��0������ZLG7290 ʱ�����쳣
-˵����
-��ʾ���ݾ�������뷽ʽ��μ�ZLG7290 �������ֲ�
+函数：zlg7290_download()
+功能：下载数据并译码
+参数：
+addr：取值0～7，显示缓存DpRam0～DpRam7 的编号
+dp：是否点亮该位的小数点，0－熄灭，1－点亮
+flash：控制该位是否闪烁，0－不闪烁，1－闪烁
+data：取值0～31，表示要显示的数据
+返回：
+0：正常
+非0：访问ZLG7290 时出现异常
+说明：
+显示数据具体的译码方式请参见ZLG7290 的数据手册
 */
 static inline int zlg7290_download(int num, int dp, int flash, char data)
 {
@@ -494,7 +494,7 @@ static void at91_i2c_init(void)
 	twi->TWI_CWGR = AT91C_TWI_CKDIV1 | AT91C_TWI_CLDIV3 | (AT91C_TWI_CLDIV3 << 8);
 	AT91_SYS->PMC_PCER |= 1 << AT91C_ID_TWI;		// enable TWI CLK
 #endif
-	// ��©�����������ʹ��
+	// 开漏输出上拉电阻使能
 	at91_set_GPIO_periph(AT91_PIN_PA25, 1);		/* TWD (SDA) */
 	//printk("pa25 gpio periph ok\n");
 	at91_set_multi_drive(AT91_PIN_PA25, 1);
@@ -535,7 +535,7 @@ static int usri2c_ioctl(struct inode *inode, struct file *file, unsigned int cmd
 	memset(&dstm, 0, sizeof(dstm));
 	down(&usri2c_lock);
 	switch (cmd) {
-	case SETDSTIME:		//����ʱ��ʱ��
+	case SETDSTIME:		//设置时钟时间
 		if ((ret = copy_from_user(&dstm, (char *)arg, sizeof(dstm))) < 0) {
 			printk("error copy from user!\n");
 			return ret;
@@ -546,7 +546,7 @@ static int usri2c_ioctl(struct inode *inode, struct file *file, unsigned int cmd
 		ret = msg_xfer(0, DSSECREG, (char *)&dstm, sizeof(dstm));
 		i2cdev = tmpi2c;
 		break;
-	case GETDSTIME:			//��ȡʱ��ʱ��
+	case GETDSTIME:			//读取时钟时间
 		tmpi2c = i2cdev;
 		i2cdev = ds1337dev;
 		ret = msg_xfer(1, DSSECREG, (char *)&dstm, sizeof(dstm));
@@ -631,7 +631,7 @@ static int usri2c_ioctl(struct inode *inode, struct file *file, unsigned int cmd
 		ret = msg_xfer(0, DSA2MIN, &dstm.min, 3);
 		i2cdev = tmpi2c;
 		break;
-	case STARTALM1:		//������ʱ
+	case STARTALM1:		//启动定时
 		// first read control register
 		tmpi2c = i2cdev;
 		i2cdev = ds1337dev;
@@ -641,7 +641,7 @@ static int usri2c_ioctl(struct inode *inode, struct file *file, unsigned int cmd
 		ret = msg_xfer(0, DSCTLREG, &dssta, 1);
 		i2cdev = tmpi2c;
 		break;
-	case STOPALM1:		//�رն�ʱ
+	case STOPALM1:		//关闭定时
 		// first read control register
 		tmpi2c = i2cdev;
 		i2cdev = ds1337dev;
@@ -662,11 +662,11 @@ static int usri2c_ioctl(struct inode *inode, struct file *file, unsigned int cmd
 		i2cdev = tmpi2c;
 		break;
 #if 0
-	case RDOLDSTA:		//��ȡ����ʱʱ��״̬����Ҫ�����ж��Ƕ�ʱ����������Ϊ����
+	case RDOLDSTA:		//读取开机时时钟状态，主要用于判断是定时开机还是人为开机
 		ret = put_user(old_status, (unsigned char *)arg);
 		break;
 #endif
-	case RDDSSTATUS:		//��ȡ��ǰʱ��״̬
+	case RDDSSTATUS:		//读取当前时钟状态
 		tmpi2c = i2cdev;
 		i2cdev = ds1337dev;
 		ret = msg_xfer(1, DSSTAREG, &dssta, 1);
@@ -894,7 +894,7 @@ static int usri2c_init(void)
 }
 static void usri2c_exit(void)
 {
-	unregister_chrdev(USRI2C_MAJOR_GPIO, "usri2c_gpio");//ע��
+	unregister_chrdev(USRI2C_MAJOR_GPIO, "usri2c_gpio");//注销
 	printk("unregistering fram\n");
 }
 static int dstortc(struct rtc_time *prtm, struct dstime *pdtm)
@@ -910,7 +910,7 @@ static int dstortc(struct rtc_time *prtm, struct dstime *pdtm)
 	return 0;
 }
 
-// ������ȡds1337��ʱ��
+// 用来获取ds1337的时间
 int getds1337tm(struct rtc_time *rtctm)
 {
 	int ret;

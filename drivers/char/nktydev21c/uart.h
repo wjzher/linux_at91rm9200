@@ -91,10 +91,10 @@ struct bct_data {
 struct bad_flow {
 	int num;
 	int total;
-	flow *pbadflow;// ·ÇÕı³£Á÷Ë®»º´æÇø, Ã¿´Î½ĞºÅ½áÊøºóÓ¦ÓÃ³ÌĞòÈ¡³ö
+	flow *pbadflow;// éæ­£å¸¸æµæ°´ç¼“å­˜åŒº, æ¯æ¬¡å«å·ç»“æŸååº”ç”¨ç¨‹åºå–å‡º
 };
 
-// È«¾Ö±äÁ¿ÉùÃ÷
+// å…¨å±€å˜é‡å£°æ˜
 extern unsigned int fee[16];
 extern flow pflow[FLOWANUM];
 extern terminal *pterminal;
@@ -110,9 +110,9 @@ extern char headline[40];//write by duyy, 2014.6.9
 extern term_ram * ptermram;
 extern acc_ram * paccmain;
 extern acc_ram paccsw[MAXSWACC];
-extern struct record_info rcd_info;// ¼ÇÂ¼ÖÕ¶ËºÍÕË»§ĞÅÏ¢
+extern struct record_info rcd_info;// è®°å½•ç»ˆç«¯å’Œè´¦æˆ·ä¿¡æ¯
 
-extern black_acc *pblack;// Ö§³Ö100,000±Ê, ´óĞ¡Îª879KB
+extern black_acc *pblack;// æ”¯æŒ100,000ç¬”, å¤§å°ä¸º879KB
 extern struct black_info blkinfo;
 
 extern int recv_data(char *buf, unsigned char num);
@@ -121,10 +121,10 @@ extern int send_byte(char buf, unsigned char num);
 extern int send_addr(unsigned char buf, unsigned char num);
 
 #ifdef CONFIG_UART_V2
-// ¶¨ÒåÌØÊâÏû·Ñ¿ØÖÆ
+// å®šä¹‰ç‰¹æ®Šæ¶ˆè´¹æ§åˆ¶
 extern user_cfg usrcfg;
-// È«¾Ö±äÁ¿Ö§³Ö
-extern int current_id;		// µ±Ç°²Í´ÎID
+// å…¨å±€å˜é‡æ”¯æŒ
+extern int current_id;		// å½“å‰é¤æ¬¡ID
 #endif
 
 #endif

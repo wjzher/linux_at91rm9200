@@ -1,16 +1,16 @@
 /*
  * Copyright (c) 2007, NKTY Company
  * All rights reserved.
- * ÎÄ¼þÃû³Æ£ºat91_sed1335.c
- * Õª    Òª£º
+ * æ–‡ä»¶åç§°ï¼šat91_sed1335.c
+ * æ‘˜    è¦ï¼š
  * 
- * µ±Ç°°æ±¾£º1.1
- * ×÷    Õß£ºwjzhe
- * Íê³ÉÈÕÆÚ£º2007Äê4ÔÂ3ÈÕ
+ * å½“å‰ç‰ˆæœ¬ï¼š1.1
+ * ä½œ    è€…ï¼šwjzhe
+ * å®Œæˆæ—¥æœŸï¼š2007å¹´4æœˆ3æ—¥
  *
- * È¡´ú°æ±¾£º1.0 
- * Ô­×÷Õß  £ºwjzhe
- * Íê³ÉÈÕÆÚ£º2007Äê2ÔÂ26ÈÕ
+ * å–ä»£ç‰ˆæœ¬ï¼š1.0 
+ * åŽŸä½œè€…  ï¼šwjzhe
+ * å®Œæˆæ—¥æœŸï¼š2007å¹´2æœˆ26æ—¥
  */
 #include <linux/unistd.h>
 #include <linux/config.h>

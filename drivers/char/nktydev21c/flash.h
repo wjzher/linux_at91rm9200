@@ -5,9 +5,9 @@
 
 /*
  * 64 Mbit -- 64-Kword block, max addr 3fffff
- * ËùÓĞFLASH²Ù×÷¶¼ÊÇË«×Ö½ÚµÄ, ¶ÔÓÚÆæÊıµØÖ·Òª½øĞĞ¶îÍâµÄ´¦Àí
+ * æ‰€æœ‰FLASHæ“ä½œéƒ½æ˜¯åŒå­—èŠ‚çš„, å¯¹äºå¥‡æ•°åœ°å€è¦è¿›è¡Œé¢å¤–çš„å¤„ç†
  */
-// ÃüÁî×Ö
+// å‘½ä»¤å­—
 #define E28FRIC 0x90	// read identifier codes
 #define E28FRA	0xFF	// read array, just one bus cycle, not be used
 #define E28FRQ	0x98	// read query

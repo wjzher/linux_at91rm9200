@@ -1,32 +1,32 @@
 /*
  * Copyright (c) 2007, NKTY Company
  * All rights reserved.
- * ÎÄ¼şÃû³Æ£ºat91_uart.c
- * Õª    Òª£ºÔö¼Ó·ÇÖĞ¶Ï·½Ê½½ĞºÅ, Ôö¼ÓºÚÃûµ¥´¦Àí½Ó¿Ú
- *			 ÔÚ·¢ËÍ½ÓÊÕÊ±¼ÓÈëlock_irq_save, ½ûÓÃÖĞ¶Ï
- *			 ²¢ÇÒCR¼Ä´æÆ÷Ğ´¸Ä±ä
- *			 Ôö¼Ó¶Ôterm_ram½á¹¹ÌåµÄĞÂ³ÉÔ±²Ù×÷
- *			 ½«RTC²Ù×÷×ªµ½ÁíÒ»¸öÎÄ¼şÖĞ
+ * æ–‡ä»¶åç§°ï¼šat91_uart.c
+ * æ‘˜    è¦ï¼šå¢åŠ éä¸­æ–­æ–¹å¼å«å·, å¢åŠ é»‘åå•å¤„ç†æ¥å£
+ *			 åœ¨å‘é€æ¥æ”¶æ—¶åŠ å…¥lock_irq_save, ç¦ç”¨ä¸­æ–­
+ *			 å¹¶ä¸”CRå¯„å­˜å™¨å†™æ”¹å˜
+ *			 å¢åŠ å¯¹term_ramç»“æ„ä½“çš„æ–°æˆå‘˜æ“ä½œ
+ *			 å°†RTCæ“ä½œè½¬åˆ°å¦ä¸€ä¸ªæ–‡ä»¶ä¸­
  * 			 
- * µ±Ç°°æ±¾£º2.3.1
- * ×÷    Õß£ºwjzhe
- * Íê³ÉÈÕÆÚ£º2008Äê4ÔÂ29ÈÕ
+ * å½“å‰ç‰ˆæœ¬ï¼š2.3.1
+ * ä½œ    è€…ï¼šwjzhe
+ * å®Œæˆæ—¥æœŸï¼š2008å¹´4æœˆ29æ—¥
  *
- * È¡´ú°æ±¾£º2.3
- * ×÷    Õß£ºwjzhe
- * Íê³ÉÈÕÆÚ£º2007Äê9ÔÂ3ÈÕ
+ * å–ä»£ç‰ˆæœ¬ï¼š2.3
+ * ä½œ    è€…ï¼šwjzhe
+ * å®Œæˆæ—¥æœŸï¼š2007å¹´9æœˆ3æ—¥
  *
- * È¡´ú°æ±¾£º2.2
- * Ô­×÷Õß  £ºwjzhe
- * Íê³ÉÈÕÆÚ£º2007Äê8ÔÂ13ÈÕ
+ * å–ä»£ç‰ˆæœ¬ï¼š2.2
+ * åŸä½œè€…  ï¼šwjzhe
+ * å®Œæˆæ—¥æœŸï¼š2007å¹´8æœˆ13æ—¥
  *
- * È¡´ú°æ±¾£º2.1 
- * Ô­×÷Õß  £ºwjzhe
- * Íê³ÉÈÕÆÚ£º2007Äê6ÔÂ6ÈÕ
+ * å–ä»£ç‰ˆæœ¬ï¼š2.1 
+ * åŸä½œè€…  ï¼šwjzhe
+ * å®Œæˆæ—¥æœŸï¼š2007å¹´6æœˆ6æ—¥
  *
- * È¡´ú°æ±¾£º2.0 
- * Ô­×÷Õß  £ºwjzhe
- * Íê³ÉÈÕÆÚ£º2007Äê4ÔÂ3ÈÕ
+ * å–ä»£ç‰ˆæœ¬ï¼š2.0 
+ * åŸä½œè€…  ï¼šwjzhe
+ * å®Œæˆæ—¥æœŸï¼š2007å¹´4æœˆ3æ—¥
  */
 #include <linux/unistd.h>
 #include <linux/config.h>
@@ -86,26 +86,26 @@
 #endif
 
 
-/* Ã¿´Î½ĞµÄÂÖÑ­µÄÈ¦Êı */
+/* æ¯æ¬¡å«çš„è½®å¾ªçš„åœˆæ•° */
 static int lapnum;
 
-// ¶¨ÒåÖ¸Õë
-/********´®¿ÚÏà¹Ø¶¨Òå***********/
+// å®šä¹‰æŒ‡é’ˆ
+/********ä¸²å£ç›¸å…³å®šä¹‰***********/
 /*static */
 AT91PS_USART uart_ctl0 = (AT91PS_USART) AT91C_VA_BASE_US0;
 /*static */
 AT91PS_USART uart_ctl2 = (AT91PS_USART) AT91C_VA_BASE_US2;
 
-/* ¼ÇÂ¼ÖÕ¶Ë×ÜÊıºÍÕË»§×ÜÊı½á¹¹Ìå */
+/* è®°å½•ç»ˆç«¯æ€»æ•°å’Œè´¦æˆ·æ€»æ•°ç»“æ„ä½“ */
 struct record_info rcd_info;
 
-/* Çı¶¯³ÌĞòÖĞÁ÷Ë®»º³åÇøÊ£Óà¿Õ¼ä */
+/* é©±åŠ¨ç¨‹åºä¸­æµæ°´ç¼“å†²åŒºå‰©ä½™ç©ºé—´ */
 int space_remain = 0;
 
-// ¶¨ÒåÊı¾İ»òÊı¾İÖ¸Õë
+// å®šä¹‰æ•°æ®æˆ–æ•°æ®æŒ‡é’ˆ
 unsigned int fee[16];
 
-// ½«ÏßĞÔÕË»§¿â»»Îªhash
+// å°†çº¿æ€§è´¦æˆ·åº“æ¢ä¸ºhash
 //acc_ram paccsw[MAXSWACC];
 struct hashtab *hash_accsw;
 static u32 def_hash_value(struct hashtab *h, void *key)
@@ -141,46 +141,46 @@ static int def_hash_cmp(struct hashtab *h, void *key1, void *key2)
 flow pflow[FLOWANUM];
 int maxflowno = 0;
 unsigned char pfbdseg[28] = {0};//add by duyy,2013.5.8
-unsigned char ptmnum[16][16];//add by duyy,2013.5.8,timenum[Éí·İ][ÖÕ¶Ë]
+unsigned char ptmnum[16][16];//add by duyy,2013.5.8,timenum[èº«ä»½][ç»ˆç«¯]
 char headline[40] = {0};//added by duyy, 2014.6.9
 term_tmsg term_time[7];//write by duyy, 2013.5.8
 term_ram * ptermram = NULL;
 terminal *pterminal = NULL;
 acc_ram *paccmain = NULL;
 
-// ¶¨ÒåÁ÷Ë®¼ÇÂ¼Ö¸Õë
+// å®šä¹‰æµæ°´è®°å½•æŒ‡é’ˆ
 struct flow_info flowptr;
 
-// ¼ÇÂ¼Ã¿´Î½ĞºÅºóµÄ²úÉúµÄÁ÷Ë®×ÜÊı
+// è®°å½•æ¯æ¬¡å«å·åçš„äº§ç”Ÿçš„æµæ°´æ€»æ•°
 int flow_sum;
 
-static int total = 0;// ÏÖÓĞÁ÷Ë®×ÜÊı
+static int total = 0;// ç°æœ‰æµæ°´æ€»æ•°
 
-// ¶¨ÒåÍøÂç×´Ì¬Ö¸Õë
+// å®šä¹‰ç½‘ç»œçŠ¶æ€æŒ‡é’ˆ
 static int net_status = 0;
-// ¶¨Òå¹âµç¿¨ÔÊĞíÍÑ»úÊ¹ÓÃ±êÖ¾
+// å®šä¹‰å…‰ç”µå¡å…è®¸è„±æœºä½¿ç”¨æ ‡å¿—
 static int le_allow = 0;
 
-// ¶¨ÒåºÚÃûµ¥Êı¾İÖ¸Õë
-black_acc *pblack = NULL;// Ö§³Ö100,000±Ê, ´óĞ¡Îª879KB
+// å®šä¹‰é»‘åå•æ•°æ®æŒ‡é’ˆ
+black_acc *pblack = NULL;// æ”¯æŒ100,000ç¬”, å¤§å°ä¸º879KB
 struct black_info blkinfo;
-// ¶¨Òåbad flow
+// å®šä¹‰bad flow
 //struct bad_flow badflow = {0};
 #ifdef CONFIG_RECORD_CASHTERM
-// ¶¨Òå¼ÇÂ¼³öÄÉ»ú×´Ì¬µÄ±äÁ¿
+// å®šä¹‰è®°å½•å‡ºçº³æœºçŠ¶æ€çš„å˜é‡
 const int cashterm_n = CASHBUFSZ;
-int cashterm_ptr = 0;				// ´æ´¢Ö¸Õë
-struct cash_status cashbuf[CASHBUFSZ];	// ±£´æ×´Ì¬¿Õ¼ä
+int cashterm_ptr = 0;				// å­˜å‚¨æŒ‡é’ˆ
+struct cash_status cashbuf[CASHBUFSZ];	// ä¿å­˜çŠ¶æ€ç©ºé—´
 #endif
 
 #ifdef CONFIG_UART_V2
-// ¶¨ÒåÌØÊâÏû·Ñ¿ØÖÆ
+// å®šä¹‰ç‰¹æ®Šæ¶ˆè´¹æ§åˆ¶
 user_cfg usrcfg;
-// È«¾Ö±äÁ¿Ö§³Ö
-int current_id;		// µ±Ç°²Í´ÎID 0~3
+// å…¨å±€å˜é‡æ”¯æŒ
+int current_id;		// å½“å‰é¤æ¬¡ID 0~3
 
 #endif
-// ¶¨Òå
+// å®šä¹‰
 static DECLARE_MUTEX(uart_lock);
 
 #define UART_MAJOR 22
@@ -247,7 +247,7 @@ static int read_RTC_time(struct rtc_time *tm, int flag)
 	struct rtc_time m_tm;
 	unsigned int time, date;
 	memset(&m_tm, 0, sizeof(m_tm));
-	// Á¬Ğø¶ÁÁ½´Î, ±£Ö¤Ã»ÓĞÃë±ä»¯
+	// è¿ç»­è¯»ä¸¤æ¬¡, ä¿è¯æ²¡æœ‰ç§’å˜åŒ–
 	do {
 		time = AT91_SYS->RTC_TIMR;
 		date = AT91_SYS->RTC_CALR;
@@ -286,12 +286,12 @@ static int read_time(unsigned char *tm)
 		//i++;
 	} while ((time != AT91_SYS->RTC_TIMR) || (date != AT91_SYS->RTC_CALR));
 	AT91_SYS->RTC_SCCR |= AT91C_RTC_SECEV;			//clear second envent flag
-	*tm++ = (date >> 8)		& 0xff;		// Äê
-	*tm++ = (date >> 16)	& 0x1f;		// ÔÂ
-	*tm++ = (date >> 24)	& 0x3f;		// ÈÕ
-	*tm++ = (time >> 16)	& 0x3f;		// Ê±
-	*tm++ = (time >> 8)		& 0x7f;		// ·Ö
-	*tm	  = time			& 0x7f;		// Ãë
+	*tm++ = (date >> 8)		& 0xff;		// å¹´
+	*tm++ = (date >> 16)	& 0x1f;		// æœˆ
+	*tm++ = (date >> 24)	& 0x3f;		// æ—¥
+	*tm++ = (time >> 16)	& 0x3f;		// æ—¶
+	*tm++ = (time >> 8)		& 0x7f;		// åˆ†
+	*tm	  = time			& 0x7f;		// ç§’
 	return 0;
 }
 
@@ -319,7 +319,7 @@ static int update_time(struct rtc_time *rtctm)
 }
 
 #ifdef CONFIG_UART_V2
-// µÃµ½time_tÊ±¼ä
+// å¾—åˆ°time_tæ—¶é—´
 int get_time_t(u32 *tv_sec)
 {
 	struct rtc_time rtctm;
@@ -332,7 +332,7 @@ int get_time_t(u32 *tv_sec)
 	return 0;
 }
 
-// µÃµ½Ò»ÌìµÄÃëÊı
+// å¾—åˆ°ä¸€å¤©çš„ç§’æ•°
 int get_day_time(void)
 {
 	char tm[6];
@@ -343,7 +343,7 @@ int get_day_time(void)
 #endif
 
 #if 0
-// uart ÖĞ¶Ï·½Ê½
+// uart ä¸­æ–­æ–¹å¼
 static int enable_usart2_int(void)
 {
 	uart_ctl2->US_IER = AT91C_US_TXRDY;
@@ -359,7 +359,7 @@ static int disable_usart_int(void)
 {
 	uart_ctl2->US_IDR = 0xFFFFFFFF;
 	uart_ctl0->US_IDR = 0xFFFFFFFF;
-	// ÅäÖÃUSART¼Ä´æÆ÷
+	// é…ç½®USARTå¯„å­˜å™¨
 	uart_ctl0->US_CR = AT91C_US_RSTSTA;
 	uart_ctl0->US_CR = AT91C_US_TXEN | AT91C_US_RXEN;
 	uart_ctl0->US_BRGR = 0x82;
@@ -388,7 +388,7 @@ int send_data(char *buf, size_t count, unsigned char num)	// attention: can cont
 	AT91_SYS->PIOC_SODR &= (!0x00001000);
 	AT91_SYS->PIOC_CODR |= 0x00001000;
 #ifdef SEND_NORECV
-	// ¿ªÊ¼·¢ËÍÊı¾İÁË, ÏÖÔÚÒª½ûÓÃ·¢ËÍ
+	// å¼€å§‹å‘é€æ•°æ®äº†, ç°åœ¨è¦ç¦ç”¨å‘é€
 	if (!(num & 0x80)) {
 		uart_ctl0->US_CR = AT91C_US_RXDIS;
 	} else {
@@ -396,9 +396,9 @@ int send_data(char *buf, size_t count, unsigned char num)	// attention: can cont
 	}
 #endif
 	udelay(1);
-	// ·¢ËÍÊı¾İÊ±²»ĞèÒªÉèÖÃÍ¨µÀ, Ïê¼ûÔ­ÀíÍ¼
+	// å‘é€æ•°æ®æ—¶ä¸éœ€è¦è®¾ç½®é€šé“, è¯¦è§åŸç†å›¾
 	if (!(num & 0x80)) {
-		// Ç°ËÄÍ¨µÀÓÃUART0
+		// å‰å››é€šé“ç”¨UART0
 		for (i = 0; i < count; i++) {
 			uart_ctl0->US_THR = *buf++;
 			if (!uart_poll(&uart_ctl0->US_CSR, AT91C_US_TXEMPTY)) {
@@ -407,7 +407,7 @@ int send_data(char *buf, size_t count, unsigned char num)	// attention: can cont
 			}
 		}
 	} else {
-		// ºóËÄÍ¨µÀÓÃUART2
+		// åå››é€šé“ç”¨UART2
 		for (i = 0; i < count; i++) {
 			uart_ctl2->US_THR = *buf++;
 			if (!uart_poll(&uart_ctl2->US_CSR, AT91C_US_TXEMPTY)) {
@@ -418,11 +418,11 @@ int send_data(char *buf, size_t count, unsigned char num)	// attention: can cont
 	}
 	ret = count;
 out:
-	// ·¢ËÍ½áÊøºóÂíÉÏÇĞ»»µ½½ÓÊÕÄ£Ê½
+	// å‘é€ç»“æŸåé©¬ä¸Šåˆ‡æ¢åˆ°æ¥æ”¶æ¨¡å¼
 	AT91_SYS->PIOC_CODR &= (!0x00001000);
 	AT91_SYS->PIOC_SODR |= 0x00001000;
 #ifdef SEND_NORECV
-	// ÂíÉÏ»»Îª½ÓÊÕ·½Ê½
+	// é©¬ä¸Šæ¢ä¸ºæ¥æ”¶æ–¹å¼
 	if (!(num & 0x80)) {
 		uart_ctl0->US_CR = AT91C_US_RXEN;
 	} else {
@@ -432,7 +432,7 @@ out:
 	//uart_ctl0->US_CR = AT91C_US_RXEN;
 	return ret;
 }
-// Ö»·¢ËÍÒ»×Ö½Ú, ³É¹¦·µ»Ø0
+// åªå‘é€ä¸€å­—èŠ‚, æˆåŠŸè¿”å›0
 int send_byte(char buf, unsigned char num)
 {
 	int ret = 0;
@@ -440,7 +440,7 @@ int send_byte(char buf, unsigned char num)
 	AT91_SYS->PIOC_SODR &= (!0x00001000);
 	AT91_SYS->PIOC_CODR |= 0x00001000;
 #ifdef SEND_NORECV
-	// ¿ªÊ¼·¢ËÍÊı¾İÁË, ÏÖÔÚÒª½ûÓÃ·¢ËÍ
+	// å¼€å§‹å‘é€æ•°æ®äº†, ç°åœ¨è¦ç¦ç”¨å‘é€
 	if (!(num & 0x80)) {
 		uart_ctl0->US_CR = AT91C_US_RXDIS;
 	} else {
@@ -448,16 +448,16 @@ int send_byte(char buf, unsigned char num)
 	}
 #endif
 	udelay(1);
-	// ·¢ËÍÊı¾İÊ±²»ĞèÒªÉèÖÃÍ¨µÀ, Ïê¼ûÔ­ÀíÍ¼
+	// å‘é€æ•°æ®æ—¶ä¸éœ€è¦è®¾ç½®é€šé“, è¯¦è§åŸç†å›¾
 	if (!(num & 0x80)) {
-		// Ç°ËÄÍ¨µÀÓÃUART0
+		// å‰å››é€šé“ç”¨UART0
 		uart_ctl0->US_THR = buf;
 		if (!uart_poll(&uart_ctl0->US_CSR, AT91C_US_TXEMPTY)) {
 			ret = -1;
 			goto out;
 		}
 	} else {
-		// ºóËÄÍ¨µÀÓÃUART2
+		// åå››é€šé“ç”¨UART2
 		uart_ctl2->US_THR = buf;
 		if (!uart_poll(&uart_ctl2->US_CSR, AT91C_US_TXEMPTY)) {
 			ret = -1;
@@ -465,11 +465,11 @@ int send_byte(char buf, unsigned char num)
 		}
 	}
 out:
-	// ·¢ËÍ½áÊøºóÂíÉÏÇĞ»»µ½½ÓÊÕÄ£Ê½
+	// å‘é€ç»“æŸåé©¬ä¸Šåˆ‡æ¢åˆ°æ¥æ”¶æ¨¡å¼
 	AT91_SYS->PIOC_CODR &= (!0x00001000);
 	AT91_SYS->PIOC_SODR |= 0x00001000;
 #ifdef SEND_NORECV
-	// ÂíÉÏ»»Îª½ÓÊÕ·½Ê½
+	// é©¬ä¸Šæ¢ä¸ºæ¥æ”¶æ–¹å¼
 	if (!(num & 0x80)) {
 		uart_ctl0->US_CR = AT91C_US_RXEN;
 	} else {
@@ -492,7 +492,7 @@ int send_addr(unsigned char buf, unsigned char num)
 	AT91_SYS->PIOC_SODR &= (!0x00001000);
 	AT91_SYS->PIOC_CODR |= 0x00001000;
 #ifdef SEND_NORECV
-	// ¿ªÊ¼·¢ËÍÊı¾İÁË, ÏÖÔÚÒª½ûÓÃ·¢ËÍ
+	// å¼€å§‹å‘é€æ•°æ®äº†, ç°åœ¨è¦ç¦ç”¨å‘é€
 	if (!(num & 0x80)) {
 		uart_ctl0->US_CR = AT91C_US_RXDIS;
 	} else {
@@ -517,11 +517,11 @@ int send_addr(unsigned char buf, unsigned char num)
 		}
 	}
 err:
-	// ·¢ËÍ½áÊøºóÂíÉÏÇĞ»»µ½½ÓÊÕÄ£Ê½
+	// å‘é€ç»“æŸåé©¬ä¸Šåˆ‡æ¢åˆ°æ¥æ”¶æ¨¡å¼
 	AT91_SYS->PIOC_CODR &= (!0x00001000);
 	AT91_SYS->PIOC_SODR |= 0x00001000;
 #ifdef SEND_NORECV
-	// ÂíÉÏ»»Îª½ÓÊÕ·½Ê½
+	// é©¬ä¸Šæ¢ä¸ºæ¥æ”¶æ–¹å¼
 	if (!(num & 0x80)) {
 		uart_ctl0->US_CR = AT91C_US_RXEN;
 	} else {
@@ -543,29 +543,29 @@ int recv_data(char *buf, unsigned char num)
 	int ret = 0;
 	if (!buf)
 		return -EINVAL;
-	// ×öÍ¨µÀÅĞ¶Ï
+	// åšé€šé“åˆ¤æ–­
 	if (!(num & 0x80)) {
 #ifdef USRECVSAFE
 #warning "use USART RECV SAFE Mode"
-		// Õâ¸öÊ±ºòÈç¹ûÒÑ¾­ÓĞÊı¾İÊÕµ½ÁË, ¿Ï¶¨ÊÇ´íÎóµÄÊı¾İ
+		// è¿™ä¸ªæ—¶å€™å¦‚æœå·²ç»æœ‰æ•°æ®æ”¶åˆ°äº†, è‚¯å®šæ˜¯é”™è¯¯çš„æ•°æ®
 		if (uart_ctl0->US_CSR & AT91C_US_RXRDY) {
-			// ÏÈ¶ÁÈ¡, ÔÙÑÓ³ÙµÈ´ı?
+			// å…ˆè¯»å–, å†å»¶è¿Ÿç­‰å¾…?
 			char tmp;
 			tmp = uart_ctl0->US_RHR;
  			//uart_ctl0->US_CR |= AT91C_US_RSTSTA;		// reset status
 		}
-		// ÅĞ¶Ï±êÖ¾Î»
+		// åˆ¤æ–­æ ‡å¿—ä½
 		if(((uart_ctl2->US_CSR & AT91C_US_OVRE) == AT91C_US_OVRE) ||
 			((uart_ctl2->US_CSR & AT91C_US_FRAME) == AT91C_US_FRAME)) {
 				uart_ctl2->US_CR = AT91C_US_RSTSTA;		// reset status
 		}
 #endif
-		// ³¬Ê±µÈ´ı
+		// è¶…æ—¶ç­‰å¾…
 		if (!uart_poll(&uart_ctl0->US_CSR, AT91C_US_RXRDY)) {
 			ret = NOTERMINAL;
 			goto out;
 		}
-		// ÅĞ¶Ï±êÖ¾Î»
+		// åˆ¤æ–­æ ‡å¿—ä½
 		if(((uart_ctl0->US_CSR & AT91C_US_OVRE) == AT91C_US_OVRE) ||
 			((uart_ctl0->US_CSR & AT91C_US_FRAME) == AT91C_US_FRAME)) {
 			*(volatile char *)buf = uart_ctl0->US_RHR;
@@ -574,29 +574,29 @@ int recv_data(char *buf, unsigned char num)
  			ret = NOCOM;
 			goto out;
 		}
-		// ¿½±´Êı¾İ
+		// æ‹·è´æ•°æ®
 		*(volatile char *)buf = uart_ctl0->US_RHR;
  	} else {
 #ifdef USRECVSAFE
-		// Õâ¸öÊ±ºòÈç¹ûÒÑ¾­ÓĞÊı¾İÊÕµ½ÁË, ¿Ï¶¨ÊÇ´íÎóµÄÊı¾İ
+		// è¿™ä¸ªæ—¶å€™å¦‚æœå·²ç»æœ‰æ•°æ®æ”¶åˆ°äº†, è‚¯å®šæ˜¯é”™è¯¯çš„æ•°æ®
 		if (uart_ctl2->US_CSR & AT91C_US_RXRDY) {
-			// ÏÈ¶ÁÈ¡, ÔÙÑÓ³ÙµÈ´ı?
+			// å…ˆè¯»å–, å†å»¶è¿Ÿç­‰å¾…?
 			char tmp;
 			tmp = uart_ctl2->US_RHR;
  			//uart_ctl2->US_CR |= AT91C_US_RSTSTA;		// reset status
 		}
-		// ÅĞ¶Ï±êÖ¾Î»
+		// åˆ¤æ–­æ ‡å¿—ä½
 		if(((uart_ctl2->US_CSR & AT91C_US_OVRE) == AT91C_US_OVRE) ||
 			((uart_ctl2->US_CSR & AT91C_US_FRAME) == AT91C_US_FRAME)) {
 				uart_ctl2->US_CR = AT91C_US_RSTSTA;		// reset status
 		}
 #endif
-		// ³¬Ê±µÈ´ı
+		// è¶…æ—¶ç­‰å¾…
 		if (!uart_poll(&uart_ctl2->US_CSR, AT91C_US_RXRDY)) {
 			ret =  NOTERMINAL;
 			goto out;
 		}
-		// ÅĞ¶Ï±êÖ¾Î»
+		// åˆ¤æ–­æ ‡å¿—ä½
 		if(((uart_ctl2->US_CSR & AT91C_US_OVRE) == AT91C_US_OVRE) ||
 			((uart_ctl2->US_CSR & AT91C_US_FRAME) == AT91C_US_FRAME)) {
 			*(volatile char *)buf = uart_ctl2->US_RHR;
@@ -605,7 +605,7 @@ int recv_data(char *buf, unsigned char num)
  			ret = NOCOM;
 			goto out;
 		}
-		// ¿½±´Êı¾İ
+		// æ‹·è´æ•°æ®
 		*(volatile char *)buf = uart_ctl2->US_RHR;
 	}
 out:
@@ -622,28 +622,28 @@ int recv_data_safe(char *buf, unsigned char num)
 	int ret = 0;
 	if (!buf)
 		return -EINVAL;
-	// ×öÍ¨µÀÅĞ¶Ï
+	// åšé€šé“åˆ¤æ–­
 	if (!(num & 0x80)) {
 #ifdef USRECVSAFE
 #warning "use USART RECV SAFE Mode"
-		// Õâ¸öÊ±ºòÈç¹ûÒÑ¾­ÓĞÊı¾İÊÕµ½ÁË, ¿Ï¶¨ÊÇ´íÎóµÄÊı¾İ
+		// è¿™ä¸ªæ—¶å€™å¦‚æœå·²ç»æœ‰æ•°æ®æ”¶åˆ°äº†, è‚¯å®šæ˜¯é”™è¯¯çš„æ•°æ®
 		if (uart_ctl0->US_CSR & AT91C_US_RXRDY) {
-			// ÏÈ¶ÁÈ¡, ÔÙÑÓ³ÙµÈ´ı?
+			// å…ˆè¯»å–, å†å»¶è¿Ÿç­‰å¾…?
 			char tmp;
 			tmp = uart_ctl0->US_RHR;
 		}
-			// ÅĞ¶Ï±êÖ¾Î»
+			// åˆ¤æ–­æ ‡å¿—ä½
 		if(((uart_ctl0->US_CSR & AT91C_US_OVRE) == AT91C_US_OVRE) ||
 			((uart_ctl0->US_CSR & AT91C_US_FRAME) == AT91C_US_FRAME)) {
 				uart_ctl0->US_CR = AT91C_US_RSTSTA;		// reset status
 		}
 #endif
-		// ³¬Ê±µÈ´ı
+		// è¶…æ—¶ç­‰å¾…
 		if (!uart_poll(&uart_ctl0->US_CSR, AT91C_US_RXRDY)) {
 			ret = NOTERMINAL;
 			goto out;
 		}
-		// ÅĞ¶Ï±êÖ¾Î»
+		// åˆ¤æ–­æ ‡å¿—ä½
 		if(((uart_ctl0->US_CSR & AT91C_US_OVRE) == AT91C_US_OVRE) ||
 			((uart_ctl0->US_CSR & AT91C_US_FRAME) == AT91C_US_FRAME)) {
 			*(volatile char *)buf = uart_ctl0->US_RHR;
@@ -652,29 +652,29 @@ int recv_data_safe(char *buf, unsigned char num)
  			ret = NOCOM;
 			goto out;
 		}
-		// ¿½±´Êı¾İ
+		// æ‹·è´æ•°æ®
 		*(volatile char *)buf = uart_ctl0->US_RHR;
  	} else {
 #ifdef USRECVSAFE
-		// Õâ¸öÊ±ºòÈç¹ûÒÑ¾­ÓĞÊı¾İÊÕµ½ÁË, ¿Ï¶¨ÊÇ´íÎóµÄÊı¾İ
+		// è¿™ä¸ªæ—¶å€™å¦‚æœå·²ç»æœ‰æ•°æ®æ”¶åˆ°äº†, è‚¯å®šæ˜¯é”™è¯¯çš„æ•°æ®
 		if (uart_ctl2->US_CSR & AT91C_US_RXRDY) {
-			// ÏÈ¶ÁÈ¡, ÔÙÑÓ³ÙµÈ´ı?
+			// å…ˆè¯»å–, å†å»¶è¿Ÿç­‰å¾…?
 			char tmp;
 			tmp = uart_ctl2->US_RHR;
  			//uart_ctl2->US_CR |= AT91C_US_RSTSTA;		// reset status
 		}
-		// ÅĞ¶Ï±êÖ¾Î»
+		// åˆ¤æ–­æ ‡å¿—ä½
 		if(((uart_ctl2->US_CSR & AT91C_US_OVRE) == AT91C_US_OVRE) ||
 			((uart_ctl2->US_CSR & AT91C_US_FRAME) == AT91C_US_FRAME)) {
 				uart_ctl2->US_CR = AT91C_US_RSTSTA;		// reset status
 		}
 #endif
-		// ³¬Ê±µÈ´ı
+		// è¶…æ—¶ç­‰å¾…
 		if (!uart_poll(&uart_ctl2->US_CSR, AT91C_US_RXRDY)) {
 			ret =  NOTERMINAL;
 			goto out;
 		}
-		// ÅĞ¶Ï±êÖ¾Î»
+		// åˆ¤æ–­æ ‡å¿—ä½
 		if(((uart_ctl2->US_CSR & AT91C_US_OVRE) == AT91C_US_OVRE) ||
 			((uart_ctl2->US_CSR & AT91C_US_FRAME) == AT91C_US_FRAME)) {
 			*(volatile char *)buf = uart_ctl2->US_RHR;
@@ -683,7 +683,7 @@ int recv_data_safe(char *buf, unsigned char num)
  			ret = NOCOM;
 			goto out;
 		}
-		// ¿½±´Êı¾İ
+		// æ‹·è´æ•°æ®
 		*(volatile char *)buf = uart_ctl2->US_RHR;
 	}
 out:
@@ -692,7 +692,7 @@ out:
 
 
 /*
- * ¼ì²éÇı¶¯ÖĞÊ£ÓàÁ÷Ë®¿Õ¼ä, ·µ»Ø<0Á÷Ë®ÇøÂú, 0Õı³£
+ * æ£€æŸ¥é©±åŠ¨ä¸­å‰©ä½™æµæ°´ç©ºé—´, è¿”å›<0æµæ°´åŒºæ»¡, 0æ­£å¸¸
  */
 static inline
 int chk_space(void)
@@ -719,7 +719,7 @@ int _reset_acc_limit(acc_ram *pacc)
 	return 0;
 }
 
-// ÖØÖÃacc ²Í´Î²ÍÏŞ
+// é‡ç½®acc é¤æ¬¡é¤é™
 int reset_acc_limit(void)
 {
 	acc_ram *pacc = paccmain;
@@ -730,12 +730,12 @@ int reset_acc_limit(void)
 	u32 slots_remain = h->nel;
 	struct hashtab_node *cur;
 	
-	// Ö÷ÕË»§¿â
+	// ä¸»è´¦æˆ·åº“
 	for (i = 0; i < nacc; i++, pacc++) {
 		_reset_acc_limit(pacc);
 	}
 	
-	// hashÕË»§¿â
+	// hashè´¦æˆ·åº“
 	for (i = 0; i < h->size && slots_remain; i++) {
 		cur = h->htable[i];
 		while (cur) {
@@ -747,7 +747,7 @@ int reset_acc_limit(void)
 	return 0;
 }
 
-// ÉèÖÃcurrent_idÖµ£¬Èç¹û²»´æÔÚ£¬ÔòÑÓÓÃÖ®Ç°µÄÖµ
+// è®¾ç½®current_idå€¼ï¼Œå¦‚æœä¸å­˜åœ¨ï¼Œåˆ™å»¶ç”¨ä¹‹å‰çš„å€¼
 int set_current_id(int itm)
 {
 	int i;
@@ -762,7 +762,7 @@ int set_current_id(int itm)
 	return 0;
 }
 
-// ³õÊ¼»¯uartÊı¾İ
+// åˆå§‹åŒ–uartæ•°æ®
 int uart_data_init(int acc_time)
 {
 	user_tmsg *tmsg = usrcfg.tmsg;
@@ -774,13 +774,13 @@ int uart_data_init(int acc_time)
 		itm, acc_time, current_id, tmsg[current_id].begin);
 	
 	if (acc_time < tmsg[current_id].begin) {
-		// ÖØÖÃacc ²Í´Î²ÍÏŞ
+		// é‡ç½®acc é¤æ¬¡é¤é™
 		reset_acc_limit();
 	}
 	return 0;
 }
 
-// ¼ì²éµ±Ç°²Í´ÎÊ±¶Î
+// æ£€æŸ¥å½“å‰é¤æ¬¡æ—¶æ®µ
 int check_current_id(int itm)
 {
 	user_tmsg *tmsg = usrcfg.tmsg;
@@ -801,7 +801,7 @@ int check_current_id(int itm)
 
 
 //#warning "485 call not use interrupt mode"
-// UART 485 ½ĞºÅº¯Êı
+// UART 485 å«å·å‡½æ•°
 static int uart_call(void)
 {
 //#define CALLDEBUG
@@ -815,7 +815,7 @@ static int uart_call(void)
 	unsigned char rdata = 0, commd;
 	term_ram *prterm;
 #ifdef CONFIG_UART_V2
-	static int itm;		// µ±Ç°Ê±¼äÒ»ÈÕÖ®ÄÚ
+	static int itm;		// å½“å‰æ—¶é—´ä¸€æ—¥ä¹‹å†…
 #endif
 	if (paccmain == NULL || pterminal == NULL || ptermram == NULL) {
 		pr_debug("pointer is NULL!!!ERROR!\n");
@@ -824,7 +824,7 @@ static int uart_call(void)
 	if (rcd_info.term_all == 0) {
 		goto out;
 	}
-	if (space_remain == 0) {//flash¿Õ¼äÊ£Óà
+	if (space_remain == 0) {//flashç©ºé—´å‰©ä½™
 		pr_debug("there is no space room\n");
 		goto out;
 	}
@@ -833,7 +833,7 @@ static int uart_call(void)
 	} else {
 		n = lapnum;
 	}
-	// Ã¿Ò»´Î½ĞºÅÇ°½«flow_sum, Çå0, ÒÔ¼ÇÂ¼²úÉúÁ÷Ë®ÊıÁ¿
+	// æ¯ä¸€æ¬¡å«å·å‰å°†flow_sum, æ¸…0, ä»¥è®°å½•äº§ç”Ÿæµæ°´æ•°é‡
 	flow_sum = 0;
 	tm[0] = 0x20;
 	read_time(&tm[1]);
@@ -847,19 +847,19 @@ static int uart_call(void)
 	while (n) {
 		prterm = ptermram;
 		AT91_SYS->ST_CR = AT91C_ST_WDRST;	/* Pat the watchdog */
-		// ½ĞÒ»È¦
+		// å«ä¸€åœˆ
 		for (i = 0; i < rcd_info.term_all; i++, prterm++, udelay(ONEBYTETM)) {
 			if (chk_space() < 0) {
 				printk("tail is %d, head is %d\n", flowptr.tail, flowptr.head);
 				goto out;
 			}
-			sel_ch(prterm->term_no);// ÈÎºÎÇé¿öÏÂ, ÏÈ½«138Êı¾İÎ»ÖÃÎ»
+			sel_ch(prterm->term_no);// ä»»ä½•æƒ…å†µä¸‹, å…ˆå°†138æ•°æ®ä½ç½®ä½
 			sendno = prterm->term_no & 0x7F;
 			prterm->add_verify = 0;
 			prterm->dif_verify = 0;
 			prterm->status = STATUSUNSET;
 			//pr_debug("call terminal %d\n", prterm->pterm->local_num);
-			// Ö÷¶¯¸üĞÂºÚÃûµ¥Ê±½«local_num | 0x80 ---> ×¢Òâ½øĞĞÌø×ª
+			// ä¸»åŠ¨æ›´æ–°é»‘åå•æ—¶å°†local_num | 0x80 ---> æ³¨æ„è¿›è¡Œè·³è½¬
 			ret = send_addr(sendno, prterm->pterm->local_num);
 			if (ret < 0) {
 				pr_debug("send addr %d error: %d\n", sendno, ret);
@@ -886,19 +886,19 @@ static int uart_call(void)
 			}
 			if ((prterm->pterm->param.term_type & (1 << REGISTER_TERMINAL_FLAG))
 				&& !(rdata & 0x80)) {
-				// no command, ²¢ÇÒÊÇÇ®°üÖÕ¶Ë
-				// »ØºÅÕıÈ·, µ«Ã»ÓĞÃüÁî
-#ifdef CONFIG_RTBLKCNTMODE		// ¸ü¸ÄºÚÃûµ¥²ßÂÔ
+				// no command, å¹¶ä¸”æ˜¯é’±åŒ…ç»ˆç«¯
+				// å›å·æ­£ç¡®, ä½†æ²¡æœ‰å‘½ä»¤
+#ifdef CONFIG_RTBLKCNTMODE		// æ›´æ”¹é»‘åå•ç­–ç•¥
 /*
- * ĞŞ¸ÄºÚÃûµ¥²ßÂÔ, Ö»ÓĞµ±N´ÎÒÔÉÏÃ»ÓĞÇëÇóÃüÁîµÄÇé¿öÏÂ²ÅÓĞ¿ÉÄÜ½øĞĞºÚÃûµ¥¸üĞÂ
- * Èç¹ûºÚÃûµ¥¸üĞÂÊ§°Ü³¬¹ıM´ÎÖ®ºó, ×Ô¶¯×ªÎªÏÂ´Î¸üĞÂÃûµ¥
+ * ä¿®æ”¹é»‘åå•ç­–ç•¥, åªæœ‰å½“Næ¬¡ä»¥ä¸Šæ²¡æœ‰è¯·æ±‚å‘½ä»¤çš„æƒ…å†µä¸‹æ‰æœ‰å¯èƒ½è¿›è¡Œé»‘åå•æ›´æ–°
+ * å¦‚æœé»‘åå•æ›´æ–°å¤±è´¥è¶…è¿‡Mæ¬¡ä¹‹å, è‡ªåŠ¨è½¬ä¸ºä¸‹æ¬¡æ›´æ–°åå•
  */
  				prterm->nocmdcnt++;
 				if (prterm->nocmdcnt <= NCMDMAX) {
 					goto _donothing;
 				}
 #endif
-				// ÔÚ´ËÒª½øĞĞÖ÷¶¯½»»¥, ÊµÊ±ÏÂ·¢ºÚÃûµ¥
+				// åœ¨æ­¤è¦è¿›è¡Œä¸»åŠ¨äº¤äº’, å®æ—¶ä¸‹å‘é»‘åå•
 				if (prterm->key_flag == 0) {
 					ret = purse_update_key(prterm);
 					if (ret == 0) {
@@ -913,7 +913,7 @@ static int uart_call(void)
 				} else {
 #if 0
 					prterm->blkerr = 0;
-					prterm->jff_trdno = jiff;	// Ã¿Ò»´Î¸üĞÂ³É¹¦ºóÒ²»áµÃµ½ĞÂµÄ°æ±¾ºÅ
+					prterm->jff_trdno = jiff;	// æ¯ä¸€æ¬¡æ›´æ–°æˆåŠŸåä¹Ÿä¼šå¾—åˆ°æ–°çš„ç‰ˆæœ¬å·
 #endif
 				}
 #ifdef CONFIG_RTBLKCNTMODE
@@ -922,7 +922,7 @@ _donothing:
 				prterm->status = TNORMAL;
 				continue;
 			} else if (!(rdata & 0x80)) {
-				// ·ÇÇ®°üÖÕ¶Ë
+				// éé’±åŒ…ç»ˆç«¯
 				prterm->status = TNORMAL;
 				continue;
 			}
@@ -940,10 +940,10 @@ _donothing:
 #endif
 			prterm->add_verify += commd;
 			prterm->dif_verify ^= commd;
-			// ¸ù¾İÃüÁî×Ö×ö´¦Àí
+			// æ ¹æ®å‘½ä»¤å­—åšå¤„ç†
 			switch (commd) {
 #ifdef CONFIG_UART_V2
-			/* Ö§³Ö´æÕÛ¿¨ÖÕ¶Ë */
+			/* æ”¯æŒå­˜æŠ˜å¡ç»ˆç«¯ */
 			case SENDLEIDIFNO:
 				if ((net_status == 0) && (le_allow == 0)) {
 					allow = 0;
@@ -965,7 +965,7 @@ _donothing:
 				ret = recv_dep_money_v1(prterm, tm, 0);
 				break;
 			case SENDRUNDATA:
-				// ·¢ËÍÖÕ¶ËÉÏµç²ÎÊı
+				// å‘é€ç»ˆç«¯ä¸Šç”µå‚æ•°
 				ret = send_run_data(prterm);
 				break;
 			case RECVNO:
@@ -974,7 +974,7 @@ _donothing:
 			case NOCMD:
 				break;
 			case SENDLEID_DOUBLE:
-				/* Ë«ÕË»§ÒªÓà¶îÃüÁî */
+				/* åŒè´¦æˆ·è¦ä½™é¢å‘½ä»¤ */
 				if ((net_status == 0) && (le_allow == 0)) {
 					allow = 0;
 				} else {
@@ -983,11 +983,11 @@ _donothing:
 				ret = recv_leid_double(prterm, allow, itm);
 				break;
 			case RECVLEFLOW_DOUBLE:
-				/* ½ÓÊÕË«ÕË»§Á÷Ë®ÃüÁî */
+				/* æ¥æ”¶åŒè´¦æˆ·æµæ°´å‘½ä»¤ */
 				ret = recv_leflow_double(prterm, tm);
 				break;
 			case SENDLEID_TICKET://write by duyy, 2014.6.6
-				/* Ë«ÕË»§ÒªÓà¶îÃüÁî */
+				/* åŒè´¦æˆ·è¦ä½™é¢å‘½ä»¤ */
 				if ((net_status == 0) && (le_allow == 0)) {
 					allow = 0;
 				} else {
@@ -1018,15 +1018,15 @@ _donothing:
 				ret = recv_dep_money_double(prterm, tm);
 				break;
 			case RECVREFUNDFLOW://write by duyy, 2013.6.18
-				/* ½ÓÊÕÍË¿î»úÁ÷Ë®ÃüÁî */
+				/* æ¥æ”¶é€€æ¬¾æœºæµæ°´å‘½ä»¤ */
 				ret = recv_refund_flow(prterm, tm);
 				break;
 			case SENDRUNDATAX://write by duyy, 2013.6.26
-				// ·¢ËÍÖÕ¶ËÉÏµç²ÎÊı
+				// å‘é€ç»ˆç«¯ä¸Šç”µå‚æ•°
 				ret = send_run_data_double(prterm, tm);
 				break;
 			case SENDHEADLINE://write by duyy, 2014.6.9
-				// ·¢ËÍĞ¡Æ±´òÓ¡»ú±êÌâÎÄ×Ö
+				// å‘é€å°ç¥¨æ‰“å°æœºæ ‡é¢˜æ–‡å­—
 				ret = send_ticket_headline(prterm);
 				break;
 #endif		/* CONFIG_UART_V2 */
@@ -1049,12 +1049,12 @@ _donothing:
 				prterm->psam_trd_num = 0;	// new terminal
 				ret = purse_send_conf(prterm, tm, &blkinfo);
 				pr_debug("purse_send conf return %d\n", ret);
-				// ´Ë´ÎÉÏµç²ÎÊı·¢ËÍ½áÊø, ´ËÊ±ÒªÖ÷¶¯ÏÂ·¢¼üÖµ
+				// æ­¤æ¬¡ä¸Šç”µå‚æ•°å‘é€ç»“æŸ, æ­¤æ—¶è¦ä¸»åŠ¨ä¸‹å‘é”®å€¼
 				if (!ret) {
 				} else
 					printk("purse_send conf return %d\n", ret);
 				break;
-			/*//Ò»¿¨Í¨Éı¼¶È¥µôÏÂÃæÁ½ÌõÃüÁî
+			/*//ä¸€å¡é€šå‡çº§å»æ‰ä¸‹é¢ä¸¤æ¡å‘½ä»¤
 			case PURSE_REQ_PARNMF:  //added by duyy,2012.2.13
 				prterm->black_flag = 0;
 				prterm->key_flag = 0;
@@ -1108,7 +1108,7 @@ out:
 }
 
 /************************************************************	
-		Çı¶¯Ïà¹ØÉèÖÃ
+		é©±åŠ¨ç›¸å…³è®¾ç½®
 *************************************************************/
 static int uart_open(struct inode *inode, struct file *filp)
 {
@@ -1151,7 +1151,7 @@ static int uart_open(struct inode *inode, struct file *filp)
 #endif
 
 	AT91_SYS->PMC_PCER = 0x00000140;
-	// ÅäÖÃUSART¼Ä´æÆ÷
+	// é…ç½®USARTå¯„å­˜å™¨
 	uart_ctl0->US_CR = AT91C_US_RSTSTA;
 	uart_ctl0->US_CR = AT91C_US_TXEN | AT91C_US_RXEN;
 	uart_ctl0->US_BRGR = 0x82;
@@ -1163,14 +1163,14 @@ static int uart_open(struct inode *inode, struct file *filp)
 	uart_ctl2->US_BRGR = 0x82;	
 	uart_ctl2->US_MR = AT91C_US_NBSTOP_1_BIT | AT91C_US_PAR_MULTI_DROP
 		| AT91C_US_CHRL_8_BITS | AT91C_US_FILTER;
-	// ÏÂÃæ½øĞĞÊı¾İ³õÊ¹»¯
+	// ä¸‹é¢è¿›è¡Œæ•°æ®åˆä½¿åŒ–
 	total = 0;
 	maxflowno = 0;
 	flow_sum = 0;
 	flowptr.head = flowptr.tail = 0;
 	memset(&rcd_info, 0, sizeof(rcd_info));
 	lapnum = LAPNUM;
-	// ³õÊ¼»¯hashtab
+	// åˆå§‹åŒ–hashtab
 	hash_accsw = hashtab_create(def_hash_value, def_hash_cmp, MAXSWACC);
 	if (hash_accsw == NULL) {
 		return -ENOMEM;
@@ -1181,7 +1181,7 @@ static int uart_open(struct inode *inode, struct file *filp)
 
 
 /*
- * UART io ¿ØÖÆº¯Êı, ²»Í¬µÄcmd, Ö´ĞĞ²»Í¬µÄÃüÁî
+ * UART io æ§åˆ¶å‡½æ•°, ä¸åŒçš„cmd, æ‰§è¡Œä¸åŒçš„å‘½ä»¤
  */
 static int uart_ioctl(struct inode* inode, struct file* file, unsigned int cmd, unsigned long arg)
 {
@@ -1199,10 +1199,10 @@ static int uart_ioctl(struct inode* inode, struct file* file, unsigned int cmd, 
 
 	switch(cmd)
 	{
-	case SETLAPNUM:		// ÉèÖÃÒ»´Î½ĞºÅÈ¦Êı
+	case SETLAPNUM:		// è®¾ç½®ä¸€æ¬¡å«å·åœˆæ•°
 		lapnum = (int)arg;
 		break;
-	case INITUART:		// ³õÊ¹»¯ËùÓĞ²ÎÊı
+	case INITUART:		// åˆä½¿åŒ–æ‰€æœ‰å‚æ•°
 		if (paccmain) {
 			if ((rcd_info.account_main * sizeof(acc_ram)) >= (SZ_128K))
 				vfree(paccmain);
@@ -1212,12 +1212,12 @@ static int uart_ioctl(struct inode* inode, struct file* file, unsigned int cmd, 
 		}
 		if ((ret = copy_from_user(&ptr, (struct uart_ptr *)arg, sizeof(ptr))) < 0)
 			break;
-		// ³õÊ¹»¯×î´óÁ÷Ë®ºÅ
+		// åˆä½¿åŒ–æœ€å¤§æµæ°´å·
 		maxflowno = ptr.max_flow_no;
-		// ³õÊ¹»¯ÕË»§¿â
+		// åˆä½¿åŒ–è´¦æˆ·åº“
 		rcd_info.account_main = rcd_info.account_all = ptr.acc_main_all;
 		rcd_info.account_sw = 0;
-		// ÓĞÕË»§¿â´óÓÚ128K, ²ÅÓÃvmallocÉêÇë¿Õ¼ä
+		// æœ‰è´¦æˆ·åº“å¤§äº128K, æ‰ç”¨vmallocç”³è¯·ç©ºé—´
 		if ((rcd_info.account_main * sizeof(acc_ram)) >= (SZ_128K)) {
 			paccmain = (acc_ram *)vmalloc(rcd_info.account_main * sizeof(acc_ram));
 			if (paccmain == NULL) {
@@ -1233,17 +1233,17 @@ static int uart_ioctl(struct inode* inode, struct file* file, unsigned int cmd, 
 				break;
 			}
 		}
-		// ¿½±´Êı¾İ
+		// æ‹·è´æ•°æ®
 		if ((ret = copy_from_user(paccmain, ptr.paccmain,
 			rcd_info.account_main * sizeof(acc_ram))) < 0) {
 			printk("UART: copy account main failed!\n");
 			break;
 		}
-		// ³õÊ¹»¯¹ÜÀí·Ñ
+		// åˆä½¿åŒ–ç®¡ç†è´¹
 		for (i = 0; i < 16; i++) {
 			fee[i] = ptr.fee[i];
 		}
-		// ³õÊ¹»¯ÖÕ¶Ë¿â
+		// åˆä½¿åŒ–ç»ˆç«¯åº“
 		if (ptermram) {
 			kfree(ptermram);
 			ptermram = NULL;
@@ -1263,7 +1263,7 @@ static int uart_ioctl(struct inode* inode, struct file* file, unsigned int cmd, 
 		}
 		ptem = pterminal;
 		ptrm = ptermram;
-		// Ìî³äterminal ram½á¹¹Ìå
+		// å¡«å……terminal ramç»“æ„ä½“
 		for (i = 0; i < rcd_info.term_all; i++, ptem++, ptrm++) {
 			pr_debug("terminal %d register\n", ptem->local_num);
 			ptrm->pterm = ptem;
@@ -1276,13 +1276,13 @@ static int uart_ioctl(struct inode* inode, struct file* file, unsigned int cmd, 
 		flowptr.head = flowptr.tail = 0;
 		flow_sum = 0;
 		total = 0;
-		// ¶ÏÍø¹âµç¿¨´¦Àí±êÖ¾
+		// æ–­ç½‘å…‰ç”µå¡å¤„ç†æ ‡å¿—
 		le_allow = ptr.le_allow;
 		//printk("le allow is %d, ptr.le.allow is %d\n", le_allow, ptr.le_allow);
 		//net_status = ptr.pnet_status;
 		if ((ret = get_user(net_status, (int *)ptr.pnet_status)) < 0)
 			break;
-		// ³õÊ¹»¯ºÚÃûµ¥
+		// åˆä½¿åŒ–é»‘åå•
 		memcpy(&blkinfo, &ptr.blkinfo, sizeof(blkinfo));
 		if (pblack == NULL) {
 			vfree(pblack);
@@ -1301,7 +1301,7 @@ static int uart_ioctl(struct inode* inode, struct file* file, unsigned int cmd, 
 		}
 		ret = copy_from_user(pblack, ptr.pbacc, sizeof(black_acc) * blkinfo.count);
 		break;
-	case SETFORBIDTIME://³õÊ¼»¯ÖÕ¶Ë½ûÖ¹Ïû·ÑÊ±¶Î,added by duyy, 2013.5.8
+	case SETFORBIDTIME://åˆå§‹åŒ–ç»ˆç«¯ç¦æ­¢æ¶ˆè´¹æ—¶æ®µ,added by duyy, 2013.5.8
 		if ((ret = copy_from_user(pfbdseg, (unsigned char*)arg, sizeof(pfbdseg))) < 0)
 			break;
 	#if 0//2013.5.13
@@ -1324,17 +1324,17 @@ static int uart_ioctl(struct inode* inode, struct file* file, unsigned int cmd, 
 		term_time[6].begin = pfbdseg[25] * 3600 + pfbdseg[24] * 60;
 		term_time[6].end = pfbdseg[27] * 3600 + pfbdseg[26] * 60;
 		break;
-	case SETTIMENUM:		// ÉèÖÃÉí·İ¡¢ÖÕ¶ËÀàĞÍÆ¥ÅäÊ±¶ÎĞòºÅ,added by duyy, 2013.5.8
-		//bug,Ô­À´ÊÇÒ»¸öifÅĞ¶ÏÓï¾ä£¬Ğ¡ÓÚ£°Ôòbreak£¬´óÓÚ£°Ôò¼ÌĞøÍùÏÂ½øĞĞ£¬»áÖÂÊ¹ÍÑ»ú²»ÄÜ¶ÏÍøÏû·Ñ,modified by duyy, 2013.7.18
+	case SETTIMENUM:		// è®¾ç½®èº«ä»½ã€ç»ˆç«¯ç±»å‹åŒ¹é…æ—¶æ®µåºå·,added by duyy, 2013.5.8
+		//bug,åŸæ¥æ˜¯ä¸€ä¸ªifåˆ¤æ–­è¯­å¥ï¼Œå°äºï¼åˆ™breakï¼Œå¤§äºï¼åˆ™ç»§ç»­å¾€ä¸‹è¿›è¡Œï¼Œä¼šè‡´ä½¿è„±æœºä¸èƒ½æ–­ç½‘æ¶ˆè´¹,modified by duyy, 2013.7.18
 		ret = copy_from_user(ptmnum, (unsigned char*)arg, sizeof(ptmnum));
 		break;
-	case HEADLINE:		// ÉèÖÃĞ¡Æ±´òÓ¡»ú±êÌâÎÄ×Ö,added by duyy, 2014.6.9
+	case HEADLINE:		// è®¾ç½®å°ç¥¨æ‰“å°æœºæ ‡é¢˜æ–‡å­—,added by duyy, 2014.6.9
 		ret = copy_from_user(headline, (char*)arg, sizeof(headline));
 		break;
-	case SETLEALLOW:		// ÉèÖÃ¹âµç¿¨ÄÜ·ñ¶ÏÍøÊ±Ïû·Ñ
+	case SETLEALLOW:		// è®¾ç½®å…‰ç”µå¡èƒ½å¦æ–­ç½‘æ—¶æ¶ˆè´¹
 		ret = copy_from_user(&le_allow, (void *)arg, sizeof(le_allow));
 		break;
-	case SETRTCTIME:		// ÉèÖÃRTC
+	case SETRTCTIME:		// è®¾ç½®RTC
 		//copy_from_user(&tm, , sizeof(tm));
 		{
 			struct rtc_time tmp;
@@ -1343,14 +1343,14 @@ static int uart_ioctl(struct inode* inode, struct file* file, unsigned int cmd, 
 			update_time(&tmp);
 		}
 		break;
-	case GETRTCTIME:		// ¶ÁÈ¡RTC
+	case GETRTCTIME:		// è¯»å–RTC
 		ret = read_RTC_time((struct rtc_time *)arg, 1);
 		//copy_to_user(, &tm2, sizeof(tm2));
 		break;
-	case START_485:			// 485½ĞºÅ, ÓÃSEM½øĞĞÊı¾İ±£»¤
+	case START_485:			// 485å«å·, ç”¨SEMè¿›è¡Œæ•°æ®ä¿æŠ¤
 		ret = uart_call();
 		break;
-	case SETREMAIN:			// ÉèÖÃÏµÍ³Ê£Óà´æ´¢¿Õ¼ä
+	case SETREMAIN:			// è®¾ç½®ç³»ç»Ÿå‰©ä½™å­˜å‚¨ç©ºé—´
 		ret = copy_from_user(&space_remain, (int *)arg, sizeof(space_remain));
 		if (ret < 0)
 			break;
@@ -1365,39 +1365,39 @@ static int uart_ioctl(struct inode* inode, struct file* file, unsigned int cmd, 
 			space_remain = 0;
 		}
 		break;
-	case GETFLOWSUM:		// »ñÈ¡Ò»´Î½ĞºÅºó²úÉúµÄÁ÷Ë®×ÜÊı
+	case GETFLOWSUM:		// è·å–ä¸€æ¬¡å«å·åäº§ç”Ÿçš„æµæ°´æ€»æ•°
 		ret = put_user(flow_sum, (int *)arg);
 		break;
-	case GETFLOWNO:			// »ñÈ¡±¾µØ×î´óÁ÷Ë®ºÅ
+	case GETFLOWNO:			// è·å–æœ¬åœ°æœ€å¤§æµæ°´å·
 		ret = put_user(maxflowno, (int *)arg);
 		break;
 	case ADDACCSW:			
-		// ´¦ÀíÒìÇø·ÇÏÖ½ğÁ÷Ë®
+		// å¤„ç†å¼‚åŒºéç°é‡‘æµæ°´
 		if ((ret = copy_from_user(&no_m_flow, (no_money_flow *)arg,
 			sizeof(no_money_flow))) < 0) {
 			printk("UART: copy from user no money flow failed\n");
 			break;
 		}
-		// ½øĞĞÊı¾İ´¦Àí
+		// è¿›è¡Œæ•°æ®å¤„ç†
 		if ((ret = deal_no_money(&no_m_flow, paccmain, hash_accsw, &rcd_info)) < 0) {
 			printk("UART: deal no money flow error\n");
 		}
 		//ret = 0;
 		break;
 	case CHGACC:
-		// ´¦ÀíÒìÇøÏÖ½ğÁ÷Ë®
+		// å¤„ç†å¼‚åŒºç°é‡‘æµæ°´
 		if ((ret = copy_from_user(&m_flow, (money_flow *)arg,
 			sizeof(money_flow))) < 0) {
 			printk("UART: copy from user money flow failed\n");
 			break;
 		}
-		// ½øĞĞÊı¾İ´¦Àí
+		// è¿›è¡Œæ•°æ®å¤„ç†
 		if ((ret = deal_money(&m_flow/*, paccmain, hash_accsw, &rcd_info*/)) < 0) {
 			printk("UART: deal money flow error\n");
 		}
 		break;
 	case ADDACCSW1:
-	{	// ÏÈ¿½±´³öÁ÷Ë®ÊıÁ¿
+	{	// å…ˆæ‹·è´å‡ºæµæ°´æ•°é‡
 		no_money_flow *pnflow = NULL;
 		ret = copy_from_user(&i, (int *)arg, sizeof(int));
 		if (ret < 0) {
@@ -1409,21 +1409,21 @@ static int uart_ioctl(struct inode* inode, struct file* file, unsigned int cmd, 
 			break;
 		}
 		arg += sizeof(int);
-		// ÔÙµÃµ½Á÷Ë®Ö¸Õë
+		// å†å¾—åˆ°æµæ°´æŒ‡é’ˆ
 		ret = copy_from_user(&pnflow, (money_flow *)arg, sizeof(pnflow));
 		if (ret < 0) {
 			printk("UART: copy from user money flow ptr failed\n");
 			break;
 		}
-		// Ë³´Î´¦Àí
+		// é¡ºæ¬¡å¤„ç†
 		while (i) {
-			// ´¦ÀíÒìÇø·ÇÏÖ½ğÁ÷Ë®
+			// å¤„ç†å¼‚åŒºéç°é‡‘æµæ°´
 			if ((ret = copy_from_user(&no_m_flow, pnflow,
 				sizeof(no_money_flow))) < 0) {
 				printk("UART: copy from user no money flow failed\n");
 				break;
 			}
-			// ½øĞĞÊı¾İ´¦Àí
+			// è¿›è¡Œæ•°æ®å¤„ç†
 			if ((ret = deal_no_money(&no_m_flow, paccmain, hash_accsw, &rcd_info)) < 0) {
 				printk("UART: deal no money flow error\n");
 			}
@@ -1433,7 +1433,7 @@ static int uart_ioctl(struct inode* inode, struct file* file, unsigned int cmd, 
 	}
 		break;
 	case CHGACC1:
-	{	// ÏÈ¿½±´³öÁ÷Ë®ÊıÁ¿
+	{	// å…ˆæ‹·è´å‡ºæµæ°´æ•°é‡
 		money_flow *pmflow = NULL;
 		ret = copy_from_user(&i, (int *)arg, sizeof(int));
 		if (ret < 0) {
@@ -1445,21 +1445,21 @@ static int uart_ioctl(struct inode* inode, struct file* file, unsigned int cmd, 
 			break;
 		}
 		arg += sizeof(int);
-		// ÔÙµÃµ½Á÷Ë®Ö¸Õë
+		// å†å¾—åˆ°æµæ°´æŒ‡é’ˆ
 		ret = copy_from_user(&pmflow, (money_flow *)arg, sizeof(pmflow));
 		if (ret < 0) {
 			printk("UART: copy from user money flow ptr failed\n");
 			break;
 		}
-		// Ë³´Î´¦Àí
+		// é¡ºæ¬¡å¤„ç†
 		while (i) {
-			// ´¦ÀíÒìÇøÏÖ½ğÁ÷Ë®
+			// å¤„ç†å¼‚åŒºç°é‡‘æµæ°´
 			if ((ret = copy_from_user(&m_flow, (money_flow *)pmflow,
 				sizeof(money_flow))) < 0) {
 				printk("UART: copy from user money flow failed\n");
 				break;
 			}
-			// ½øĞĞÊı¾İ´¦Àí
+			// è¿›è¡Œæ•°æ®å¤„ç†
 			if ((ret = deal_money(&m_flow/*, paccmain, paccsw, &rcd_info*/)) < 0) {
 				printk("UART: deal money flow error\n");
 			}
@@ -1470,7 +1470,7 @@ static int uart_ioctl(struct inode* inode, struct file* file, unsigned int cmd, 
 		break;
 #ifdef CONFIG_UART_V2
 	case NEWREG: 
-	{	// ÏÈ¿½±´³öÁ÷Ë®ÊıÁ¿
+	{	// å…ˆæ‹·è´å‡ºæµæ°´æ•°é‡
 		acc_ram *pacc = NULL, acc_tmp;
 		ret = copy_from_user(&i, (int *)arg, sizeof(int));
 		if (ret < 0) {
@@ -1482,20 +1482,20 @@ static int uart_ioctl(struct inode* inode, struct file* file, unsigned int cmd, 
 			break;
 		}
 		arg += sizeof(int);
-		// ÔÙµÃµ½Á÷Ë®Ö¸Õë
+		// å†å¾—åˆ°æµæ°´æŒ‡é’ˆ
 		ret = copy_from_user(&pacc, (money_flow *)arg, sizeof(pacc));
 		if (ret < 0) {
 			pr_debug("UART: copy from new reg flow ptr failed\n");
 			break;
 		}
-		// Ë³´Î´¦Àí
+		// é¡ºæ¬¡å¤„ç†
 		while (i) {
-			// ´¦ÀíÒìÇøÏÖ½ğÁ÷Ë®
+			// å¤„ç†å¼‚åŒºç°é‡‘æµæ°´
 			if ((ret = copy_from_user(&acc_tmp, pacc, sizeof(acc_tmp))) < 0) {
 				pr_debug("UART: copy from new reg flow failed\n");
 				break;
 			}
-			// ½øĞĞÊı¾İ´¦Àí
+			// è¿›è¡Œæ•°æ®å¤„ç†
 			if ((ret = new_reg(&acc_tmp)) < 0) {
 				pr_debug("UART: new reg flow error\n");
 			}
@@ -1505,7 +1505,7 @@ static int uart_ioctl(struct inode* inode, struct file* file, unsigned int cmd, 
 	}
 		break;
 	case SETSPLPARAM:
-		// µ¼ÈëÌØÊâ²ÎÊı
+		// å¯¼å…¥ç‰¹æ®Šå‚æ•°
 		if ((ret = copy_from_user(&usrcfg, (void *)arg, sizeof(usrcfg))) < 0) {
 			pr_debug("UART: copy from usrcfg failed\n");;
 			break;
@@ -1513,34 +1513,34 @@ static int uart_ioctl(struct inode* inode, struct file* file, unsigned int cmd, 
 
 		break;
 	case INITUARTDATA:
-		// ´¦ÀíÊı¾İ, arg = acc_time, ÕË»§¿âÉú³ÉÊ±¼ä
+		// å¤„ç†æ•°æ®, arg = acc_time, è´¦æˆ·åº“ç”Ÿæˆæ—¶é—´
 		ret = uart_data_init(arg);
 		break;
 #endif
-	case GETFLOWPTR:// É÷ÓÃ, µÃµ½ÄÚ²¿Á÷Ë®Ö¸Õë
+	case GETFLOWPTR:// æ…ç”¨, å¾—åˆ°å†…éƒ¨æµæ°´æŒ‡é’ˆ
 		printk("not support get flow ptr\n");
 		ret = -1;
 		break;
-	case SETFLOWPTR:// É÷ÓÃ, ÉèÖÃÄÚ²¿Á÷Ë®Ö¸Õë
+	case SETFLOWPTR:// æ…ç”¨, è®¾ç½®å†…éƒ¨æµæ°´æŒ‡é’ˆ
 		printk("not support set flow ptr\n");
 		ret = -1;
 		break;
-	case GETFLOW:// È¡µÃ½ĞºÅºóµÄÁ÷Ë®, Ò»¹²cnt±Ê
+	case GETFLOW:// å–å¾—å«å·åçš„æµæ°´, ä¸€å…±cntç¬”
 		if ((ret = copy_from_user(&pget, (struct get_flow *)arg,
 			sizeof(pget))) < 0) {
 			break;
 		}
 		flow_head = flowptr.head;
 		flow_tail = flowptr.tail;
-		// ²»´æÔÚÑ­»·´æ´¢, ÏÖÓĞÁ÷Ë®±ÊÊıÎªflow_tail
-		// ¿ÉÒÔ»ñµÃÈçÏÂ±ÊÊı¾İ
+		// ä¸å­˜åœ¨å¾ªç¯å­˜å‚¨, ç°æœ‰æµæ°´ç¬”æ•°ä¸ºflow_tail
+		// å¯ä»¥è·å¾—å¦‚ä¸‹ç¬”æ•°æ®
 		pget.cnt = MIN(pget.cnt, flow_tail);
 		ret = copy_to_user(pget.pflow, pflow, sizeof(flow) * pget.cnt);
 		if (ret < 0)
 			break;
 		ret = copy_to_user((void *)(arg + sizeof(flow *)), &pget.cnt, sizeof(pget.cnt));
 		break;
-	case GETACCINFO:// »ñµÃÕË»§¿âĞÅÏ¢
+	case GETACCINFO:// è·å¾—è´¦æˆ·åº“ä¿¡æ¯
 		if (rcd_info.account_all != rcd_info.account_main + rcd_info.account_sw) {
 			printk("UART: acc_all != acc_main + acc_sw: %d, %d, %d\n",
 				rcd_info.account_all, rcd_info.account_main, rcd_info.account_sw);
@@ -1551,21 +1551,21 @@ static int uart_ioctl(struct inode* inode, struct file* file, unsigned int cmd, 
 			//break;
 		}
 		break;
-	case GETACCMAIN:// µÃµ½Ö÷ÕË»§¿â
+	case GETACCMAIN:// å¾—åˆ°ä¸»è´¦æˆ·åº“
 		ret = 0;
 		if (rcd_info.account_main == 0)
 			break;
 		if ((ret = copy_to_user((acc_ram *)arg, paccmain,
 			sizeof(acc_ram) * rcd_info.account_main)) < 0)
 			break;
-		// ¶ÁÈ¡ÕÊ»§ĞÅÏ¢ºó½«ÕÊ»§¿Õ¼äÇå³ı
+		// è¯»å–å¸æˆ·ä¿¡æ¯åå°†å¸æˆ·ç©ºé—´æ¸…é™¤
 		if ((rcd_info.account_main * sizeof(acc_ram)) > SZ_128K)
 			vfree(paccmain);
 		else
 			kfree(paccmain);
 		paccmain = NULL;
 		break;
-	case GETACCSW:// µÃµ½¸¨ÕË»§¿â
+	case GETACCSW:// å¾—åˆ°è¾…è´¦æˆ·åº“
 		ret = 0;
 		if (rcd_info.account_sw == 0)
 			break;
@@ -1586,18 +1586,18 @@ static int uart_ioctl(struct inode* inode, struct file* file, unsigned int cmd, 
 			printk("warning hashtab get all return %d, but %d\n",
 				ret, hash_accsw->nel);
 		}
-		// ÅÅĞòÂğ?
+		// æ’åºå—?
 		ret = copy_to_user((void *)arg, v, sizeof(acc_ram) * ret);
 		//kfree(v);
 		vfree(v);
 }
 
 		break;
-	case SETNETSTATUS:// ÉèÖÃÍøÂç×´Ì¬
+	case SETNETSTATUS:// è®¾ç½®ç½‘ç»œçŠ¶æ€
 		ret = get_user(net_status, (int *)arg);
 		break;
-	case BCT_BLACKLIST:// ¹ã²¥ºÚÃûµ¥
-		// ºÚÃûµ¥Ê±¼äºÜ³¤, ĞèÒª¹Ø±Õ¿´ÃÅ¹·
+	case BCT_BLACKLIST:// å¹¿æ’­é»‘åå•
+		// é»‘åå•æ—¶é—´å¾ˆé•¿, éœ€è¦å…³é—­çœ‹é—¨ç‹—
 		// save watch dog reg
 		wtdreg = AT91_SYS->ST_WDMR;
 		AT91_SYS->ST_WDMR = AT91C_ST_EXTEN;
@@ -1608,15 +1608,15 @@ static int uart_ioctl(struct inode* inode, struct file* file, unsigned int cmd, 
 			term_ram *ptrm;
 			black_acc *pbacc;
 			int i;
-			// ½«±ØÒªĞÅÏ¢¿½±´µ½ÄÚºËÖĞ
+			// å°†å¿…è¦ä¿¡æ¯æ‹·è´åˆ°å†…æ ¸ä¸­
 			ret = copy_from_user(&bctdata, (void *)arg, sizeof(bctdata));
 			if (ret < 0)
 				break;
-			// ÔÚÕı³£½øĞĞÊı¾İ´¦ÀíÇ°ÅĞ¶ÏºÚÃûµ¥µÄÊıÁ¿ÊÇ·ñÎª0
+			// åœ¨æ­£å¸¸è¿›è¡Œæ•°æ®å¤„ç†å‰åˆ¤æ–­é»‘åå•çš„æ•°é‡æ˜¯å¦ä¸º0
 			if (bctdata.info.count == 0) {
 				break;
 			}
-			// ÉêÇëºÚÃûµ¥ÁĞ±í¿Õ¼ä
+			// ç”³è¯·é»‘åå•åˆ—è¡¨ç©ºé—´
 			if (bctdata.info.count * sizeof(black_acc) >= SZ_128K) {
 				pbacc = (black_acc *)vmalloc(bctdata.info.count * sizeof(black_acc));
 				if (pbacc == NULL) {
@@ -1630,11 +1630,11 @@ static int uart_ioctl(struct inode* inode, struct file* file, unsigned int cmd, 
 					break;
 				}
 			}
-			// ¿½±´ºÚÃûµ¥
+			// æ‹·è´é»‘åå•
 			ret = copy_from_user(pbacc, bctdata.pbacc, bctdata.info.count * sizeof(black_acc));
 			if (ret < 0)
 				break;
-			// ¹¹Ôìterm_ram
+			// æ„é€ term_ram
 			ptrm = (term_ram *)kmalloc(bctdata.term_cnt * sizeof(term_ram), GFP_KERNEL);
 			if (ptrm == NULL) {
 				ret = -ENOMEM;
@@ -1655,11 +1655,11 @@ static int uart_ioctl(struct inode* inode, struct file* file, unsigned int cmd, 
 				ptrm[i].term_no = bctdata.pterm[i].local_num;
 				//printk("ptrm[%d]: no: %d\n", i, ptrm[i].term_no);
 			}
-			// ¹ã²¥ºÚÃûµ¥
+			// å¹¿æ’­é»‘åå•
 			ret = purse_broadcast_blk(pbacc, &bctdata.info, ptrm, bctdata.term_cnt);
 			if (ret < 0)
 				printk("broadcast blk failed\n");
-			// ÊÍ·ÅÄÚ´æ
+			// é‡Šæ”¾å†…å­˜
 			if (bctdata.info.count * sizeof(black_acc) >= SZ_128K) {
 				vfree(pbacc);
 			} else {
@@ -1721,7 +1721,7 @@ static int uart_ioctl(struct inode* inode, struct file* file, unsigned int cmd, 
 }
 
 /*
- * Ğ´ÈëFRAM»º´æÁ÷Ë®, Ö»ÓÃÓÚÏµÍ³³õÊ¹»¯Ê±
+ * å†™å…¥FRAMç¼“å­˜æµæ°´, åªç”¨äºç³»ç»Ÿåˆä½¿åŒ–æ—¶
  */
 static int uart_write(struct file *file, const char *buff, size_t count, loff_t *offp)
 {
@@ -1729,7 +1729,7 @@ static int uart_write(struct file *file, const char *buff, size_t count, loff_t 
 }
 
 /*
- * ³ÌĞòÔËĞĞ¹ı³ÌÖĞ¶ÁÈ¡ÖÕ¶ËĞÅÏ¢
+ * ç¨‹åºè¿è¡Œè¿‡ç¨‹ä¸­è¯»å–ç»ˆç«¯ä¿¡æ¯
  */
 static int uart_read(struct file *file, char *buff, size_t count, loff_t *offp)
 {
@@ -1774,7 +1774,7 @@ static int uart_close(struct inode *inode, struct file *file)
 {
 	hashtab_destroy_d(hash_accsw);
 	hash_accsw = NULL;
-	// ÊÍ·Å×ÊÔ´, modified by wjzhe 20110214
+	// é‡Šæ”¾èµ„æº, modified by wjzhe 20110214
 	if (paccmain) {
 		if ((rcd_info.account_main * sizeof(acc_ram)) > SZ_128K) {
 			vfree(paccmain);
@@ -1819,8 +1819,8 @@ static __init int uart_init(void)
 	if (request_irq(AT91C_ID_US2, us2_interrupt, 0, "us2", NULL))
 		return -EBUSY;
 #if PRIORITY
-	AT91_SYS->AIC_SMR[AT91C_ID_US0] |= (PRIORITY & 0x7);/* irq ÓÅÏÈ¼¶ */
-	AT91_SYS->AIC_SMR[AT91C_ID_US2] |= (PRIORITY & 0x7);/* irq ÓÅÏÈ¼¶ */
+	AT91_SYS->AIC_SMR[AT91C_ID_US0] |= (PRIORITY & 0x7);/* irq ä¼˜å…ˆçº§ */
+	AT91_SYS->AIC_SMR[AT91C_ID_US2] |= (PRIORITY & 0x7);/* irq ä¼˜å…ˆçº§ */
 #endif
 #endif
 	printk("AT91 UART driver v2.0\n");
@@ -1834,7 +1834,7 @@ static __exit void uart_exit(void)
 	disable_irq(UART0_IRQ);
 	free_irq(UART0_IRQ, NULL);
 #endif
-	unregister_chrdev(UART_MAJOR, "uart");				//×¢ÏúÉè±¸
+	unregister_chrdev(UART_MAJOR, "uart");				//æ³¨é”€è®¾å¤‡
 }
 
 module_init(uart_init);

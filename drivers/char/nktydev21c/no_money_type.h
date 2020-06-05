@@ -1,13 +1,13 @@
 #ifndef _NO_MONEY_TYPE_
 #define _NO_MONEY_TYPE_
-// 1´ú±í¹ÒÊ§£»
-// 2´ú±í½â¹Ò£»
-// 3´ú±íÉèÍµ²Í£»
-// 4´ú±í½âÍµ²Í£»
-// 5´ú±í»»¿¨£»
-// 6´ú±íÕË»§×¢Ïú£»
-// 7´ú±íµ±²Í×¢²á£»
-// 8´ú±íºÚÃûµ¥
+// 1ä»£è¡¨æŒ‚å¤±ï¼›
+// 2ä»£è¡¨è§£æŒ‚ï¼›
+// 3ä»£è¡¨è®¾å·é¤ï¼›
+// 4ä»£è¡¨è§£å·é¤ï¼›
+// 5ä»£è¡¨æ¢å¡ï¼›
+// 6ä»£è¡¨è´¦æˆ·æ³¨é”€ï¼›
+// 7ä»£è¡¨å½“é¤æ³¨å†Œï¼›
+// 8ä»£è¡¨é»‘åå•
 
 #define NOM_LOSS_CARD 1
 #define NOM_FIND_CARD 2
@@ -27,25 +27,25 @@ typedef unsigned char BYTE;
 
 #ifndef CONFIG_UART_V2
 typedef struct {
-	int				OperAreaID;					//·¢Æð²Ù×÷µÄÇøºÅ
-	unsigned long	OperationID;				//ºÚÃûµ¥¼ÍÂ¼ºÅ
-	unsigned long	CardId;					//²Ù×÷¶ÔÓ¦¿¨ºÅ--OldCardId
-	int			BLTypeId;					//ºÚÃûµ¥²Ù×÷ÀàÐÍ
-	unsigned long	NewCardId;					//»»¿¨µÄ¿¨ºÅ
-	int				Type;	//1´ú±í¹ÒÊ§£»2´ú±í½â¹Ò£»3´ú±íÉèÍµ²Í£»4´ú±í½âÍµ²Í£»5´ú±í»»¿¨£»6´ú±íÕË»§×¢Ïú£»7´ú±íµ±²Í×¢²á£»8´ú±íºÚÃûµ¥; 9´ú±íÐÞ¸ÄÕÊ»§ÃÜÂë; 10´ú±íÖ÷ÕÊ»§¶³½á; 11´ú±íÖ÷ÕÊ»§½â¶³; 12´ú±í²¹ÌùÕÊ»§¶³½á; 13´ú±í²¹ÌùÕÊ»§½â¶³
-	long			AccountId;					//µ±²Í×¢²áµÄÕËºÅ
-	int				RemainMoney;				//µ±²Í×¢²áÕË»§Óà¶î
-	int				Flag;						////µ±²Í×¢²áÕË»§×´Ì¬
-	int				UpLimitMoney;				//µ±²Í×¢²áÕË»§Ïû·ÑÉÏÏÞ
-	int				ManageId;					//µ±²Í×¢²áÕË»§¹ÜÀí·ÑÏµÊý
-	int				PowerId;					//µ±²Í×¢²áÕË»§Éí·ÝÀàÐÍ
-	char        FlowTime[20];					//ºÚÃûµ¥Á÷Ë®½á¹¹
+	int				OperAreaID;					//å‘èµ·æ“ä½œçš„åŒºå·
+	unsigned long	OperationID;				//é»‘åå•çºªå½•å·
+	unsigned long	CardId;					//æ“ä½œå¯¹åº”å¡å·--OldCardId
+	int			BLTypeId;					//é»‘åå•æ“ä½œç±»åž‹
+	unsigned long	NewCardId;					//æ¢å¡çš„å¡å·
+	int				Type;	//1ä»£è¡¨æŒ‚å¤±ï¼›2ä»£è¡¨è§£æŒ‚ï¼›3ä»£è¡¨è®¾å·é¤ï¼›4ä»£è¡¨è§£å·é¤ï¼›5ä»£è¡¨æ¢å¡ï¼›6ä»£è¡¨è´¦æˆ·æ³¨é”€ï¼›7ä»£è¡¨å½“é¤æ³¨å†Œï¼›8ä»£è¡¨é»‘åå•; 9ä»£è¡¨ä¿®æ”¹å¸æˆ·å¯†ç ; 10ä»£è¡¨ä¸»å¸æˆ·å†»ç»“; 11ä»£è¡¨ä¸»å¸æˆ·è§£å†»; 12ä»£è¡¨è¡¥è´´å¸æˆ·å†»ç»“; 13ä»£è¡¨è¡¥è´´å¸æˆ·è§£å†»
+	long			AccountId;					//å½“é¤æ³¨å†Œçš„è´¦å·
+	int				RemainMoney;				//å½“é¤æ³¨å†Œè´¦æˆ·ä½™é¢
+	int				Flag;						////å½“é¤æ³¨å†Œè´¦æˆ·çŠ¶æ€
+	int				UpLimitMoney;				//å½“é¤æ³¨å†Œè´¦æˆ·æ¶ˆè´¹ä¸Šé™
+	int				ManageId;					//å½“é¤æ³¨å†Œè´¦æˆ·ç®¡ç†è´¹ç³»æ•°
+	int				PowerId;					//å½“é¤æ³¨å†Œè´¦æˆ·èº«ä»½ç±»åž‹
+	char        FlowTime[20];					//é»‘åå•æµæ°´ç»“æž„
 } no_money_flow;
 
 typedef struct __money_flow {
-	long  AccountId; //ÕË»§¿¨ºÅ
+	long  AccountId; //è´¦æˆ·å¡å·
 	unsigned long CardNo; 
-	int   Money; //Óà¶î±ä»¯Á¿£¬µ¥Î»Îª·Ö 
+	int   Money; //ä½™é¢å˜åŒ–é‡ï¼Œå•ä½ä¸ºåˆ† 
 } money_flow;
 #endif
 

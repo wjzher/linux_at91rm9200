@@ -5,7 +5,7 @@
 
 #define BYTEOFDFPAGE 1056
 
-//DataFlash�Ĵ洢�ṹ�궨��
+//DataFlash的存储结构宏定义
 //0-8191 pages for all
 #define FLOW_S 0			// flow start page
 #define FLOW_E 4949		// flow end page
@@ -16,7 +16,7 @@
 #define BLACK_A 860
 #define ACCOUNT_S 5890	// account start page, 201520
 #define ACCOUNT_E 8179	// account end page 2290 pages
-#define TERM_S 8180		// �ն˿�ʮҳ
+#define TERM_S 8180		// 终端库十页
 #define TERM_E 8189
 #define FLASHTIME 8190	// 2 pages
 #define FLASH_ALL 8192	// all page

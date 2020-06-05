@@ -1,24 +1,24 @@
 /*
  * Copyright (c) 2007, NKTY Company
  * All rights reserved.
- * ÎÄ¼şÃû³Æ£ºat91_usri2c.c
- * Õª    Òª£º¶ÔI2C½Ó¿Ú±à³Ì, Ä¿Ç°Ö»Ö§³ÖÌúµçºÍÊ±ÖÓĞ¾Æ¬DS1337
- *			 ¶ÔÌúµçµÄ²Ù×÷ÓÃreadºÍwriteÊµÏÖ, ¶ÔDS1337µÄ²Ù×÷ÓÃioctlÊµÏÖ
- *			 1.1 Ê¹ÓÃsemaphore±£»¤ÁÙ½çÇø
- *			 1.1.1 ÔÚ´«ÊäÊ±½ûÖ¹ÖĞ¶Ï
- * 			 1.2.1 ¼ÓÈë¶ÔÆ÷¼şZLG7290BµÄÖ§³Ö
+ * æ–‡ä»¶åç§°ï¼šat91_usri2c.c
+ * æ‘˜    è¦ï¼šå¯¹I2Cæ¥å£ç¼–ç¨‹, ç›®å‰åªæ”¯æŒé“ç”µå’Œæ—¶é’ŸèŠ¯ç‰‡DS1337
+ *			 å¯¹é“ç”µçš„æ“ä½œç”¨readå’Œwriteå®ç°, å¯¹DS1337çš„æ“ä½œç”¨ioctlå®ç°
+ *			 1.1 ä½¿ç”¨semaphoreä¿æŠ¤ä¸´ç•ŒåŒº
+ *			 1.1.1 åœ¨ä¼ è¾“æ—¶ç¦æ­¢ä¸­æ–­
+ * 			 1.2.1 åŠ å…¥å¯¹å™¨ä»¶ZLG7290Bçš„æ”¯æŒ
  *
- * µ±Ç°°æ±¾£º1.2.1
- * ×÷    Õß£ºwjzhe
- * Íê³ÉÈÕÆÚ£º2007Äê10ÔÂ29ÈÕ
+ * å½“å‰ç‰ˆæœ¬ï¼š1.2.1
+ * ä½œ    è€…ï¼šwjzhe
+ * å®Œæˆæ—¥æœŸï¼š2007å¹´10æœˆ29æ—¥
  *
- * È¡´ú°æ±¾£º1.1.1
- * ×÷    Õß£ºwjzhe
- * Íê³ÉÈÕÆÚ£º2007Äê8ÔÂ14ÈÕ
+ * å–ä»£ç‰ˆæœ¬ï¼š1.1.1
+ * ä½œ    è€…ï¼šwjzhe
+ * å®Œæˆæ—¥æœŸï¼š2007å¹´8æœˆ14æ—¥
  *
- * È¡´ú°æ±¾£º1.0 
- * Ô­×÷Õß  £ºwjzhe
- * Íê³ÉÈÕÆÚ£º2007Äê2ÔÂ6ÈÕ
+ * å–ä»£ç‰ˆæœ¬ï¼š1.0 
+ * åŸä½œè€…  ï¼šwjzhe
+ * å®Œæˆæ—¥æœŸï¼š2007å¹´2æœˆ6æ—¥
  */
 #include <linux/unistd.h>   
 #include <linux/ioport.h>  
@@ -164,7 +164,7 @@ static int msg_xfer(int flag, unsigned int addr, char *buf, unsigned int count)
 		twi->TWI_CWGR = twiclk_reg;
 	}
 #endif
-	udelay(5);// Ã¿´Î´«ÊäÍêÍ£5 us
+	udelay(5);// æ¯æ¬¡ä¼ è¾“å®Œåœ5 us
 	return 0;
 err:
 	reset_twi();
@@ -206,18 +206,18 @@ static int tmbin2bcd(struct dstime *tm)
 
 #ifdef ZLG7290B
 /*
-º¯Êı£ºzlg7290_download()
-¹¦ÄÜ£ºÏÂÔØÊı¾İ²¢ÒëÂë
-²ÎÊı£º
-addr£ºÈ¡Öµ0¡«7£¬ÏÔÊ¾»º´æDpRam0¡«DpRam7 µÄ±àºÅ
-dp£ºÊÇ·ñµãÁÁ¸ÃÎ»µÄĞ¡Êıµã£¬0£­Ï¨Ãğ£¬1£­µãÁÁ
-flash£º¿ØÖÆ¸ÃÎ»ÊÇ·ñÉÁË¸£¬0£­²»ÉÁË¸£¬1£­ÉÁË¸
-data£ºÈ¡Öµ0¡«31£¬±íÊ¾ÒªÏÔÊ¾µÄÊı¾İ
-·µ»Ø£º
-0£ºÕı³£
-·Ç0£º·ÃÎÊZLG7290 Ê±³öÏÖÒì³£
-ËµÃ÷£º
-ÏÔÊ¾Êı¾İ¾ßÌåµÄÒëÂë·½Ê½Çë²Î¼ûZLG7290 µÄÊı¾İÊÖ²á
+å‡½æ•°ï¼šzlg7290_download()
+åŠŸèƒ½ï¼šä¸‹è½½æ•°æ®å¹¶è¯‘ç 
+å‚æ•°ï¼š
+addrï¼šå–å€¼0ï½7ï¼Œæ˜¾ç¤ºç¼“å­˜DpRam0ï½DpRam7 çš„ç¼–å·
+dpï¼šæ˜¯å¦ç‚¹äº®è¯¥ä½çš„å°æ•°ç‚¹ï¼Œ0ï¼ç†„ç­ï¼Œ1ï¼ç‚¹äº®
+flashï¼šæ§åˆ¶è¯¥ä½æ˜¯å¦é—ªçƒï¼Œ0ï¼ä¸é—ªçƒï¼Œ1ï¼é—ªçƒ
+dataï¼šå–å€¼0ï½31ï¼Œè¡¨ç¤ºè¦æ˜¾ç¤ºçš„æ•°æ®
+è¿”å›ï¼š
+0ï¼šæ­£å¸¸
+é0ï¼šè®¿é—®ZLG7290 æ—¶å‡ºç°å¼‚å¸¸
+è¯´æ˜ï¼š
+æ˜¾ç¤ºæ•°æ®å…·ä½“çš„è¯‘ç æ–¹å¼è¯·å‚è§ZLG7290 çš„æ•°æ®æ‰‹å†Œ
 */
 static inline int zlg7290_download(int num, int dp, int flash, char data)
 {
@@ -257,7 +257,7 @@ static int usri2c_ioctl(struct inode *inode, struct file *file, unsigned int cmd
 	unsigned int twi_clk, twi_sclock, twi_cldiv2, twi_cldiv3;//TWI_SCLOCK, TWI_CLDIV2
 	memset(&dstm, 0, sizeof(dstm));
 	switch (cmd) {
-	case SETDSTIME:		//ÉèÖÃÊ±ÖÓÊ±¼ä
+	case SETDSTIME:		//è®¾ç½®æ—¶é’Ÿæ—¶é—´
 		if ((ret = copy_from_user(&dstm, (char *)arg, sizeof(dstm))) < 0) {
 			printk("error copy from user!\n");
 			return ret;
@@ -274,7 +274,7 @@ static int usri2c_ioctl(struct inode *inode, struct file *file, unsigned int cmd
 		spin_unlock(&usri2c_lock);
 #endif
 		break;
-	case GETDSTIME:			//¶ÁÈ¡Ê±ÖÓÊ±¼ä
+	case GETDSTIME:			//è¯»å–æ—¶é’Ÿæ—¶é—´
 #ifdef I2CLOCK
 		spin_lock(&usri2c_lock);
 #endif
@@ -389,7 +389,7 @@ static int usri2c_ioctl(struct inode *inode, struct file *file, unsigned int cmd
 		spin_unlock(&usri2c_lock);
 #endif
 		break;
-	case STARTALM1:		//Æô¶¯¶¨Ê±
+	case STARTALM1:		//å¯åŠ¨å®šæ—¶
 		// first read control register
 #ifdef I2CLOCK
 		spin_lock(&usri2c_lock);
@@ -405,7 +405,7 @@ static int usri2c_ioctl(struct inode *inode, struct file *file, unsigned int cmd
 		spin_unlock(&usri2c_lock);
 #endif
 		break;
-	case STOPALM1:		//¹Ø±Õ¶¨Ê±
+	case STOPALM1:		//å…³é—­å®šæ—¶
 		// first read control register
 #ifdef I2CLOCK
 		spin_lock(&usri2c_lock);
@@ -432,11 +432,11 @@ static int usri2c_ioctl(struct inode *inode, struct file *file, unsigned int cmd
 #endif
 		break;
 #if 0
-	case RDOLDSTA:		//¶ÁÈ¡¿ª»úÊ±Ê±ÖÓ×´Ì¬£¬Ö÷ÒªÓÃÓÚÅĞ¶ÏÊÇ¶¨Ê±¿ª»ú»¹ÊÇÈËÎª¿ª»ú
+	case RDOLDSTA:		//è¯»å–å¼€æœºæ—¶æ—¶é’ŸçŠ¶æ€ï¼Œä¸»è¦ç”¨äºåˆ¤æ–­æ˜¯å®šæ—¶å¼€æœºè¿˜æ˜¯äººä¸ºå¼€æœº
 		ret = put_user(old_status, (unsigned char *)arg);
 		break;
 #endif
-	case RDDSSTATUS:		//¶ÁÈ¡µ±Ç°Ê±ÖÓ×´Ì¬
+	case RDDSSTATUS:		//è¯»å–å½“å‰æ—¶é’ŸçŠ¶æ€
 #ifdef I2CLOCK
 		spin_lock(&usri2c_lock);
 #endif
@@ -727,7 +727,7 @@ static int usri2c_init(void)
 }
 static void usri2c_exit(void)
 {
-	unregister_chrdev(USRI2C_MAJOR, "usri2c");//×¢Ïú
+	unregister_chrdev(USRI2C_MAJOR, "usri2c");//æ³¨é”€
 	printk("unregistering fram\n");
 }
 

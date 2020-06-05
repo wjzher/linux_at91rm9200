@@ -1,28 +1,28 @@
 /*
  * Copyright (c) 2007, NKTY Company
  * All rights reserved.
- * ÎÄ¼şÃû³Æ£ºdata_arch.h
- * Õª    Òª£º¶¨ÒåÓÃµ½µÄÊı¾İ½á¹¹ÌåºÍ485Çı¶¯ÖĞÓÃµ½µÄ²¿·ÖÃüÁî×Ö
- *			 ĞÂµÄPOS»úÖÕ¶Ë¿â½á¹¹Ìå¸Ä±ä, ĞÂÔöºÚÃûµ¥½á¹¹Ìå
- *			 Ôö¼Óterm_ram½á¹¹Ìå³ÉÔ±, ×÷ÎªÖÕ¶Ë»úµÄ²ÎÊıÉèÖÃ±êÖ¾
- * 			 ¸ü¸ÄFLASHÖĞÕÊ»§¸ñÊ½, À©³ämoney, 2.2
- *			 Ôö¼ÓÒ»¿¨Í¨V2Ö§³Ö
+ * æ–‡ä»¶åç§°ï¼šdata_arch.h
+ * æ‘˜    è¦ï¼šå®šä¹‰ç”¨åˆ°çš„æ•°æ®ç»“æ„ä½“å’Œ485é©±åŠ¨ä¸­ç”¨åˆ°çš„éƒ¨åˆ†å‘½ä»¤å­—
+ *			 æ–°çš„POSæœºç»ˆç«¯åº“ç»“æ„ä½“æ”¹å˜, æ–°å¢é»‘åå•ç»“æ„ä½“
+ *			 å¢åŠ term_ramç»“æ„ä½“æˆå‘˜, ä½œä¸ºç»ˆç«¯æœºçš„å‚æ•°è®¾ç½®æ ‡å¿—
+ * 			 æ›´æ”¹FLASHä¸­å¸æˆ·æ ¼å¼, æ‰©å……money, 2.2
+ *			 å¢åŠ ä¸€å¡é€šV2æ”¯æŒ
  * 	
- * µ±Ç°°æ±¾£º2.2
- * ×÷    Õß£ºDuyy
- * Íê³ÉÈÕÆÚ£º2013Äê6ÔÂ18ÈÕ
+ * å½“å‰ç‰ˆæœ¬ï¼š2.2
+ * ä½œ    è€…ï¼šDuyy
+ * å®Œæˆæ—¥æœŸï¼š2013å¹´6æœˆ18æ—¥
  *
- * µ±Ç°°æ±¾£º2.1
- * ×÷    Õß£ºwjzhe
- * Íê³ÉÈÕÆÚ£º2007Äê9ÔÂ3ÈÕ
+ * å½“å‰ç‰ˆæœ¬ï¼š2.1
+ * ä½œ    è€…ï¼šwjzhe
+ * å®Œæˆæ—¥æœŸï¼š2007å¹´9æœˆ3æ—¥
  *
- * µ±Ç°°æ±¾£º2.0
- * Ô­×÷Õß  £ºwjzhe
- * Íê³ÉÈÕÆÚ£º2007Äê6ÔÂ14ÈÕ
+ * å½“å‰ç‰ˆæœ¬ï¼š2.0
+ * åŸä½œè€…  ï¼šwjzhe
+ * å®Œæˆæ—¥æœŸï¼š2007å¹´6æœˆ14æ—¥
  *
- * È¡´ú°æ±¾£º1.1 
- * Ô­×÷Õß  £ºwjzhe
- * Íê³ÉÈÕÆÚ£º2007Äê4ÔÂ11ÈÕ
+ * å–ä»£ç‰ˆæœ¬ï¼š1.1 
+ * åŸä½œè€…  ï¼šwjzhe
+ * å®Œæˆæ—¥æœŸï¼š2007å¹´4æœˆ11æ—¥
  */
 #ifndef _DATA_ARCH_H_
 #define _DATA_ARCH_H_
@@ -33,44 +33,44 @@
 #endif
 #include "dataflash.h"
 
-#define SENDLEIDIFNO 0x10	// ·¢ËÍ¹âµç¿¨ÕË»§ĞÅÏ¢
-#define SENDRUNDATA 0x20	// ·¢ËÍÉÏµç²ÎÊı
+#define SENDLEIDIFNO 0x10	// å‘é€å…‰ç”µå¡è´¦æˆ·ä¿¡æ¯
+#define SENDRUNDATA 0x20	// å‘é€ä¸Šç”µå‚æ•°
 #define RECVNO 0x40			// 
-#define RECVLEHEXFLOW 0xF	// ½ÓÊÕ¹âµç¿¨Á÷Ë®(HEX)
-#define RECVLEBCDFLOW 0x2	// ½ÓÊÕ¹âµç¿¨Á÷Ë®(BCD)
-#define RECVTAKEFLOW 0x04	// ½ÓÊÕ¹âµç¿¨È¡¿îÁ÷Ë®
-#define RECVDEPFLOW 0x08	// ½ÓÊÕ¹âµç¿¨´æ¿îÁ÷Ë®
+#define RECVLEHEXFLOW 0xF	// æ¥æ”¶å…‰ç”µå¡æµæ°´(HEX)
+#define RECVLEBCDFLOW 0x2	// æ¥æ”¶å…‰ç”µå¡æµæ°´(BCD)
+#define RECVTAKEFLOW 0x04	// æ¥æ”¶å…‰ç”µå¡å–æ¬¾æµæ°´
+#define RECVDEPFLOW 0x08	// æ¥æ”¶å…‰ç”µå¡å­˜æ¬¾æµæ°´
 #define NOCMD 0x80
 
 #ifdef CONFIG_UART_V2
-/* ÀúÊ·ĞÂÔöÃüÁî */
+/* å†å²æ–°å¢å‘½ä»¤ */
 #ifdef CONFIG_WATER
-#define RECVWATSFLOW 0x84	// ÊÕÈ¡Ë®¿ØÖÕ¶Ëµ¥´ÎÁ÷Ë®
-#define RECVWATAFLOW 0x85	// ½«ÖÕ¶ËµÄµ¥´ÎÁ÷Ë®Ôİ´æÇøÄÚµÄÁ÷Ë®´ò°ü´æÈëÁ÷Ë®Çø
+#define RECVWATSFLOW 0x84	// æ”¶å–æ°´æ§ç»ˆç«¯å•æ¬¡æµæ°´
+#define RECVWATAFLOW 0x85	// å°†ç»ˆç«¯çš„å•æ¬¡æµæ°´æš‚å­˜åŒºå†…çš„æµæ°´æ‰“åŒ…å­˜å…¥æµæ°´åŒº
 #endif	/* CONFIG_WATER */
 
-/* Ë«ÕË»§ÇëÇóÓà¶îÃüÁî */
+/* åŒè´¦æˆ·è¯·æ±‚ä½™é¢å‘½ä»¤ */
 #define SENDLEID_DOUBLE 0x99
-/* Ë«ÕË»§Á÷Ë®½ÓÊÕÃüÁî */
+/* åŒè´¦æˆ·æµæ°´æ¥æ”¶å‘½ä»¤ */
 #define RECVLEFLOW_DOUBLE 0x9A
 
-/*³öÄÉ»úºÍÍË¿î»úĞÂÃüÁî£¬Ë«Ğ£Ñé£¬write by duyy, 2013.6.18*/
-#define SENDLEIDACCX 0x91	// ·¢ËÍ¹âµç¿¨ÕË»§ĞÅÏ¢, Ôö¼ÓÕËºÅË«Ğ£Ñé
-#define RECVDEPFLOWX 0x93	// ½ÓÊÕ¹âµç¿¨´æ¿îÁ÷Ë® Ë«Ğ£Ñé
-#define RECVTAKEFLOWX 0x92	// ½ÓÊÕ¹âµç¿¨È¡¿îÁ÷Ë® Ë«Ğ£Ñé
-#define RECVREFUNDFLOW 0x94	// ½ÓÊÕÍË¿î»úÁ÷Ë® Ë«Ğ£Ñé
+/*å‡ºçº³æœºå’Œé€€æ¬¾æœºæ–°å‘½ä»¤ï¼ŒåŒæ ¡éªŒï¼Œwrite by duyy, 2013.6.18*/
+#define SENDLEIDACCX 0x91	// å‘é€å…‰ç”µå¡è´¦æˆ·ä¿¡æ¯, å¢åŠ è´¦å·åŒæ ¡éªŒ
+#define RECVDEPFLOWX 0x93	// æ¥æ”¶å…‰ç”µå¡å­˜æ¬¾æµæ°´ åŒæ ¡éªŒ
+#define RECVTAKEFLOWX 0x92	// æ¥æ”¶å…‰ç”µå¡å–æ¬¾æµæ°´ åŒæ ¡éªŒ
+#define RECVREFUNDFLOW 0x94	// æ¥æ”¶é€€æ¬¾æœºæµæ°´ åŒæ ¡éªŒ
 
-#define SENDRUNDATAX 0x95   // ·¢ËÍÉÏµç²ÎÊı Ë«Ğ£Ñé//write by duyy, 2013.6.26
+#define SENDRUNDATAX 0x95   // å‘é€ä¸Šç”µå‚æ•° åŒæ ¡éªŒ//write by duyy, 2013.6.26
 
-#define SENDLEID_TICKET 0x96// ·¢ËÍË«ÕË»§ĞÅÏ¢£¬Ôö¼ÓÕËºÅ¡¢ĞÕÃû£¬Ö§³ÖÖÕ¶Ë´òĞ¡Æ±¹¦ÄÜ£¬write by duyy, 2014.6.6
-#define SENDLEIDACCX_TICKET 0x97// ·¢ËÍË«ÕË»§ĞÅÏ¢£¬Ôö¼ÓÕËºÅ¡¢ĞÕÃû£¬Ö§³Ö³öÄÉÖÕ¶Ë´òĞ¡Æ±¹¦ÄÜ£¬write by duyy, 2014.6.6
-#define SENDHEADLINE 0x98   // ·¢ËÍĞ¡Æ±´òÓ¡»ú±êÌâÎÄ×Ö Ë«Ğ£Ñé//write by duyy, 2014.6.9
+#define SENDLEID_TICKET 0x96// å‘é€åŒè´¦æˆ·ä¿¡æ¯ï¼Œå¢åŠ è´¦å·ã€å§“åï¼Œæ”¯æŒç»ˆç«¯æ‰“å°ç¥¨åŠŸèƒ½ï¼Œwrite by duyy, 2014.6.6
+#define SENDLEIDACCX_TICKET 0x97// å‘é€åŒè´¦æˆ·ä¿¡æ¯ï¼Œå¢åŠ è´¦å·ã€å§“åï¼Œæ”¯æŒå‡ºçº³ç»ˆç«¯æ‰“å°ç¥¨åŠŸèƒ½ï¼Œwrite by duyy, 2014.6.6
+#define SENDHEADLINE 0x98   // å‘é€å°ç¥¨æ‰“å°æœºæ ‡é¢˜æ–‡å­— åŒæ ¡éªŒ//write by duyy, 2014.6.9
 
-/* Ïû·Ñ±êÖ¾ */
-#define TRMF_DISC (1 << 1)		/* ´òÕÛ±êÖ¾ */
-#define TRMF_LIMIT (1 << 0)		/* ²Í´Î±êÖ¾ */
-#define TRMF_DISCF (1 << 8)		/* ´òÕÛÖÕ¶ËÏû·Ñ±êÖ¾ */
-#define FLOWF_SPLIT (1 << 2)	/* Á÷Ë®²ğ·Ö±êÖ¾ */
+/* æ¶ˆè´¹æ ‡å¿— */
+#define TRMF_DISC (1 << 1)		/* æ‰“æŠ˜æ ‡å¿— */
+#define TRMF_LIMIT (1 << 0)		/* é¤æ¬¡æ ‡å¿— */
+#define TRMF_DISCF (1 << 8)		/* æ‰“æŠ˜ç»ˆç«¯æ¶ˆè´¹æ ‡å¿— */
+#define FLOWF_SPLIT (1 << 2)	/* æµæ°´æ‹†åˆ†æ ‡å¿— */
 #endif	/* CONFIG_UART_V2 */
 
 #define LECONSUME (0x1 << 5)
@@ -85,13 +85,13 @@
 #define CHKCSUM 0x45
 
 #define CONSTANT_MONEY_TERMIAL 0  //#define FRIST_ENTER_CARD_FLAG 0,modified by duyy, 2013.6.26
-#define LIMIT_MODE_FLAG 1         //  ÖÕ¶ËÓĞÏû·ÑÉÏÏŞ±êÖ¾Î»
+#define LIMIT_MODE_FLAG 1         //  ç»ˆç«¯æœ‰æ¶ˆè´¹ä¸Šé™æ ‡å¿—ä½
 #define REFUND_FLAG 2			 //#define RAM_MODE_FLAG 2,modified by duyy, 2013.6.17
-#define ENTER_SECRET_FLAG 3         //ÊäÃÜÂë±êÖ¾Î»
-#define ONE_PRICE_FLAG 4           // µ¥Æ·ÖÖ·½Ê½±êÖ¾Î»
-#define CASH_TERMINAL_FLAG 5       // ³öÄÉ»ú±êÖ¾Î»
-#define MESS_TERMINAL_FLAG 6      //  ÊÛ·¹»ú±êÖ¾Î» 
-#define REGISTER_TERMINAL_FLAG 7    // ×¢²á»ú±êÖ¾Î»
+#define ENTER_SECRET_FLAG 3         //è¾“å¯†ç æ ‡å¿—ä½
+#define ONE_PRICE_FLAG 4           // å•å“ç§æ–¹å¼æ ‡å¿—ä½
+#define CASH_TERMINAL_FLAG 5       // å‡ºçº³æœºæ ‡å¿—ä½
+#define MESS_TERMINAL_FLAG 6      //  å”®é¥­æœºæ ‡å¿—ä½ 
+#define REGISTER_TERMINAL_FLAG 7    // æ³¨å†Œæœºæ ‡å¿—ä½
 
 #define ACCOUNTCLASS 4
 #define ACCOUNTFLAG 6
@@ -109,177 +109,177 @@ typedef struct __usr_time {//BCD
 
 
 /*
- * PosTime		CHAR	7	BCD	ÊµÊ±Ê±¼ä£ºYYYYMMDDHHMMSS
- * AppCardID	DWORD	4	HEX	¿¨Æ¬ĞòÁĞºÅ»ò¿¨ºÅ
- * AccountsNo	DWORD	4	HEX	ÕÊºÅ
- * MoneySum		DWORD	4	HEX	µ±Ç°²Í´ÎÏû·Ñ×Ü¶î
-BakReg		BYTE	2	HEX	´ıÀ©Õ¹
- * ManagMoney	BYTE	3	HEX	¹ÜÀí·Ñ²î¶î 
- * PosSetNo		WORD	2	HEX	½áËã»ú±»ÉèÖÃ±àºÅ 
- * PsamNo		WORD	2	HEX	½áËã»úÖĞPSAM¿¨±àºÅ
- * PsamTrdNo	DWORD	4	HEX	½áËã»úÖĞPSAM¿¨½»Ò×ĞòºÅ
- * WalTrdNo		WORD	2	HEX	Ç®°ü½»Ò×ĞòºÅ
- * WalTrdMoney	DWORD	4	HEX	½»Ò×½ğ¶î£¬µ¥Î»Îª·Ö
- * WalRemMoney	DWORD	4	HEX	Ç®°ü½»Ò×ºóÓà¶î£¬µ¥Î»ÊÇ·Ö
- * FoodGroupNo	BYTE	1	HEX	²ËÆ··Ö×é±àºÅ£º00¡«06
- * DealType		BYTE	1	HEX	½»Ò×ÀàĞÍ±êÊ¶: ¼û¡¶Mifare one s50 ¿¨Æ¬¹æ»®¡·¨D¨D½»Ò×ÀàĞÍ±àÂë
- * FlowType		BYTE	1	HEX	Á÷Ë®ÀàĞÍ±êÊ¶£ºBit0Õı³£Á÷Ë®¡¢Bit1Ê§°ÜÁ÷Ë®¡¢Bit2Ç¿ÖÆÊÛ·¹Á÷Ë®¡¢Bit3-Bit7ÎªÇ®°üÀàĞÍ 
- * TacCode		BYTE	2	HEX	TACĞ£ÑéÂë: TacCode1=PosTime +¡­+ FlowType TacCode2=PosTime^¡­¡­^FlowType
- * FlowStatus	BYTE	1	HEX	×´Ì¬£º0xFFÎ´ÉÏ´«£¬0xFEÒÑÉÏ´«
+ * PosTime		CHAR	7	BCD	å®æ—¶æ—¶é—´ï¼šYYYYMMDDHHMMSS
+ * AppCardID	DWORD	4	HEX	å¡ç‰‡åºåˆ—å·æˆ–å¡å·
+ * AccountsNo	DWORD	4	HEX	å¸å·
+ * MoneySum		DWORD	4	HEX	å½“å‰é¤æ¬¡æ¶ˆè´¹æ€»é¢
+BakReg		BYTE	2	HEX	å¾…æ‰©å±•
+ * ManagMoney	BYTE	3	HEX	ç®¡ç†è´¹å·®é¢ 
+ * PosSetNo		WORD	2	HEX	ç»“ç®—æœºè¢«è®¾ç½®ç¼–å· 
+ * PsamNo		WORD	2	HEX	ç»“ç®—æœºä¸­PSAMå¡ç¼–å·
+ * PsamTrdNo	DWORD	4	HEX	ç»“ç®—æœºä¸­PSAMå¡äº¤æ˜“åºå·
+ * WalTrdNo		WORD	2	HEX	é’±åŒ…äº¤æ˜“åºå·
+ * WalTrdMoney	DWORD	4	HEX	äº¤æ˜“é‡‘é¢ï¼Œå•ä½ä¸ºåˆ†
+ * WalRemMoney	DWORD	4	HEX	é’±åŒ…äº¤æ˜“åä½™é¢ï¼Œå•ä½æ˜¯åˆ†
+ * FoodGroupNo	BYTE	1	HEX	èœå“åˆ†ç»„ç¼–å·ï¼š00ï½06
+ * DealType		BYTE	1	HEX	äº¤æ˜“ç±»å‹æ ‡è¯†: è§ã€ŠMifare one s50 å¡ç‰‡è§„åˆ’ã€‹â€•â€•äº¤æ˜“ç±»å‹ç¼–ç 
+ * FlowType		BYTE	1	HEX	æµæ°´ç±»å‹æ ‡è¯†ï¼šBit0æ­£å¸¸æµæ°´ã€Bit1å¤±è´¥æµæ°´ã€Bit2å¼ºåˆ¶å”®é¥­æµæ°´ã€Bit3-Bit7ä¸ºé’±åŒ…ç±»å‹ 
+ * TacCode		BYTE	2	HEX	TACæ ¡éªŒç : TacCode1=PosTime +â€¦+ FlowType TacCode2=PosTime^â€¦â€¦^FlowType
+ * FlowStatus	BYTE	1	HEX	çŠ¶æ€ï¼š0xFFæœªä¸Šä¼ ï¼Œ0xFEå·²ä¸Šä¼ 
  * add cpu card support, modified by wjzhe, Sep 11 2009
  */
 typedef struct __m1_flow {
-	unsigned char flow_type;		// Bit0Õı³£Á÷Ë®¡¢Bit1Ê§°ÜÁ÷Ë®¡¢Bit2Ç¿ÖÆÊÛ·¹Á÷Ë®¡¢Bit3-Bit7ÎªÇ®°üÀàĞÍ
-	long flow_num;					// Á÷Ë®ºÅ, ÓÉUARTÇı¶¯Éú³É
-	int consume_sum;				// Ïû·Ñ½ğ¶î-->½»Ò×½ğ¶î, µ¥Î»·Ö
-	usr_time date;					// Ïû·ÑÊ±¼ä, Ãë...Äê
-	long manage_fee;				// ¹ÜÀí·Ñ²î¶î
-	unsigned char tml_num;			// ÖÕ¶ËºÅ
-	unsigned char areano;			// ÇøºÅ
-	unsigned int card_num;			// ¿¨ºÅ, CPU¿¨ÎªASN
-	unsigned int acc_num;					// ÕËºÅ
+	unsigned char flow_type;		// Bit0æ­£å¸¸æµæ°´ã€Bit1å¤±è´¥æµæ°´ã€Bit2å¼ºåˆ¶å”®é¥­æµæ°´ã€Bit3-Bit7ä¸ºé’±åŒ…ç±»å‹
+	long flow_num;					// æµæ°´å·, ç”±UARTé©±åŠ¨ç”Ÿæˆ
+	int consume_sum;				// æ¶ˆè´¹é‡‘é¢-->äº¤æ˜“é‡‘é¢, å•ä½åˆ†
+	usr_time date;					// æ¶ˆè´¹æ—¶é—´, ç§’...å¹´
+	long manage_fee;				// ç®¡ç†è´¹å·®é¢
+	unsigned char tml_num;			// ç»ˆç«¯å·
+	unsigned char areano;			// åŒºå·
+	unsigned int card_num;			// å¡å·, CPUå¡ä¸ºASN
+	unsigned int acc_num;					// è´¦å·
 #ifndef CPUCARD
-	unsigned short psam_num;		// PSAM¿¨±àºÅ
+	unsigned short psam_num;		// PSAMå¡ç¼–å·
 #else
-	unsigned int psam_num;			// CPU PSAM±àºÅ4-byte
+	unsigned int psam_num;			// CPU PSAMç¼–å·4-byte
 #endif
-	long psam_trd_num;		// PSAM¿¨½»Ò×ĞòºÅ
-	unsigned short walt_num;		// Ç®°ü½»Ò×ĞòºÅ
-	long remain_money;				// Ç®°üÓà¶î
-	unsigned char food_grp_num;		// ²ËÆ··Ö×é
-	unsigned char deal_type;		// ½»Ò×ÀàĞÍ
+	long psam_trd_num;		// PSAMå¡äº¤æ˜“åºå·
+	unsigned short walt_num;		// é’±åŒ…äº¤æ˜“åºå·
+	long remain_money;				// é’±åŒ…ä½™é¢
+	unsigned char food_grp_num;		// èœå“åˆ†ç»„
+	unsigned char deal_type;		// äº¤æ˜“ç±»å‹
 #ifndef CPUCARD
 	unsigned short tac_code;		// TAC code
-	long money_sum;					// µ±ÌìÏû·Ñ×Ü¶î
+	long money_sum;					// å½“å¤©æ¶ˆè´¹æ€»é¢
 #else
 	unsigned int cpu_tac;			// cpu card tac code
 #endif
 } __attribute__ ((packed)) m1_flow;
 
 /*
-AppCardID	DWORD	4	HEX	´æÕÛ¿¨¿¨ºÅ	
-PosSetNo	WORD	2	HEX	½áËã»ú±àºÅ	
-PsamNo	WORD	2	HEX	½áËã»úÖĞPSAM¿¨±àºÅ	
-PsamTrdNo	DWORD	4	HEX	½áËã»úÖĞPSAM¿¨½»Ò×ĞòºÅ	
-CsmMny	DWORD	4	HEX	½»Ò×½ğ¶î£¬µ¥Î»Îª·Ö            	
-BakReg	BYTE	1	HEX	´ıÀ©Õ¹	0X00
-FlowType	BYTE	1	HEX	Á÷Ë®ÀàĞÍ±êÊ¶£ºBit0Õı³£Á÷Ë®¡¢Bit1Ê§°ÜÁ÷Ë®¡¢Bit2Ç¿ÖÆÊÛ·¹Á÷Ë®	
+AppCardID	DWORD	4	HEX	å­˜æŠ˜å¡å¡å·	
+PosSetNo	WORD	2	HEX	ç»“ç®—æœºç¼–å·	
+PsamNo	WORD	2	HEX	ç»“ç®—æœºä¸­PSAMå¡ç¼–å·	
+PsamTrdNo	DWORD	4	HEX	ç»“ç®—æœºä¸­PSAMå¡äº¤æ˜“åºå·	
+CsmMny	DWORD	4	HEX	äº¤æ˜“é‡‘é¢ï¼Œå•ä½ä¸ºåˆ†            	
+BakReg	BYTE	1	HEX	å¾…æ‰©å±•	0X00
+FlowType	BYTE	1	HEX	æµæ°´ç±»å‹æ ‡è¯†ï¼šBit0æ­£å¸¸æµæ°´ã€Bit1å¤±è´¥æµæ°´ã€Bit2å¼ºåˆ¶å”®é¥­æµæ°´	
 */
 typedef struct __le_flow {
-	unsigned char flow_type;		// flow type: 0xAB, 0xAC, 0xAD---Ïû·Ñ, ³äÖµ, È¡¿î
-	long flow_num;			// ±¾µØÁ÷Ë®ºÅ
-	long consume_sum;				// Ïû·Ñ½ğ¶î
-	usr_time date;					// ½»Ò×ÈÕÆÚÊ±¼ä: year, mon, day, hour, min, sec (20 06 06 08 10 00 05)
-	long manage_fee;				// ¹ÜÀí·Ñ
-	unsigned char tml_num;			// ÖÕ¶ËºÅ
-	unsigned char areano;			// ÇøºÅ
-	unsigned long card_num;			// ¿¨ºÅ
-	long acc_num;			// ÕË»§
-	unsigned short psam_num;		// PSAM¿¨±àºÅ
-	unsigned long psam_trd_num;		// PSAM¿¨½»Ò×ĞòºÅ
-	unsigned char ltype;		// ÏŞÖÆÀàĞÍ±êÊ¶ bit0 ²ÍÏŞÉèÖÃ bit 1´òÕÛÁ÷Ë®
-	unsigned char is_sub;		// ±êÊ¶ÊÇ·ñÎª²¹ÌùÕË»§Á÷Ë®
+	unsigned char flow_type;		// flow type: 0xAB, 0xAC, 0xAD---æ¶ˆè´¹, å……å€¼, å–æ¬¾
+	long flow_num;			// æœ¬åœ°æµæ°´å·
+	long consume_sum;				// æ¶ˆè´¹é‡‘é¢
+	usr_time date;					// äº¤æ˜“æ—¥æœŸæ—¶é—´: year, mon, day, hour, min, sec (20 06 06 08 10 00 05)
+	long manage_fee;				// ç®¡ç†è´¹
+	unsigned char tml_num;			// ç»ˆç«¯å·
+	unsigned char areano;			// åŒºå·
+	unsigned long card_num;			// å¡å·
+	long acc_num;			// è´¦æˆ·
+	unsigned short psam_num;		// PSAMå¡ç¼–å·
+	unsigned long psam_trd_num;		// PSAMå¡äº¤æ˜“åºå·
+	unsigned char ltype;		// é™åˆ¶ç±»å‹æ ‡è¯† bit0 é¤é™è®¾ç½® bit 1æ‰“æŠ˜æµæ°´
+	unsigned char is_sub;		// æ ‡è¯†æ˜¯å¦ä¸ºè¡¥è´´è´¦æˆ·æµæ°´
 	unsigned char notused[12];
 } __attribute__ ((packed)) le_flow;
 
 typedef struct __flow {				// 50-byte
-	unsigned char flow_type;		// Bit0Õı³£Á÷Ë®¡¢Bit1Ê§°ÜÁ÷Ë®¡¢Bit2Ç¿ÖÆÊÛ·¹Á÷Ë®¡¢Bit3-Bit7ÎªÇ®°üÀàĞÍ
-	long flow_num;					// Á÷Ë®ºÅ, ÓÉUARTÇı¶¯Éú³É
-	long consume_sum;				// Ïû·Ñ½ğ¶î-->½»Ò×½ğ¶î, µ¥Î»·Ö
-	usr_time date;					// Ïû·ÑÊ±¼ä, Ãë...Äê
-	long manage_fee;				// ¹ÜÀí·Ñ²î¶î
-	unsigned char tml_num;			// ÖÕ¶ËºÅ
-	unsigned char areano;			// ÇøºÅ
-	unsigned long card_num;			// ¿¨ºÅ
-	long acc_num;					// ÕËºÅ
-	unsigned short psam_num;		// PSAM¿¨±àºÅ
-	unsigned long psam_trd_num;		// PSAM¿¨½»Ò×ĞòºÅ
-	unsigned short walt_num;		// Ç®°ü½»Ò×ĞòºÅ
-	long remain_money;				// Ç®°üÓà¶î
-	unsigned char food_grp_num;		// ²ËÆ··Ö×é
-	unsigned char deal_type;		// ½»Ò×ÀàĞÍ
+	unsigned char flow_type;		// Bit0æ­£å¸¸æµæ°´ã€Bit1å¤±è´¥æµæ°´ã€Bit2å¼ºåˆ¶å”®é¥­æµæ°´ã€Bit3-Bit7ä¸ºé’±åŒ…ç±»å‹
+	long flow_num;					// æµæ°´å·, ç”±UARTé©±åŠ¨ç”Ÿæˆ
+	long consume_sum;				// æ¶ˆè´¹é‡‘é¢-->äº¤æ˜“é‡‘é¢, å•ä½åˆ†
+	usr_time date;					// æ¶ˆè´¹æ—¶é—´, ç§’...å¹´
+	long manage_fee;				// ç®¡ç†è´¹å·®é¢
+	unsigned char tml_num;			// ç»ˆç«¯å·
+	unsigned char areano;			// åŒºå·
+	unsigned long card_num;			// å¡å·
+	long acc_num;					// è´¦å·
+	unsigned short psam_num;		// PSAMå¡ç¼–å·
+	unsigned long psam_trd_num;		// PSAMå¡äº¤æ˜“åºå·
+	unsigned short walt_num;		// é’±åŒ…äº¤æ˜“åºå·
+	long remain_money;				// é’±åŒ…ä½™é¢
+	unsigned char food_grp_num;		// èœå“åˆ†ç»„
+	unsigned char deal_type;		// äº¤æ˜“ç±»å‹
 	unsigned short tac_code;		// TAC code
-	long money_sum;					// µ±Ç°²Í´ÎÏû·Ñ×Ü¶î
+	long money_sum;					// å½“å‰é¤æ¬¡æ¶ˆè´¹æ€»é¢
 } __attribute__ ((packed)) flow;
 
 
 #ifdef CONFIG_UART_V2
-// Ò»¿¨Í¨V2°æ±¾ÕË»§¿â
-/* FLASHÖĞÕË»§´æ´¢½á¹¹ */
+// ä¸€å¡é€šV2ç‰ˆæœ¬è´¦æˆ·åº“
+/* FLASHä¸­è´¦æˆ·å­˜å‚¨ç»“æ„ */
 typedef struct __account {
 	unsigned int acc_num;			// account number
 	unsigned int card_num;			// card number
 
-	/*ÏÖ½ğÕË»§ĞÅÏ¢ */
-	int money;						// ÏÖ½ğÕË»§½ğ¶î
-	unsigned char passwd[3];		// 3×Ö½ÚÃÜÂë(BCD)
-	unsigned short money_limit;		// µ±²ÍÏû·ÑÉÏÏŞ(0~655.35),0xFFFFÎªÎŞÏŞÄ£Ê½,added by duyy, 2014.2.17
-	unsigned char times_limit;		// µ±²ÍÏû·Ñ´ÎÊıÉÏÏŞ(0~255),0xFFÎªÎŞÏŞÄ£Ê½,added by duyy, 2014.2.17
-	unsigned char power_id;			// Éí·İÀàĞÍ
-									// bit7»»¿¨±êÊ¶, Çı¶¯ÖĞÊ¹ÓÃ
-									// bit6²»ÔÊĞí³äÖµ±êÊ¶
-	unsigned char flag;				// ±êÖ¾
-									// bit 0: ¹ÒÊ§
-									// bit 1: ×¢Ïú
-									// bit 2: ÕË»§¶³½á
-									// bit 3: ²¹Ìù¶³½á
-									// bit 7..4: ¹ÜÀí·Ñid
-	unsigned char st_limit;			// µ½´ïÏû·ÑÉÏÏŞºóµÄ×´Ì¬,modified by duyy, 2013.6.17
-									//bit1bit0=0:ÏÖ½ğÕÊ»§µ½´ïÏû·ÑÉÏÏŞºó½ûÖ¹Ïû·Ñ
-									//bit1bit0=1:ÏÖ½ğÕÊ»§µ½´ïÏû·ÑÉÏÏŞºóÊäÃÜÂë¼ÌĞøÏû·ÑÏÖ½ğÕÊ»§
-									//bit1bit0=2:ÏÖ½ğÕÊ»§µ½´ïÏû·ÑÉÏÏŞºóÊäÃÜÂë¼ÌĞøÏû·Ñ²¹ÌùÓà¶î
-									//bit1bit0=3:ÏÖ½ğÕÊ»§µ½´ïÏû·ÑÉÏÏŞºó²»ÊäÈëÃÜÂë¼ÌĞøÏû·Ñ²¹ÌùÓà¶î	
-									//bit3bit2=0:²¹ÌùÕÊ»§µ½´ïÏû·ÑÉÏÏŞºó½ûÖ¹Ïû·Ñ
-									//bit3bit2=1:²¹ÌùÕÊ»§µ½´ïÏû·ÑÉÏÏŞºóÔÊĞíÊäÃÜÂëÏû·Ñ²¹ÌùÕÊ»§
-									//bit3bit2=2:²¹ÌùÕÊ»§µ½´ïÏû·ÑÉÏÏŞºóÔÊĞíÊäÃÜÂëÏû·ÑÏÖ½ğÕÊ»§
-									//bit3bit2=3:²¹ÌùÕÊ»§µ½´ïÏû·ÑÉÏÏŞºó²»ÊäÃÜÂë¼ÌĞøÏû·ÑÏÖ½ğÕÊ»§
-									//bit4=1:ÔÊĞí¿çÕË»§Ïû·Ñ;bit4=0:²»ÔÊĞí¿çÕË»§Ïû·Ñ
-									//bit5=1:ÓÅÏÈÏû·ÑÏÖ½ğÕÊ»§;bit5=0£ºÓÅÏÈÏû·Ñ²¹ÌùÕÊ»§
+	/*ç°é‡‘è´¦æˆ·ä¿¡æ¯ */
+	int money;						// ç°é‡‘è´¦æˆ·é‡‘é¢
+	unsigned char passwd[3];		// 3å­—èŠ‚å¯†ç (BCD)
+	unsigned short money_limit;		// å½“é¤æ¶ˆè´¹ä¸Šé™(0~655.35),0xFFFFä¸ºæ— é™æ¨¡å¼,added by duyy, 2014.2.17
+	unsigned char times_limit;		// å½“é¤æ¶ˆè´¹æ¬¡æ•°ä¸Šé™(0~255),0xFFä¸ºæ— é™æ¨¡å¼,added by duyy, 2014.2.17
+	unsigned char power_id;			// èº«ä»½ç±»å‹
+									// bit7æ¢å¡æ ‡è¯†, é©±åŠ¨ä¸­ä½¿ç”¨
+									// bit6ä¸å…è®¸å……å€¼æ ‡è¯†
+	unsigned char flag;				// æ ‡å¿—
+									// bit 0: æŒ‚å¤±
+									// bit 1: æ³¨é”€
+									// bit 2: è´¦æˆ·å†»ç»“
+									// bit 3: è¡¥è´´å†»ç»“
+									// bit 7..4: ç®¡ç†è´¹id
+	unsigned char st_limit;			// åˆ°è¾¾æ¶ˆè´¹ä¸Šé™åçš„çŠ¶æ€,modified by duyy, 2013.6.17
+									//bit1bit0=0:ç°é‡‘å¸æˆ·åˆ°è¾¾æ¶ˆè´¹ä¸Šé™åç¦æ­¢æ¶ˆè´¹
+									//bit1bit0=1:ç°é‡‘å¸æˆ·åˆ°è¾¾æ¶ˆè´¹ä¸Šé™åè¾“å¯†ç ç»§ç»­æ¶ˆè´¹ç°é‡‘å¸æˆ·
+									//bit1bit0=2:ç°é‡‘å¸æˆ·åˆ°è¾¾æ¶ˆè´¹ä¸Šé™åè¾“å¯†ç ç»§ç»­æ¶ˆè´¹è¡¥è´´ä½™é¢
+									//bit1bit0=3:ç°é‡‘å¸æˆ·åˆ°è¾¾æ¶ˆè´¹ä¸Šé™åä¸è¾“å…¥å¯†ç ç»§ç»­æ¶ˆè´¹è¡¥è´´ä½™é¢	
+									//bit3bit2=0:è¡¥è´´å¸æˆ·åˆ°è¾¾æ¶ˆè´¹ä¸Šé™åç¦æ­¢æ¶ˆè´¹
+									//bit3bit2=1:è¡¥è´´å¸æˆ·åˆ°è¾¾æ¶ˆè´¹ä¸Šé™åå…è®¸è¾“å¯†ç æ¶ˆè´¹è¡¥è´´å¸æˆ·
+									//bit3bit2=2:è¡¥è´´å¸æˆ·åˆ°è¾¾æ¶ˆè´¹ä¸Šé™åå…è®¸è¾“å¯†ç æ¶ˆè´¹ç°é‡‘å¸æˆ·
+									//bit3bit2=3:è¡¥è´´å¸æˆ·åˆ°è¾¾æ¶ˆè´¹ä¸Šé™åä¸è¾“å¯†ç ç»§ç»­æ¶ˆè´¹ç°é‡‘å¸æˆ·
+									//bit4=1:å…è®¸è·¨è´¦æˆ·æ¶ˆè´¹;bit4=0:ä¸å…è®¸è·¨è´¦æˆ·æ¶ˆè´¹
+									//bit5=1:ä¼˜å…ˆæ¶ˆè´¹ç°é‡‘å¸æˆ·;bit5=0ï¼šä¼˜å…ˆæ¶ˆè´¹è¡¥è´´å¸æˆ·
 
-	/* ²¹ÌùÕË»§ĞÅÏ¢ */
-	unsigned char sub_money[3];		// ²¹Ìù½ğ¶îsub money
-	unsigned short smoney_limit;	// µ±²Í²¹ÌùÏû·ÑÉÏÏŞ
-	unsigned char stimes_limit;		// µ±²Í´ÎÊıÏû·ÑÉÏÏŞ
-	unsigned char spower_id;		// ²¹ÌùÕË»§Éí·İÀàĞÍ
+	/* è¡¥è´´è´¦æˆ·ä¿¡æ¯ */
+	unsigned char sub_money[3];		// è¡¥è´´é‡‘é¢sub money
+	unsigned short smoney_limit;	// å½“é¤è¡¥è´´æ¶ˆè´¹ä¸Šé™
+	unsigned char stimes_limit;		// å½“é¤æ¬¡æ•°æ¶ˆè´¹ä¸Šé™
+	unsigned char spower_id;		// è¡¥è´´è´¦æˆ·èº«ä»½ç±»å‹
 
-	/* Ê£ÓàÏû·Ñ¶î/´ÎÊı */
-	unsigned short money_life;		// ÏÖ½ğÕÊ»§Ïû·Ñ½ğ¶î
-	unsigned char times_life;		// ÏÖ½ğÕÊ»§Ïû·Ñ´ÎÊı
-	unsigned short smoney_life;		// ²¹ÌùÏû·Ñ½ğ¶î
-	unsigned char stimes_life;		// ²¹ÌùÏû·Ñ´ÎÊı
+	/* å‰©ä½™æ¶ˆè´¹é¢/æ¬¡æ•° */
+	unsigned short money_life;		// ç°é‡‘å¸æˆ·æ¶ˆè´¹é‡‘é¢
+	unsigned char times_life;		// ç°é‡‘å¸æˆ·æ¶ˆè´¹æ¬¡æ•°
+	unsigned short smoney_life;		// è¡¥è´´æ¶ˆè´¹é‡‘é¢
+	unsigned char stimes_life;		// è¡¥è´´æ¶ˆè´¹æ¬¡æ•°
 
-	unsigned char dic_times;		// ´òÕÛÏû·Ñ´ÎÊıÍ³¼Æ×î´ó255
-	char user_name[12];		// ±£´æÓÃ»§ĞÕÃû,write by duyy, 2014.6.6
-	/* Í¸Ö§, duyy,2013.6.17 */
-	unsigned short draft;		// ÏÖ½ğÕÊ»§Í¸Ö§¶î¶È£¬ÒÔÔªÎªµ¥Î»
-	unsigned short sdraft;		// ²¹ÌùÕÊ»§Í¸Ö§¶î¶È£¬ÒÔÔªÎªµ¥Î»
+	unsigned char dic_times;		// æ‰“æŠ˜æ¶ˆè´¹æ¬¡æ•°ç»Ÿè®¡æœ€å¤§255
+	char user_name[12];		// ä¿å­˜ç”¨æˆ·å§“å,write by duyy, 2014.6.6
+	/* é€æ”¯, duyy,2013.6.17 */
+	unsigned short draft;		// ç°é‡‘å¸æˆ·é€æ”¯é¢åº¦ï¼Œä»¥å…ƒä¸ºå•ä½
+	unsigned short sdraft;		// è¡¥è´´å¸æˆ·é€æ”¯é¢åº¦ï¼Œä»¥å…ƒä¸ºå•ä½
 } __attribute__ ((packed)) /* account */acc_ram;
 
 
 
-#define ACCF_LOSS (1 << 0)//¹ÒÊ§¿¨
-#define ACCF_WOFF (1 << 1)//×¢Ïú
-#define ACCF_FREEZE (1 << 2)//ÏÖ½ğÕÊ»§¶³½á
-#define ACCF_FREEZE_SUB (1 << 3)//²¹ÌùÕÊ»§¶³½á
-#define ACCF_MNGE_MASK (0xF << 4)//¹ÜÀí·Ñ
+#define ACCF_LOSS (1 << 0)//æŒ‚å¤±å¡
+#define ACCF_WOFF (1 << 1)//æ³¨é”€
+#define ACCF_FREEZE (1 << 2)//ç°é‡‘å¸æˆ·å†»ç»“
+#define ACCF_FREEZE_SUB (1 << 3)//è¡¥è´´å¸æˆ·å†»ç»“
+#define ACCF_MNGE_MASK (0xF << 4)//ç®¡ç†è´¹
 
 /* st_limit bit */
-#define ACCST_CASH_NCM (0 << 0)      //ÏÖ½ğÕÊ»§µ½´ïÏû·ÑÉÏÏŞºó½ûÖ¹Ïû·Ñ,modified by duyy, 2013.6.17
-#define ACCST_CASH_PSWCASH (1 << 0)  //ÏÖ½ğÕÊ»§µ½´ïÏû·ÑÉÏÏŞºóÊäÃÜÂë¼ÌĞøÏû·ÑÏÖ½ğÕÊ»§,modified by duyy, 2013.6.17
-#define ACCST_CASH_PSWSUB (2 << 0)   //ÏÖ½ğÕÊ»§µ½´ïÏû·ÑÉÏÏŞºóÊäÃÜÂë¼ÌĞøÏû·Ñ²¹ÌùÓà¶î,modified by duyy, 2013.6.17
-#define ACCST_CASH_CMSUB (3 << 0)    //ÏÖ½ğÕÊ»§µ½´ïÏû·ÑÉÏÏŞºó²»ÊäÈëÃÜÂë¼ÌĞøÏû·Ñ²¹ÌùÓà¶î,modified by duyy, 2013.6.17
-#define ACCST_SUB_NCM (0 << 2)       //²¹ÌùÕÊ»§µ½´ïÏû·ÑÉÏÏŞºó½ûÖ¹Ïû·Ñ,modified by duyy, 2013.6.17
-#define ACCST_SUB_PSWSUB (1 << 2)    //²¹ÌùÕÊ»§µ½´ïÏû·ÑÉÏÏŞºóÔÊĞíÊäÃÜÂëÏû·Ñ²¹ÌùÕÊ»§,modified by duyy, 2013.6.17
-#define ACCST_SUB_PSWCASH (2 << 2)   //²¹ÌùÕÊ»§µ½´ïÏû·ÑÉÏÏŞºóÔÊĞíÊäÃÜÂëÏû·ÑÏÖ½ğÕÊ»§,modified by duyy, 2013.6.17
-#define ACCST_SUB_CMCASH (3 << 2)    //²¹ÌùÕÊ»§µ½´ïÏû·ÑÉÏÏŞºó²»ÊäÃÜÂë¼ÌĞøÏû·ÑÏÖ½ğÕÊ»§,modified by duyy, 2013.6.17
-#define ACCST_ALLOW_UNIT (1 << 4)	 // ÔÊĞí¿çÕË»§Ïû·Ñ,modified by duyy, 2013.6.17
-#define ACCST_CASH (1 << 5)		     // ÓÅÏÈÏû·ÑÏÖ½ğÕË»§,modified by duyy, 2013.6.17
+#define ACCST_CASH_NCM (0 << 0)      //ç°é‡‘å¸æˆ·åˆ°è¾¾æ¶ˆè´¹ä¸Šé™åç¦æ­¢æ¶ˆè´¹,modified by duyy, 2013.6.17
+#define ACCST_CASH_PSWCASH (1 << 0)  //ç°é‡‘å¸æˆ·åˆ°è¾¾æ¶ˆè´¹ä¸Šé™åè¾“å¯†ç ç»§ç»­æ¶ˆè´¹ç°é‡‘å¸æˆ·,modified by duyy, 2013.6.17
+#define ACCST_CASH_PSWSUB (2 << 0)   //ç°é‡‘å¸æˆ·åˆ°è¾¾æ¶ˆè´¹ä¸Šé™åè¾“å¯†ç ç»§ç»­æ¶ˆè´¹è¡¥è´´ä½™é¢,modified by duyy, 2013.6.17
+#define ACCST_CASH_CMSUB (3 << 0)    //ç°é‡‘å¸æˆ·åˆ°è¾¾æ¶ˆè´¹ä¸Šé™åä¸è¾“å…¥å¯†ç ç»§ç»­æ¶ˆè´¹è¡¥è´´ä½™é¢,modified by duyy, 2013.6.17
+#define ACCST_SUB_NCM (0 << 2)       //è¡¥è´´å¸æˆ·åˆ°è¾¾æ¶ˆè´¹ä¸Šé™åç¦æ­¢æ¶ˆè´¹,modified by duyy, 2013.6.17
+#define ACCST_SUB_PSWSUB (1 << 2)    //è¡¥è´´å¸æˆ·åˆ°è¾¾æ¶ˆè´¹ä¸Šé™åå…è®¸è¾“å¯†ç æ¶ˆè´¹è¡¥è´´å¸æˆ·,modified by duyy, 2013.6.17
+#define ACCST_SUB_PSWCASH (2 << 2)   //è¡¥è´´å¸æˆ·åˆ°è¾¾æ¶ˆè´¹ä¸Šé™åå…è®¸è¾“å¯†ç æ¶ˆè´¹ç°é‡‘å¸æˆ·,modified by duyy, 2013.6.17
+#define ACCST_SUB_CMCASH (3 << 2)    //è¡¥è´´å¸æˆ·åˆ°è¾¾æ¶ˆè´¹ä¸Šé™åä¸è¾“å¯†ç ç»§ç»­æ¶ˆè´¹ç°é‡‘å¸æˆ·,modified by duyy, 2013.6.17
+#define ACCST_ALLOW_UNIT (1 << 4)	 // å…è®¸è·¨è´¦æˆ·æ¶ˆè´¹,modified by duyy, 2013.6.17
+#define ACCST_CASH (1 << 5)		     // ä¼˜å…ˆæ¶ˆè´¹ç°é‡‘è´¦æˆ·,modified by duyy, 2013.6.17
 
 /* power_id bit */
-#define ACCP_CHANGE (1 << 7)		// ÊÇ·ñÎª»»¹ıµÄ¿¨
-#define ACCP_NOCASH (1 << 6)		// ²»ÔÊĞí³äÖµ
+#define ACCP_CHANGE (1 << 7)		// æ˜¯å¦ä¸ºæ¢è¿‡çš„å¡
+#define ACCP_NOCASH (1 << 6)		// ä¸å…è®¸å……å€¼
 
-//typedef account acc_ram;		// Çı¶¯ÖĞµÄÕË»§ĞÅÏ¢ºÍFLASHÖĞµÄÒ»ÖÂ
+//typedef account acc_ram;		// é©±åŠ¨ä¸­çš„è´¦æˆ·ä¿¡æ¯å’ŒFLASHä¸­çš„ä¸€è‡´
 #else
 #ifdef SMALLACOUNT
 typedef struct __account {			// 12-byte
@@ -315,13 +315,13 @@ typedef struct __acc_ram {
 struct term_param {					// 16-byte
 	unsigned char areano;			// terminal area no
 	unsigned char term_type;		// type of terminal
-	unsigned char blkuptm;			// max time of update black list	ÎŞÏŞÖÆ=0xFF
-	unsigned short purse_time;		// Ç®°ü×îĞ¡Ïû·Ñ¼ä¸ô		ÎŞÏŞ=0
-	unsigned char spcl;				// bit0~2=²Í´ÎÊı, bit3²ÍÏŞ
+	unsigned char blkuptm;			// max time of update black list	æ— é™åˆ¶=0xFF
+	unsigned short purse_time;		// é’±åŒ…æœ€å°æ¶ˆè´¹é—´éš”		æ— é™=0
+	unsigned char spcl;				// bit0~2=é¤æ¬¡æ•°, bit3é¤é™
 	unsigned char psam_passwd[3];	// psam password
 	unsigned char term_passwd[3];	// terminal password
 	unsigned char max_consume;		// max consume
-	unsigned short card_id; //¿¨ÀàĞÍ,write by duyy, 2013.6.26
+	unsigned short card_id; //å¡ç±»å‹,write by duyy, 2013.6.26
 	unsigned char verify;
 } __attribute__ ((packed)) ;
 
@@ -355,20 +355,20 @@ struct tradenum {
 } __attribute__ ((packed)) ; 
 
 typedef struct __black_acc {
-	unsigned long card_num;		// ¿¨ºÅ
-	struct tradenum t_num;				// ¼ÇÂ¼ºÅ
-	__s8 opt;					// 1-->¹ÒÊ§, 0-->½â¹Ò
+	unsigned long card_num;		// å¡å·
+	struct tradenum t_num;				// è®°å½•å·
+	__s8 opt;					// 1-->æŒ‚å¤±, 0-->è§£æŒ‚
 } __attribute__ ((packed)) black_acc;
 
-struct black_info {// 24×Ö½Ú
+struct black_info {// 24å­—èŠ‚
 	int edition;
 	struct tradenum trade_num;
 	int count;
 };
-//ÖÕ¶Ë½ûÖ¹Ïû·ÑÊ±¶Î×ª»»Êı¾İ½á¹¹£¬write by duyy, 2013.5.8
+//ç»ˆç«¯ç¦æ­¢æ¶ˆè´¹æ—¶æ®µè½¬æ¢æ•°æ®ç»“æ„ï¼Œwrite by duyy, 2013.5.8
 typedef struct __term_tmsg {
-	u32 begin;					// ¿ªÊ¼Ê±¼ä
-	u32 end;					// ½áÊøÊ±¼ä
+	u32 begin;					// å¼€å§‹æ—¶é—´
+	u32 end;					// ç»“æŸæ—¶é—´
 } term_tmsg;
 struct time_term {
 	unsigned char smin;
@@ -388,7 +388,7 @@ typedef struct __terminal {			// 52-byte
 	unsigned char local_num;		// local terminal number
 	unsigned char price[32];		// food price
 	//unsigned char max_consume;		// max consume
-	unsigned char power_id;		// ¼¸ÀàÖÕ¶Ë
+	unsigned char power_id;		// å‡ ç±»ç»ˆç«¯
 	struct term_param param;
 #define mfee_feature(x) managefee[x].feature
 #define mfee_value(x) managefee[x].value
@@ -408,7 +408,7 @@ typedef struct __term_ram {
 	unsigned char term_no;
 	terminal *pterm;
 	int status;
-	unsigned char dif_verify;// ËùÓĞµÄĞ£Ñé¶¼Ö»ÊÇ±¾°üÊı¾İµÄĞ£Ñé
+	unsigned char dif_verify;// æ‰€æœ‰çš„æ ¡éªŒéƒ½åªæ˜¯æœ¬åŒ…æ•°æ®çš„æ ¡éªŒ
 	unsigned char add_verify;
 	int flow_flag;
 	int term_money;
@@ -418,172 +418,172 @@ typedef struct __term_ram {
 	int key_flag;
 	unsigned int psam_trd_num;
 #ifdef CONFIG_UART_V2
-	/* ÖÕ¶Ë½ğ¶îÊäÈë */
+	/* ç»ˆç«¯é‡‘é¢è¾“å…¥ */
 	int _tmoney;
-	/* µ±Ç°Ïû·Ñ±êÖ¾ bit 0²Í´Î²ÍÏŞ, bit 1´òÕÛ */
+	/* å½“å‰æ¶ˆè´¹æ ‡å¿— bit 0é¤æ¬¡é¤é™, bit 1æ‰“æŠ˜ */
 	unsigned int _con_flag;
 #endif
 #if 0
-	int blkerr;				// ÊÕÈ¡GA´íÎó¼ÆÊı
-	unsigned long jff_trdno;	// ×îºóÒ»´Î¸üĞÂºÚÃûµ¥µÄÊ±¼ä
+	int blkerr;				// æ”¶å–GAé”™è¯¯è®¡æ•°
+	unsigned long jff_trdno;	// æœ€åä¸€æ¬¡æ›´æ–°é»‘åå•çš„æ—¶é—´
 #endif
-#ifdef CONFIG_RTBLKCNTMODE		// ¸ü¸ÄºÚÃûµ¥²ßÂÔ
-	int nocmdcnt;			// ¼ÆÊı
+#ifdef CONFIG_RTBLKCNTMODE		// æ›´æ”¹é»‘åå•ç­–ç•¥
+	int nocmdcnt;			// è®¡æ•°
 #endif
 } term_ram;
 
 typedef struct __term_info {
 	int term_no;
 	int status;
-	int money;	// Çø·ÖÕı¸º
-	int flag;	// 0->Ïû·Ñ»ú, 1->³öÄÉ»ú
+	int money;	// åŒºåˆ†æ­£è´Ÿ
+	int flag;	// 0->æ¶ˆè´¹æœº, 1->å‡ºçº³æœº
 } term_info;
 
 
 #define FLOWPERPAGE (BYTEOFDFPAGE / sizeof(flow))
 #ifdef CONFIG_RECORD_CASHTERM
-// ¶¨Òå¼ÇÂ¼³öÄÉ»ú×´Ì¬µÄ±äÁ¿
+// å®šä¹‰è®°å½•å‡ºçº³æœºçŠ¶æ€çš„å˜é‡
 struct cash_status {
-	unsigned char termno;		// ÖÕ¶ËºÅ
-	unsigned char status;		// ¿¨»òÏû·Ñ×´Ì¬
-	unsigned char feature;		// ´ËÕÊºÅ±êÊ¶
-	unsigned int accno;			// ÕÊºÅ
-	unsigned int cardno;		// ¿¨ºÅ
-	int money;					// Óà¶î
-	int consume;				// ´Ë´ÎÏû·Ñ¶î
-	int managefee;				// ¹ÜÀí·Ñ
-	int term_money;				// ³öÄÉ»úµ±Ç°×Ü½ğ¶î
+	unsigned char termno;		// ç»ˆç«¯å·
+	unsigned char status;		// å¡æˆ–æ¶ˆè´¹çŠ¶æ€
+	unsigned char feature;		// æ­¤å¸å·æ ‡è¯†
+	unsigned int accno;			// å¸å·
+	unsigned int cardno;		// å¡å·
+	int money;					// ä½™é¢
+	int consume;				// æ­¤æ¬¡æ¶ˆè´¹é¢
+	int managefee;				// ç®¡ç†è´¹
+	int term_money;				// å‡ºçº³æœºå½“å‰æ€»é‡‘é¢
 };
-#define CASH_NORMAL 0		// Í¨³£×´Ì¬
-#define CASH_CARDIN 1		// ¿¨²åÈë
-#define CASH_CARDOFF 2		// ¿¨°Î×ß
-#define CASH_TAKEOFF 3		// Íê³ÉÈ¡Ç®
-#define CASH_DEPOFF 4		// Íê³É´æÇ®
+#define CASH_NORMAL 0		// é€šå¸¸çŠ¶æ€
+#define CASH_CARDIN 1		// å¡æ’å…¥
+#define CASH_CARDOFF 2		// å¡æ‹”èµ°
+#define CASH_TAKEOFF 3		// å®Œæˆå–é’±
+#define CASH_DEPOFF 4		// å®Œæˆå­˜é’±
 #define CASHBUFSZ 16
 extern const int cashterm_n;
-extern int cashterm_ptr;				// ´æ´¢Ö¸Õë
-extern struct cash_status cashbuf[CASHBUFSZ];	// ±£´æ×´Ì¬¿Õ¼ä
+extern int cashterm_ptr;				// å­˜å‚¨æŒ‡é’ˆ
+extern struct cash_status cashbuf[CASHBUFSZ];	// ä¿å­˜çŠ¶æ€ç©ºé—´
 #endif
 
 #ifdef CONFIG_UART_V2
-/* ÌØÊâ²ÎÊı½á¹¹¶¨Òå */
+/* ç‰¹æ®Šå‚æ•°ç»“æ„å®šä¹‰ */
 
-/* Éí·İÀàĞÍºÍÖÕ¶ËÀàĞÍ¶ÔÓ¦±í */
+/* èº«ä»½ç±»å‹å’Œç»ˆç«¯ç±»å‹å¯¹åº”è¡¨ */
 typedef unsigned short term_allow;
 
-/* ´òÕÛ²ÎÊı½á¹¹ */
+/* æ‰“æŠ˜å‚æ•°ç»“æ„ */
 typedef struct __discount {
-	u16 disc_val1;		// µÚÒ»´Î´òÕÛ±ÈÀı 0xFFFFÎŞĞ§¡¡0xFFFE½ûÖ¹Ïû·Ñ  0xFFFD±íÊ¾±ÈÀıÎª0,modified by duyy, 2013.6.19
-	u16 const_val1;		// µÚÒ»´Î¹Ì¶¨½ğ¶î 0xFFFFÎŞĞ§¡¡0xFFFE½ûÖ¹Ïû·Ñ  0xFFFD±íÊ¾¹Ì¶¨0Ôª
-	u16 disc_val2;		// µÚ¶ş´Î´òÕÛ±ÈÀı 0xFFFFÎŞĞ§¡¡0xFFFE½ûÖ¹Ïû·Ñ  0xFFFD±íÊ¾±ÈÀıÎª0
-	u16 const_val2;		// µÚ¶ş´Î¹Ì¶¨½ğ¶î 0xFFFFÎŞĞ§¡¡0xFFFE½ûÖ¹Ïû·Ñ  0xFFFD±íÊ¾¹Ì¶¨0Ôª
-	u8 start_times;		// Ë¢¿¨Èô¸É´Îºó¿ªÊ¼´òÕÛ
-	u8 end_times1;		// µÚÒ»´Î´òÕÛ´ÎÊı 0±íÊ¾ÎŞĞ§
-	u8 end_times2;		// µÚ¶ş´Î´òÕÛ´ÎÊı 0±íÊ¾ÎŞĞ§
-	u8 reserved;		// ±£Áô
-						// ÓĞĞ§±êÖ¾ 0±íÊ¾ÎŞĞ§ 1±íÊ¾¸öÈËÕË»§ÓĞĞ§
-						// 2±íÊ¾²¹ÌùÕË»§ÓĞĞ§ 3±íÊ¾¶¼ÓĞĞ§
+	u16 disc_val1;		// ç¬¬ä¸€æ¬¡æ‰“æŠ˜æ¯”ä¾‹ 0xFFFFæ— æ•ˆã€€0xFFFEç¦æ­¢æ¶ˆè´¹  0xFFFDè¡¨ç¤ºæ¯”ä¾‹ä¸º0,modified by duyy, 2013.6.19
+	u16 const_val1;		// ç¬¬ä¸€æ¬¡å›ºå®šé‡‘é¢ 0xFFFFæ— æ•ˆã€€0xFFFEç¦æ­¢æ¶ˆè´¹  0xFFFDè¡¨ç¤ºå›ºå®š0å…ƒ
+	u16 disc_val2;		// ç¬¬äºŒæ¬¡æ‰“æŠ˜æ¯”ä¾‹ 0xFFFFæ— æ•ˆã€€0xFFFEç¦æ­¢æ¶ˆè´¹  0xFFFDè¡¨ç¤ºæ¯”ä¾‹ä¸º0
+	u16 const_val2;		// ç¬¬äºŒæ¬¡å›ºå®šé‡‘é¢ 0xFFFFæ— æ•ˆã€€0xFFFEç¦æ­¢æ¶ˆè´¹  0xFFFDè¡¨ç¤ºå›ºå®š0å…ƒ
+	u8 start_times;		// åˆ·å¡è‹¥å¹²æ¬¡åå¼€å§‹æ‰“æŠ˜
+	u8 end_times1;		// ç¬¬ä¸€æ¬¡æ‰“æŠ˜æ¬¡æ•° 0è¡¨ç¤ºæ— æ•ˆ
+	u8 end_times2;		// ç¬¬äºŒæ¬¡æ‰“æŠ˜æ¬¡æ•° 0è¡¨ç¤ºæ— æ•ˆ
+	u8 reserved;		// ä¿ç•™
+						// æœ‰æ•ˆæ ‡å¿— 0è¡¨ç¤ºæ— æ•ˆ 1è¡¨ç¤ºä¸ªäººè´¦æˆ·æœ‰æ•ˆ
+						// 2è¡¨ç¤ºè¡¥è´´è´¦æˆ·æœ‰æ•ˆ 3è¡¨ç¤ºéƒ½æœ‰æ•ˆ
 } discount;
 
-/* Ê±¶ÎºÍ´òÕÛĞÅÏ¢ÃèÊö */
+/* æ—¶æ®µå’Œæ‰“æŠ˜ä¿¡æ¯æè¿° */
 typedef struct __user_tmsg {
-	int id;						// ±àºÅ 1~4
-	u32 begin;					// ¿ªÊ¼Ê±¼ä
-	u32 end;					// ½áÊøÊ±¼ä
-	u32 t_mask[8];		// ÖÕ¶ËÔÊĞíÑÚÂë
-	discount disc[16];			// 16¸öÉí·İ´òÕÛ²ÎÊı
+	int id;						// ç¼–å· 1~4
+	u32 begin;					// å¼€å§‹æ—¶é—´
+	u32 end;					// ç»“æŸæ—¶é—´
+	u32 t_mask[8];		// ç»ˆç«¯å…è®¸æ©ç 
+	discount disc[16];			// 16ä¸ªèº«ä»½æ‰“æŠ˜å‚æ•°
 } user_tmsg;
 
-/* Éí·İ½ûÖ¹Ïû·ÑÊ±¶Î */
+/* èº«ä»½ç¦æ­¢æ¶ˆè´¹æ—¶æ®µ */
 typedef struct __user_nallow {
-	u32 begin[4];		// ¿ªÊ¼Ê±¼ä, ×î¶àËÄ¸öÊ±¼ä
-	u32 end[4];			// ½áÊøÊ±¼ä
+	u32 begin[4];		// å¼€å§‹æ—¶é—´, æœ€å¤šå››ä¸ªæ—¶é—´
+	u32 end[4];			// ç»“æŸæ—¶é—´
 } user_nallow;
 
-/* ÌØÊâ²ÎÊıÃèÊö */
+/* ç‰¹æ®Šå‚æ•°æè¿° */
 typedef struct __user_cfg {
-	user_tmsg tmsg[4];		// ËÄ¸öÊ±¶Î
-	user_nallow nallow[16];	// 16Éí·İ²»ÔÊĞíÏû·ÑÊ±¶Î
-	term_allow tallow[16];	// 16Éí·İ¶ÔÓ¦16ÖÕ¶Ë, È«¾ÖÓĞĞ§
+	user_tmsg tmsg[4];		// å››ä¸ªæ—¶æ®µ
+	user_nallow nallow[16];	// 16èº«ä»½ä¸å…è®¸æ¶ˆè´¹æ—¶æ®µ
+	term_allow tallow[16];	// 16èº«ä»½å¯¹åº”16ç»ˆç«¯, å…¨å±€æœ‰æ•ˆ
 } user_cfg;
 
-// ÒìÇøÁ÷Ë®½á¹¹
+// å¼‚åŒºæµæ°´ç»“æ„
 
-// ·ÇÏÖ½ğÁ÷Ë®½á¹¹£¬Èç¹ûÊÇµ±²Í×¢²áÁ÷Ë®£¬ÔòÓÃ°×Ãûµ¥½á¹¹
+// éç°é‡‘æµæ°´ç»“æ„ï¼Œå¦‚æœæ˜¯å½“é¤æ³¨å†Œæµæ°´ï¼Œåˆ™ç”¨ç™½åå•ç»“æ„
 typedef struct __NoMoneyFlowStruct
 {
-	int			OperAreaID;				//·¢Æğ²Ù×÷µÄÇøºÅ
-	unsigned int	OperationID;				//ºÚÃûµ¥¼ÍÂ¼ºÅ
-	unsigned int	OldCardId;					//²Ù×÷¶ÔÓ¦¿¨ºÅ
-	unsigned int	NewCardId;				//»»¿¨ĞÂ¿¨ºÅ 
-	int			BLTypeId;					//ºÚÃûµ¥²Ù×÷ÀàĞÍ
-	int			Type;						//1´ú±í¹ÒÊ§£»
-											//2´ú±í½â¹Ò£»
-											//5´ú±í»»¿¨£» 
-											//6´ú±íÕË»§×¢Ïú£»
-											//8´ú±íºÚÃûµ¥
-											//9ĞŞ¸ÄÕË»§ÃÜÂë
-											//10´ú±íÖ÷ÕÊ»§¶³½á; //write by duyy, 2013.5.8
-											//11´ú±íÖ÷ÕÊ»§½â¶³; //write by duyy, 2013.5.8
-											//12´ú±í²¹ÌùÕÊ»§¶³½á;//write by duyy, 2013.5.8 
-											//13´ú±í²¹ÌùÕÊ»§½â¶³//write by duyy, 2013.5.8
-	char FlowTime[8];		// ºÚÃûµ¥½»Ò×Ê±¼ä YYYYMMDDhhnnss£¬7¸ö×Ö½Ú×îºóÒ»¸öÌî0
+	int			OperAreaID;				//å‘èµ·æ“ä½œçš„åŒºå·
+	unsigned int	OperationID;				//é»‘åå•çºªå½•å·
+	unsigned int	OldCardId;					//æ“ä½œå¯¹åº”å¡å·
+	unsigned int	NewCardId;				//æ¢å¡æ–°å¡å· 
+	int			BLTypeId;					//é»‘åå•æ“ä½œç±»å‹
+	int			Type;						//1ä»£è¡¨æŒ‚å¤±ï¼›
+											//2ä»£è¡¨è§£æŒ‚ï¼›
+											//5ä»£è¡¨æ¢å¡ï¼› 
+											//6ä»£è¡¨è´¦æˆ·æ³¨é”€ï¼›
+											//8ä»£è¡¨é»‘åå•
+											//9ä¿®æ”¹è´¦æˆ·å¯†ç 
+											//10ä»£è¡¨ä¸»å¸æˆ·å†»ç»“; //write by duyy, 2013.5.8
+											//11ä»£è¡¨ä¸»å¸æˆ·è§£å†»; //write by duyy, 2013.5.8
+											//12ä»£è¡¨è¡¥è´´å¸æˆ·å†»ç»“;//write by duyy, 2013.5.8 
+											//13ä»£è¡¨è¡¥è´´å¸æˆ·è§£å†»//write by duyy, 2013.5.8
+	char FlowTime[8];		// é»‘åå•äº¤æ˜“æ—¶é—´ YYYYMMDDhhnnssï¼Œ7ä¸ªå­—èŠ‚æœ€åä¸€ä¸ªå¡«0
 } no_money_flow;
 
 typedef struct __money_flow
 {
-	int  		AccountId; //ÕË»§ÕËºÅ
-	unsigned int 	CardNo; 	//¿¨ºÅ
-	int   Money;	//Óà¶î±ä»¯Á¿£¬µ¥Î»Îª·Ö
-	char  AccoType;	//¼ÆÈëÄÄÒ»¸öÕË»§£¨Õë¶ÔË«Óà¶î£¬0±íÊ¾¸öÈËÓà¶î£¬1±íÊ¾²¹ÌùÓà¶î£©
-	char  LimitType;	//ÏŞÖÆÀàĞÍ£¬ÊÇ·ñ¼ÆÈëÏû·Ñ´ÎÊıÏû·Ñ½ğ¶î£¨0±íÊ¾²»¼ÆÈë£¬1±íÊ¾¼ÆÈë£©
-	char  DisTermConsume;//ÊÇ·ñÔÚ´òÕÛÖÕ¶ËÉÏÏû·Ñ
-	char Reserved[1];	// ±£Áô
+	int  		AccountId; //è´¦æˆ·è´¦å·
+	unsigned int 	CardNo; 	//å¡å·
+	int   Money;	//ä½™é¢å˜åŒ–é‡ï¼Œå•ä½ä¸ºåˆ†
+	char  AccoType;	//è®¡å…¥å“ªä¸€ä¸ªè´¦æˆ·ï¼ˆé’ˆå¯¹åŒä½™é¢ï¼Œ0è¡¨ç¤ºä¸ªäººä½™é¢ï¼Œ1è¡¨ç¤ºè¡¥è´´ä½™é¢ï¼‰
+	char  LimitType;	//é™åˆ¶ç±»å‹ï¼Œæ˜¯å¦è®¡å…¥æ¶ˆè´¹æ¬¡æ•°æ¶ˆè´¹é‡‘é¢ï¼ˆ0è¡¨ç¤ºä¸è®¡å…¥ï¼Œ1è¡¨ç¤ºè®¡å…¥ï¼‰
+	char  DisTermConsume;//æ˜¯å¦åœ¨æ‰“æŠ˜ç»ˆç«¯ä¸Šæ¶ˆè´¹
+	char Reserved[1];	// ä¿ç•™
 	unsigned int time;
 } money_flow;
 
 struct net_acc
 {
-	int	AccountId;			//ÕËºÅ
-	unsigned int  CardId;		//¿¨ºÅ
-	int 	RemainMoney;		//Óà¶î£¨¿Û³ıÓà¶îÏÂÏŞºóµÄ£©
-	int 	Flag;				//±êÖ¾£¨¹ÒÊ§¡¢Íµ²Í£©
-	int 	ManageId;			//ÏÖ½ğÕÊ»§´æ¿î¹ÜÀí·Ñ£¬±£Áô£¨µÚ¼¸¸ö¹ÜÀí·Ñ´Ó0¿ªÊ¼£¬
-								//Í¬Ê±Ìá¹©¹ÜÀí·ÑÏµÊıÁĞ±íchar[n]£©
-								//×î¸ßÎ»±íÊ¾ÊÇ·ñÔÊĞí´æ¿î
-	char 	Password[4];		//Ïû·ÑÃÜÂë				
-	int 	UpLimitMoney;		//ÏÖ½ğÕÊ»§Ïû·ÑÉÏÏŞ
-	unsigned char	UpLimitTime;	//ÏÖ½ğÕÊ»§Ïû·Ñ´ÎÊıÉÏÏŞ
-	unsigned char	FreezeFlag; 	//ÏÖ½ğÕÊ»§¶³½á±êÖ¾
-	unsigned char	PowerId;		//´æÕÛ¿¨ÏÖ½ğÕÊ»§Óà¶îÉí·İÀàĞÍ 1~16
-	unsigned char	PwdType;	//ÏÖ½ğÕÊ»§µ½´ïÏû·ÑÉÏÏŞºó×´Ì¬//modified by duyy, 2013.6.17
-								//bit1bit0=0:ÏÖ½ğÕÊ»§µ½´ïÏû·ÑÉÏÏŞºó½ûÖ¹Ïû·Ñ
-								//bit1bit0=1:ÏÖ½ğÕÊ»§µ½´ïÏû·ÑÉÏÏŞºóÊäÃÜÂë¼ÌĞøÏû·ÑÏÖ½ğÕÊ»§
-								//bit1bit0=2:ÏÖ½ğÕÊ»§µ½´ïÏû·ÑÉÏÏŞºóÊäÃÜÂë¼ÌĞøÏû·Ñ²¹ÌùÓà¶î
-								//bit1bit0=3:ÏÖ½ğÕÊ»§µ½´ïÏû·ÑÉÏÏŞºó²»ÊäÈëÃÜÂë¼ÌĞøÏû·Ñ²¹ÌùÓà
-								//bit2=1:ÔÊĞí¿çÕË»§Ïû·Ñ
-								//bit2=0:²»ÔÊĞí¿çÕË»§Ïû·Ñ
-								//bit3=0:±íÊ¾ÓÅÏÈÏû·Ñ²¹ÌùÕÊ»§½ğ¶î
-								//bit3=1:±íÊ¾ÓÅÏÈÏû·ÑÏÖ½ğÕÊ»§Óà¶î
+	int	AccountId;			//è´¦å·
+	unsigned int  CardId;		//å¡å·
+	int 	RemainMoney;		//ä½™é¢ï¼ˆæ‰£é™¤ä½™é¢ä¸‹é™åçš„ï¼‰
+	int 	Flag;				//æ ‡å¿—ï¼ˆæŒ‚å¤±ã€å·é¤ï¼‰
+	int 	ManageId;			//ç°é‡‘å¸æˆ·å­˜æ¬¾ç®¡ç†è´¹ï¼Œä¿ç•™ï¼ˆç¬¬å‡ ä¸ªç®¡ç†è´¹ä»0å¼€å§‹ï¼Œ
+								//åŒæ—¶æä¾›ç®¡ç†è´¹ç³»æ•°åˆ—è¡¨char[n]ï¼‰
+								//æœ€é«˜ä½è¡¨ç¤ºæ˜¯å¦å…è®¸å­˜æ¬¾
+	char 	Password[4];		//æ¶ˆè´¹å¯†ç 				
+	int 	UpLimitMoney;		//ç°é‡‘å¸æˆ·æ¶ˆè´¹ä¸Šé™
+	unsigned char	UpLimitTime;	//ç°é‡‘å¸æˆ·æ¶ˆè´¹æ¬¡æ•°ä¸Šé™
+	unsigned char	FreezeFlag; 	//ç°é‡‘å¸æˆ·å†»ç»“æ ‡å¿—
+	unsigned char	PowerId;		//å­˜æŠ˜å¡ç°é‡‘å¸æˆ·ä½™é¢èº«ä»½ç±»å‹ 1~16
+	unsigned char	PwdType;	//ç°é‡‘å¸æˆ·åˆ°è¾¾æ¶ˆè´¹ä¸Šé™åçŠ¶æ€//modified by duyy, 2013.6.17
+								//bit1bit0=0:ç°é‡‘å¸æˆ·åˆ°è¾¾æ¶ˆè´¹ä¸Šé™åç¦æ­¢æ¶ˆè´¹
+								//bit1bit0=1:ç°é‡‘å¸æˆ·åˆ°è¾¾æ¶ˆè´¹ä¸Šé™åè¾“å¯†ç ç»§ç»­æ¶ˆè´¹ç°é‡‘å¸æˆ·
+								//bit1bit0=2:ç°é‡‘å¸æˆ·åˆ°è¾¾æ¶ˆè´¹ä¸Šé™åè¾“å¯†ç ç»§ç»­æ¶ˆè´¹è¡¥è´´ä½™é¢
+								//bit1bit0=3:ç°é‡‘å¸æˆ·åˆ°è¾¾æ¶ˆè´¹ä¸Šé™åä¸è¾“å…¥å¯†ç ç»§ç»­æ¶ˆè´¹è¡¥è´´ä½™
+								//bit2=1:å…è®¸è·¨è´¦æˆ·æ¶ˆè´¹
+								//bit2=0:ä¸å…è®¸è·¨è´¦æˆ·æ¶ˆè´¹
+								//bit3=0:è¡¨ç¤ºä¼˜å…ˆæ¶ˆè´¹è¡¥è´´å¸æˆ·é‡‘é¢
+								//bit3=1:è¡¨ç¤ºä¼˜å…ˆæ¶ˆè´¹ç°é‡‘å¸æˆ·ä½™é¢
 
-	int 			SubRemainMoney; 	//²¹ÌùÓà¶î
-	unsigned short	SubUpLimitMoney;//²¹ÌùÏû·ÑÉÏÏŞ
-	unsigned short	DiscountNum ;	//±¾Ê±¶ÎÔÚ´òÕÛÖÕ¶ËÉÏÏû·Ñ´ÎÊı
-	unsigned char	SubUpLimitTimes;//²¹ÌùÏû·Ñ´ÎÊıÉÏÏŞ
-	unsigned char	SubFreezeFlag;	//²¹Ìù¶³½á±êÖ¾
-	unsigned char	SubPowerId; //´æÕÛ¿¨²¹ÌùÓà¶îÉí·İÀàĞÍ 1~16
-	unsigned char	SubPwdType; //²¹ÌùÕÊ»§µ½´ïÏû·ÑÉÏÏŞºó×´Ì¬£¬
-							//0±íÊ¾µ½´ïÏû·ÑÉÏÏŞºó½ûÖ¹Ïû·Ñ
-							//1±íÊ¾µ½´ïÏû·ÑÉÏÏŞºóÊäÃÜÂë¼ÌĞøÏû·Ñ²¹Ìù¶î
-							//2±íÊ¾µ½´ïÏû·ÑÉÏÏŞºóÊäÃÜÂë¼ÌĞøÏû·ÑÏÖ½ğÕÊ»§Óà¶î
-							//3±íÊ¾µ½´ïÏû·ÑÉÏÏŞºó²»ÊäÈëÃÜÂë¼ÌĞøÏû·ÑÏÖ½ğÕÊ»§Óà¶î
-	int 		ConsumedLimitedMoney; 	//Ê£ÓàÔÊĞí±¾²ÍÏÖ½ğÕÊ»§ÒÑÏû·Ñ×ÜÏû·Ñ½ğ¶î
-	unsigned short	SubConsumedLimitedMoney;	//Ê£ÓàÔÊĞí±¾²Í²¹ÌùÕË»§ÒÑÏû·Ñ²¹ÌùÏû·Ñ½ğ¶î
-	unsigned char	ConsumedLimitedTimes; 	//±¾²ÍÏÖ½ğÕÊ»§ÒÑÏû·ÑÊ£ÓàÔÊĞíÏû·Ñ´ÎÊı
-	unsigned char	SubConsumedLimitedTimes;		//±¾²Í²¹ÌùÕË»§ÒÑÏû·ÑÊ£ÓàÔÊĞí²¹ÌùÏû·Ñ´ÎÊı
+	int 			SubRemainMoney; 	//è¡¥è´´ä½™é¢
+	unsigned short	SubUpLimitMoney;//è¡¥è´´æ¶ˆè´¹ä¸Šé™
+	unsigned short	DiscountNum ;	//æœ¬æ—¶æ®µåœ¨æ‰“æŠ˜ç»ˆç«¯ä¸Šæ¶ˆè´¹æ¬¡æ•°
+	unsigned char	SubUpLimitTimes;//è¡¥è´´æ¶ˆè´¹æ¬¡æ•°ä¸Šé™
+	unsigned char	SubFreezeFlag;	//è¡¥è´´å†»ç»“æ ‡å¿—
+	unsigned char	SubPowerId; //å­˜æŠ˜å¡è¡¥è´´ä½™é¢èº«ä»½ç±»å‹ 1~16
+	unsigned char	SubPwdType; //è¡¥è´´å¸æˆ·åˆ°è¾¾æ¶ˆè´¹ä¸Šé™åçŠ¶æ€ï¼Œ
+							//0è¡¨ç¤ºåˆ°è¾¾æ¶ˆè´¹ä¸Šé™åç¦æ­¢æ¶ˆè´¹
+							//1è¡¨ç¤ºåˆ°è¾¾æ¶ˆè´¹ä¸Šé™åè¾“å¯†ç ç»§ç»­æ¶ˆè´¹è¡¥è´´é¢
+							//2è¡¨ç¤ºåˆ°è¾¾æ¶ˆè´¹ä¸Šé™åè¾“å¯†ç ç»§ç»­æ¶ˆè´¹ç°é‡‘å¸æˆ·ä½™é¢
+							//3è¡¨ç¤ºåˆ°è¾¾æ¶ˆè´¹ä¸Šé™åä¸è¾“å…¥å¯†ç ç»§ç»­æ¶ˆè´¹ç°é‡‘å¸æˆ·ä½™é¢
+	int 		ConsumedLimitedMoney; 	//å‰©ä½™å…è®¸æœ¬é¤ç°é‡‘å¸æˆ·å·²æ¶ˆè´¹æ€»æ¶ˆè´¹é‡‘é¢
+	unsigned short	SubConsumedLimitedMoney;	//å‰©ä½™å…è®¸æœ¬é¤è¡¥è´´è´¦æˆ·å·²æ¶ˆè´¹è¡¥è´´æ¶ˆè´¹é‡‘é¢
+	unsigned char	ConsumedLimitedTimes; 	//æœ¬é¤ç°é‡‘å¸æˆ·å·²æ¶ˆè´¹å‰©ä½™å…è®¸æ¶ˆè´¹æ¬¡æ•°
+	unsigned char	SubConsumedLimitedTimes;		//æœ¬é¤è¡¥è´´è´¦æˆ·å·²æ¶ˆè´¹å‰©ä½™å…è®¸è¡¥è´´æ¶ˆè´¹æ¬¡æ•°
 
-	unsigned short  OverDraft;	// ÏÖ½ğÕÊ»§Í¸Ö§¶î¶È£¬ÒÔÔªÎªµ¥Î»,modified by duyy, 2013.6.17
-	unsigned short  SubOverDraft;	//²¹ÌùÕÊ»§Í¸Ö§¶î¶È£¬ÒÔÔªÎªµ¥Î»,modified by duyy, 2013.6.17
+	unsigned short  OverDraft;	// ç°é‡‘å¸æˆ·é€æ”¯é¢åº¦ï¼Œä»¥å…ƒä¸ºå•ä½,modified by duyy, 2013.6.17
+	unsigned short  SubOverDraft;	//è¡¥è´´å¸æˆ·é€æ”¯é¢åº¦ï¼Œä»¥å…ƒä¸ºå•ä½,modified by duyy, 2013.6.17
 };
 
 #endif

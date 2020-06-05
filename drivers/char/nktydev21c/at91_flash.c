@@ -1,16 +1,16 @@
 /*
  * Copyright (c) 2007, NKTY Company
  * All rights reserved.
- * ÎÄ¼şÃû³Æ£ºat91_flash.c
- * Õª    Òª£ºNOR FLASHÇı¶¯³ÌĞò, Ö÷ÒªÖ§³ÖJS28F640
+ * æ–‡ä»¶åç§°ï¼šat91_flash.c
+ * æ‘˜    è¦ï¼šNOR FLASHé©±åŠ¨ç¨‹åº, ä¸»è¦æ”¯æŒJS28F640
  * 
- * µ±Ç°°æ±¾£º1.0
- * ×÷    Õß£ºwjzhe
- * Íê³ÉÈÕÆÚ£º2007Äê6ÔÂ8ÈÕ
+ * å½“å‰ç‰ˆæœ¬ï¼š1.0
+ * ä½œ    è€…ï¼šwjzhe
+ * å®Œæˆæ—¥æœŸï¼š2007å¹´6æœˆ8æ—¥
  *
- * È¡´ú°æ±¾£º1.0 
- * Ô­×÷Õß  £ºwjzhe
- * Íê³ÉÈÕÆÚ£º2007Äê6ÔÂ8ÈÕ
+ * å–ä»£ç‰ˆæœ¬ï¼š1.0 
+ * åŸä½œè€…  ï¼šwjzhe
+ * å®Œæˆæ—¥æœŸï¼š2007å¹´6æœˆ8æ—¥
  */
 #include <linux/config.h>
 #include <linux/module.h>
@@ -34,23 +34,23 @@
  
 #include "flash.h"
 
-/* ÒÔÏÂÊÇFLASHÎïÀíµØÖ·µÄ¶¨Òå, »¹ÓĞFLASHÄÚ²¿µØÖ·µÄ¶¨Òå */
+/* ä»¥ä¸‹æ˜¯FLASHç‰©ç†åœ°å€çš„å®šä¹‰, è¿˜æœ‰FLASHå†…éƒ¨åœ°å€çš„å®šä¹‰ */
 #define PHYS_FLASH_1 0x10000000
 #define PHYS_FLASH_SIZE 0x200000  /* 2 megs main flash */
 #define CFG_FLASH_BASE		PHYS_FLASH_1
-/* ÃüÁîµØÖ· */
+/* å‘½ä»¤åœ°å€ */
 #define MEM_FLASH_ADDR1		((0x00005555<<1))
 #define MEM_FLASH_ADDR2		((0x00002AAA<<1))
 #define IDENT_FLASH_ADDR1	((0x0000555<<1))
 #define IDENT_FLASH_ADDR2	((0x0000AAA<<1))
 
-flash_info_t    *flash_info;	// ¶¨ÒåFLASH INFO STUCTURE
+flash_info_t    *flash_info;	// å®šä¹‰FLASH INFO STUCTURE
 #define DEBUG
 #undef DEBUG
 
 /*
- * Ê¶±ğFLASHÆ÷¼ş, ²¢×öĞéÄâÄÚ´æÓ³Éä
- * Ä¿Ç°Ö»Ê¶±ğINTELÆ÷¼ş
+ * è¯†åˆ«FLASHå™¨ä»¶, å¹¶åšè™šæ‹Ÿå†…å­˜æ˜ å°„
+ * ç›®å‰åªè¯†åˆ«INTELå™¨ä»¶
  */
 static int at91_flash_mem(flash_info_t *info)
 {
@@ -60,7 +60,7 @@ static int at91_flash_mem(flash_info_t *info)
 	unsigned char cfi[4];
 	unsigned long s_addr = 0;
 	int i;
-	start = ioremap(CFG_FLASH_BASE, SZ_2M);// ¼ÙÉèÊÇ2MµÄFLASH
+	start = ioremap(CFG_FLASH_BASE, SZ_2M);// å‡è®¾æ˜¯2Mçš„FLASH
 	// read and store data from CFG_FLASH_BASE
 	data = 0;
 	// issue CFI Query, write 0x98 to 0x55
@@ -84,7 +84,7 @@ static int at91_flash_mem(flash_info_t *info)
 		iounmap(start);
 		return -1;
 	}
-	// ÅĞ¶ÏFLASHĞÍºÅ
+	// åˆ¤æ–­FLASHå‹å·
 	ptr = start + IDENT_FLASH_ADDR1;
 	__raw_writew(FLASH_CODE1, ptr);
 	ptr = start + IDENT_FLASH_ADDR2;
@@ -130,7 +130,7 @@ static int at91_flash_mem(flash_info_t *info)
 				return -1;
 		}
 	}
-	// ÏÖÔÚÒªÖØĞÂÓ³ÉäÄÚ´æ
+	// ç°åœ¨è¦é‡æ–°æ˜ å°„å†…å­˜
 	iounmap(start);
 	start = ioremap(CFG_FLASH_BASE, info->size);
 	info->sector_count = info->size / SZ_128K;
@@ -142,7 +142,7 @@ static int at91_flash_mem(flash_info_t *info)
 	return 0;
 }
 /*
- * ¶ÁFLASH×´Ì¬, ·µ»ØFLASH×´Ì¬ĞÅÏ¢
+ * è¯»FLASHçŠ¶æ€, è¿”å›FLASHçŠ¶æ€ä¿¡æ¯
  */
 static unsigned short read_flash_stauts(flash_info_t *info)
 {
@@ -156,8 +156,8 @@ static unsigned short read_flash_stauts(flash_info_t *info)
 	return (status & 0xFF);
 }
 /*
- * ¶ÁĞ´FLASHÅĞ¶Ï³¬Ê±º¯Êı, bitÊÇÒªÅĞ¶ÏµÄÎ», loopÊÇÑ­»·´ÎÊı
- * ·µ»Ø0ËµÃ÷ÅĞ¶ÏbitÎ»³¬Ê±, ·µ»ØÆäËüÖµ, Ôò²»³¬Ê±
+ * è¯»å†™FLASHåˆ¤æ–­è¶…æ—¶å‡½æ•°, bitæ˜¯è¦åˆ¤æ–­çš„ä½, loopæ˜¯å¾ªç¯æ¬¡æ•°
+ * è¿”å›0è¯´æ˜åˆ¤æ–­bitä½è¶…æ—¶, è¿”å›å…¶å®ƒå€¼, åˆ™ä¸è¶…æ—¶
  */
 static short flash_poll(flash_info_t *info, unsigned long bit, int loop)
 {
@@ -176,8 +176,8 @@ static short flash_poll(flash_info_t *info, unsigned long bit, int loop)
 }
 
 /*
- * ¶ÁÈ¡FLASH×´Ì¬, ²¢ÅĞ¶Ï¸÷¸ö×´Ì¬Î», ½øĞĞ´òÓ¡Êä³ö
- * ³ı³¬Ê±´íÎóÍâ, ÆäËü´íÎó½«·µ»Ø-1, ·ñÔò·µ»Ø0
+ * è¯»å–FLASHçŠ¶æ€, å¹¶åˆ¤æ–­å„ä¸ªçŠ¶æ€ä½, è¿›è¡Œæ‰“å°è¾“å‡º
+ * é™¤è¶…æ—¶é”™è¯¯å¤–, å…¶å®ƒé”™è¯¯å°†è¿”å›-1, å¦åˆ™è¿”å›0
  */
 int flash_sterr(flash_info_t *info)
 {
@@ -218,7 +218,7 @@ FERR:
 }
 
 /*
- * ½«Êı¾İĞ´ÈëFLASH»º³åÇø²¢±à³Ì
+ * å°†æ•°æ®å†™å…¥FLASHç¼“å†²åŒºå¹¶ç¼–ç¨‹
  * count must less than or equal to buffer size(info->buffer_size)
  */
 static int write_flash_buffer(void *buf, size_t count, flash_info_t *info, unsigned long addr)
@@ -238,7 +238,7 @@ static int write_flash_buffer(void *buf, size_t count, flash_info_t *info, unsig
 	if (count == 0) {
 		return 0;
 	}
-	// ¼ÆËãwcnt
+	// è®¡ç®—wcnt
 	if (count % 2) {
 		wcnt = (count + 1) / 2;
 	} else {
@@ -279,7 +279,7 @@ static int write_flash_buffer(void *buf, size_t count, flash_info_t *info, unsig
 		ptr += 2;
 	}
 	if (count == 1) {
-		// »¹Ê£Ò»¸ö×Ö½Ú
+		// è¿˜å‰©ä¸€ä¸ªå­—èŠ‚
 		cmd = (unsigned short)*(unsigned char *)data;
 		cmd |= 0xFF00;
 		__raw_writew(cmd, ptr);
@@ -295,7 +295,7 @@ static int write_flash_buffer(void *buf, size_t count, flash_info_t *info, unsig
 }
 
 /*
- * °´×Ö½øĞĞFLASH±à³Ì
+ * æŒ‰å­—è¿›è¡ŒFLASHç¼–ç¨‹
  */
 static int write_flash_word(unsigned short word, unsigned long addr, flash_info_t *info)
 {
@@ -318,7 +318,7 @@ static int write_flash_word(unsigned short word, unsigned long addr, flash_info_
 }
 
 /*
- * ÉèÖÃÄ³Ò»¿élock-bit
+ * è®¾ç½®æŸä¸€å—lock-bit
  */
 static int set_lock_bit(int sect, flash_info_t *info)
 {
@@ -343,7 +343,7 @@ static int set_lock_bit(int sect, flash_info_t *info)
 }
 
 /*
- * Çå³ısect lock-bit
+ * æ¸…é™¤sect lock-bit
  */
 static int clear_lock_bit(int sect, flash_info_t *info)
 {
@@ -368,7 +368,7 @@ static int clear_lock_bit(int sect, flash_info_t *info)
 }
 
 /*
- * ²Á³ıFLASHÊı¾İ
+ * æ“¦é™¤FLASHæ•°æ®
  */
 static int erase_flash(flash_info_t * info, int s_first, int s_last)
 {
@@ -489,7 +489,7 @@ static loff_t at91_flash_llseek(struct file *filp, loff_t off, int whence)
     return newpos;
 }
 /*
- * ´ò¿ªÉè±¸º¯Êı, ´ÓÉè±¸ºÅ²»ÄÜÎª>=1
+ * æ‰“å¼€è®¾å¤‡å‡½æ•°, ä»è®¾å¤‡å·ä¸èƒ½ä¸º>=1
  */
 static int at91_flash_open(struct inode *inode, struct file *filp)
 {
@@ -540,7 +540,7 @@ static int at91_flash_open(struct inode *inode, struct file *filp)
 }
 
 /*
- * IO¿ØÖÆº¯Êı, Ö÷ÒªÓĞ²ÁĞ´FLASH, set lock-bit, clear lock-bit, µÈFLASH¿é²Ù×÷
+ * IOæ§åˆ¶å‡½æ•°, ä¸»è¦æœ‰æ“¦å†™FLASH, set lock-bit, clear lock-bit, ç­‰FLASHå—æ“ä½œ
  */
 static int at91_flash_ioctl(struct inode* inode,struct file* filp, unsigned int cmd, unsigned long arg)
 {
@@ -563,18 +563,18 @@ static int at91_flash_ioctl(struct inode* inode,struct file* filp, unsigned int 
 	if (ret)
 		return -EFAULT;
 	switch (cmd) {
-		case ERASEBLOCK:	/* ¿é²Á³ıFLASH, ÒªÇóÒ»´ÎÖ»ÄÜ²ÁÒ»¿é */
+		case ERASEBLOCK:	/* å—æ“¦é™¤FLASH, è¦æ±‚ä¸€æ¬¡åªèƒ½æ“¦ä¸€å— */
 			ret = get_user(sect, (int *)arg);
 			if (ret < 0)
 				return ret;
 			ret = erase_flash(info, sect, sect);
 			break;
-		case SETLOCKSECT:	/* ÉèÖÃ¿élock-bit */
+		case SETLOCKSECT:	/* è®¾ç½®å—lock-bit */
 			ret = get_user(sect, (int *)arg);
 			if (ret < 0) return ret;
 			ret = set_lock_bit(sect, info);
 			break;
-		case CLEARLOCKSECT:	/* Çå³ı¿élock-bit */
+		case CLEARLOCKSECT:	/* æ¸…é™¤å—lock-bit */
 			ret = get_user(sect, (int *)arg);
 			if (ret < 0) return ret;
 			ret = clear_lock_bit(sect, info);
@@ -586,7 +586,7 @@ static int at91_flash_ioctl(struct inode* inode,struct file* filp, unsigned int 
 }
 
 /*
- * ÔÚµ±Ç°ÓÎ±ê´¦¶ÁÈ¡FLASHcount¸ö×Ö½Ú
+ * åœ¨å½“å‰æ¸¸æ ‡å¤„è¯»å–FLASHcountä¸ªå­—èŠ‚
  */
 static int at91_flash_read(struct file *filp, char* buf, size_t count, loff_t *offp)
 {
@@ -602,13 +602,13 @@ static int at91_flash_read(struct file *filp, char* buf, size_t count, loff_t *o
     if (f_pos + count > info->size)
         count = info->size - f_pos;
 
-	// Ê×µØÖ·²»ÊÇ2µÄÕûÊı±¶
+	// é¦–åœ°å€ä¸æ˜¯2çš„æ•´æ•°å€
 	fnum = f_pos % (info->portwidth / sizeof(unsigned char));
 	if (fnum) {
 		realcnt += info->portwidth / sizeof(unsigned char) - fnum;
 		a_first = f_pos - fnum;
 	}
-	// Ä©µØÖ·µÄÊı¾İÁ¿²»ÊÇ2µÄÕûÊı±¶
+	// æœ«åœ°å€çš„æ•°æ®é‡ä¸æ˜¯2çš„æ•´æ•°å€
 	newpos = a_first + realcnt;
 	lnum = newpos % (info->portwidth / sizeof(unsigned char));
 	if (lnum) {
@@ -720,7 +720,7 @@ struct file_operations at91_flash_fops = {
 static __init int at91_flash_init(void)
 {
 	int ret;
-	// ÉêÇë¿Õ¼ä
+	// ç”³è¯·ç©ºé—´
 	flash_info = kmalloc(sizeof(flash_info_t), GFP_KERNEL);
 	if (flash_info == NULL) {
 		printk ("Unable to allocate AT91 FLASH device structure.\n");
@@ -728,25 +728,25 @@ static __init int at91_flash_init(void)
 		goto out;
 	}
 	memset(flash_info, 0, sizeof(flash_info_t));
-	// ÅäÖÃSMC¼Ä´æÆ÷
+	// é…ç½®SMCå¯„å­˜å™¨
 	AT91_SYS->EBI_SMC2_CSR[0] = AT91C_SMC2_BAT | AT91C_SMC2_WSEN | (AT91C_SMC2_NWS & 0xA)
 	| (AT91C_SMC2_TDF & 0xF00) | AT91C_SMC2_DBW_16 | (AT91C_SMC2_RWSETUP & 0x6);
 
-	// ÏÂÃæÒªÓ³ÉäĞéÄâµØÖ·
+	// ä¸‹é¢è¦æ˜ å°„è™šæ‹Ÿåœ°å€
 	ret = at91_flash_mem(flash_info);
 	if (ret < 0) {
 		printk ("Unable to flash MEM.\n");
 		goto mmout;
 	}
-	// ½øĞĞÌî³äflash info
+	// è¿›è¡Œå¡«å……flash info
 	flash_info->buffer_write_tout = FLASH_WRITE_TIMEOUT;
 	flash_info->erase_blk_tout = FLASH_ERASE_TIMEOUT;
 	flash_info->write_tout = FLASH_WRITE_TIMEOUT;
 	flash_info->chipwidth = 16;
 	flash_info->buffer_size = 32;
 	flash_info->portwidth = 16;
-	// ×¢²áÉè±¸, Éè±¸ºÅÎª140
-	ret = register_chrdev(FLASH_MAJOR, "NOR FLASH", &at91_flash_fops);				//×¢²áÉè±¸
+	// æ³¨å†Œè®¾å¤‡, è®¾å¤‡å·ä¸º140
+	ret = register_chrdev(FLASH_MAJOR, "NOR FLASH", &at91_flash_fops);				//æ³¨å†Œè®¾å¤‡
 	if (ret < 0) {
 		printk(KERN_ERR "at91_flash: couldn't get a major %d for NOR FLASH.\n", FLASH_MAJOR);
 		goto mmout;

@@ -1,33 +1,33 @@
 /*
  * Copyright (c) 2007, NKTY Company
  * All rights reserved.
- * ÎÄ¼şÃû³Æ£ºat91_gpiob.c
- * Õª    Òª£ºPIOB°´¼üÇı¶¯³ÌĞò, PB0~PB5½Ó¼üÅÌ, PB7½ÓPower¼ü, PB6½ÓÍøÂç
- * 			 ÄÚºË¸üĞÂµ½2.6.12ºó, ¶ÔGPIOµÄÖĞ¶ÏÓëÒÔÇ°°æ±¾²»Ò»ÖÂ
- *			 ³ÌĞò×¢²á7¸öÖĞ¶ÏÀ´½øĞĞ¶Ô°´¼üµÄÏìÓ¦
- *			 ÄÚºË°æ±¾¸ßÓÚ2.6Ê±Ò»¶¨×¢ÒâÖĞ¶Ïº¯ÊıµÄ·µ»ØÖµ, IRQ_HANDLE-->1
- *			 INIT¼ÓÈë¹Ø±ÕÖĞ¶Ï´¦Àí, ·ÀÖ¹¹Ø»ú¼üÖĞ¶Ï, ÏàÓ¦µÄÒªÔÚMainÖĞÒª½«
- *			 ¹Ø»úĞÅºÅÂíÉÏ¹Ø±Õ! PIOB15ÎªÇ¿ÖÆ¹Ø»úĞÅºÅÏß, ²»ÒªËæ±ãÇå³ı
- *			 ¼ÓÈë¶Ô¹Ø±Õ°´¼üÖ®ºóµÄ±êÖ¾Öµ, Ó¦ÓÃ³ÌĞò¿ÉÒÔÖªµÀÊ²Ã´°´¼üÆÁ±Î
- *			 ĞŞ¸ÄÒ»Ğ©¼Ä´æÆ÷µÄÅäÖÃ
- *			 È¥µô  Ê¹ÄÜPIOB15¶ÔPIOB_ODSRĞ´ÓĞĞ§
- *           Èç¹ûÒÑ¾­ÓĞ¹Ø»ú¼ü, ÖĞ¶ÏºóÂíÉÏ·µ»Ø
+ * æ–‡ä»¶åç§°ï¼šat91_gpiob.c
+ * æ‘˜    è¦ï¼šPIOBæŒ‰é”®é©±åŠ¨ç¨‹åº, PB0~PB5æ¥é”®ç›˜, PB7æ¥Poweré”®, PB6æ¥ç½‘ç»œ
+ * 			 å†…æ ¸æ›´æ–°åˆ°2.6.12å, å¯¹GPIOçš„ä¸­æ–­ä¸ä»¥å‰ç‰ˆæœ¬ä¸ä¸€è‡´
+ *			 ç¨‹åºæ³¨å†Œ7ä¸ªä¸­æ–­æ¥è¿›è¡Œå¯¹æŒ‰é”®çš„å“åº”
+ *			 å†…æ ¸ç‰ˆæœ¬é«˜äº2.6æ—¶ä¸€å®šæ³¨æ„ä¸­æ–­å‡½æ•°çš„è¿”å›å€¼, IRQ_HANDLE-->1
+ *			 INITåŠ å…¥å…³é—­ä¸­æ–­å¤„ç†, é˜²æ­¢å…³æœºé”®ä¸­æ–­, ç›¸åº”çš„è¦åœ¨Mainä¸­è¦å°†
+ *			 å…³æœºä¿¡å·é©¬ä¸Šå…³é—­! PIOB15ä¸ºå¼ºåˆ¶å…³æœºä¿¡å·çº¿, ä¸è¦éšä¾¿æ¸…é™¤
+ *			 åŠ å…¥å¯¹å…³é—­æŒ‰é”®ä¹‹åçš„æ ‡å¿—å€¼, åº”ç”¨ç¨‹åºå¯ä»¥çŸ¥é“ä»€ä¹ˆæŒ‰é”®å±è”½
+ *			 ä¿®æ”¹ä¸€äº›å¯„å­˜å™¨çš„é…ç½®
+ *			 å»æ‰  ä½¿èƒ½PIOB15å¯¹PIOB_ODSRå†™æœ‰æ•ˆ
+ *           å¦‚æœå·²ç»æœ‰å…³æœºé”®, ä¸­æ–­åé©¬ä¸Šè¿”å›
  * 
- * µ±Ç°°æ±¾£º1.5
- * ×÷    Õß£ºwjzhe
- * Íê³ÉÈÕÆÚ£º2007Äê11ÔÂ22ÈÕ
+ * å½“å‰ç‰ˆæœ¬ï¼š1.5
+ * ä½œ    è€…ï¼šwjzhe
+ * å®Œæˆæ—¥æœŸï¼š2007å¹´11æœˆ22æ—¥
  *
- * È¡´ú°æ±¾£º1.4
- * ×÷    Õß£ºwjzhe
- * Íê³ÉÈÕÆÚ£º2007Äê8ÔÂ10ÈÕ
+ * å–ä»£ç‰ˆæœ¬ï¼š1.4
+ * ä½œ    è€…ï¼šwjzhe
+ * å®Œæˆæ—¥æœŸï¼š2007å¹´8æœˆ10æ—¥
  *
- * È¡´ú°æ±¾£º1.3 
- * Ô­×÷Õß  £ºwjzhe
- * Íê³ÉÈÕÆÚ£º2007Äê7ÔÂ19ÈÕ
+ * å–ä»£ç‰ˆæœ¬ï¼š1.3 
+ * åŸä½œè€…  ï¼šwjzhe
+ * å®Œæˆæ—¥æœŸï¼š2007å¹´7æœˆ19æ—¥
  *
- * È¡´ú°æ±¾£º1.2 
- * Ô­×÷Õß  £ºwjzhe
- * Íê³ÉÈÕÆÚ£º2007Äê4ÔÂ29ÈÕ
+ * å–ä»£ç‰ˆæœ¬ï¼š1.2 
+ * åŸä½œè€…  ï¼šwjzhe
+ * å®Œæˆæ—¥æœŸï¼š2007å¹´4æœˆ29æ—¥
  */
 #include <linux/init.h>
 #include <linux/module.h>
@@ -61,7 +61,7 @@ static int at91_halt = 0;
 #endif
 
 #ifdef NEWPIO
-// ¶ÔÓÚ2.6.12ÒÔºó°æ±¾µÄÖĞ¶Ïº¯Êı
+// å¯¹äº2.6.12ä»¥åç‰ˆæœ¬çš„ä¸­æ–­å‡½æ•°
 static irqreturn_t GPIOB0_irq_handler(int this_irq, void *dev_id, struct pt_regs *regs)
 {
 	static unsigned long key_jif;
@@ -79,11 +79,11 @@ static irqreturn_t GPIOB0_irq_handler(int this_irq, void *dev_id, struct pt_regs
 		printk("down GPIOB0\n");
 #endif
 	}
-	// ¼ÇÂ¼µ±Ç°Ê±¼ä
+	// è®°å½•å½“å‰æ—¶é—´
 	current_jif = jiffies;
 	key = key_flag = KEYUP;
 	if (key == input_buf[tail - 1]) {
-		// ´ËÊ±ÒªÅĞ¶ÏÊ±ÖÓµÎ´ğÊı
+		// æ­¤æ—¶è¦åˆ¤æ–­æ—¶é’Ÿæ»´ç­”æ•°
 #ifdef PB_DEBUG
 		printk("current_jif = %d, key_jif = %d\n", current_jif, key_jif);
 #endif
@@ -91,7 +91,7 @@ static irqreturn_t GPIOB0_irq_handler(int this_irq, void *dev_id, struct pt_regs
 			return IRQ_HANDLED;
 	}
 	input_buf[tail++] = key_flag;
-	// ¼ÇÂ¼KEYÊ±ÖÓµÎ´ğ
+	// è®°å½•KEYæ—¶é’Ÿæ»´ç­”
 	key_jif = current_jif;
 	tail &= 0xFF;
 	if (tail == head) {
@@ -120,11 +120,11 @@ static irqreturn_t GPIOB1_irq_handler(int this_irq, void *dev_id, struct pt_regs
 		printk("down GPIOB1\n");
 #endif
 	}
-	// ¼ÇÂ¼µ±Ç°Ê±¼ä
+	// è®°å½•å½“å‰æ—¶é—´
 	current_jif = jiffies;
 	key = key_flag = KEYLEFT;
 	if (key == input_buf[tail - 1]) {
-		// ´ËÊ±ÒªÅĞ¶ÏÊ±ÖÓµÎ´ğÊı
+		// æ­¤æ—¶è¦åˆ¤æ–­æ—¶é’Ÿæ»´ç­”æ•°
 #ifdef PB_DEBUG
 		printk("current_jif = %d, key_jif = %d\n", current_jif, key_jif);
 #endif
@@ -132,7 +132,7 @@ static irqreturn_t GPIOB1_irq_handler(int this_irq, void *dev_id, struct pt_regs
 			return IRQ_HANDLED;
 	}
 	input_buf[tail++] = key_flag;
-	// ¼ÇÂ¼KEYÊ±ÖÓµÎ´ğ
+	// è®°å½•KEYæ—¶é’Ÿæ»´ç­”
 	key_jif = current_jif;
 	tail &= 0xFF;
 	if (tail == head) {
@@ -161,11 +161,11 @@ static irqreturn_t GPIOB2_irq_handler(int this_irq, void *dev_id, struct pt_regs
 		printk("down GPIOB2\n");
 #endif
 	}
-	// ¼ÇÂ¼µ±Ç°Ê±¼ä
+	// è®°å½•å½“å‰æ—¶é—´
 	current_jif = jiffies;
 	key = key_flag = KEYOK;
 	if (key == input_buf[tail - 1]) {
-		// ´ËÊ±ÒªÅĞ¶ÏÊ±ÖÓµÎ´ğÊı
+		// æ­¤æ—¶è¦åˆ¤æ–­æ—¶é’Ÿæ»´ç­”æ•°
 #ifdef PB_DEBUG
 		printk("current_jif = %d, key_jif = %d\n", current_jif, key_jif);
 #endif
@@ -173,7 +173,7 @@ static irqreturn_t GPIOB2_irq_handler(int this_irq, void *dev_id, struct pt_regs
 			return IRQ_HANDLED;
 	}
 	input_buf[tail++] = key_flag;
-	// ¼ÇÂ¼KEYÊ±ÖÓµÎ´ğ
+	// è®°å½•KEYæ—¶é’Ÿæ»´ç­”
 	key_jif = current_jif;
 	tail &= 0xFF;
 	if (tail == head) {
@@ -202,11 +202,11 @@ static irqreturn_t GPIOB3_irq_handler(int this_irq, void *dev_id, struct pt_regs
 		printk("down GPIOB3\n");
 #endif
 	}
-	// ¼ÇÂ¼µ±Ç°Ê±¼ä
+	// è®°å½•å½“å‰æ—¶é—´
 	current_jif = jiffies;
 	key = key_flag = KEYRIGHT;
 	if (key == input_buf[tail - 1]) {
-		// ´ËÊ±ÒªÅĞ¶ÏÊ±ÖÓµÎ´ğÊı
+		// æ­¤æ—¶è¦åˆ¤æ–­æ—¶é’Ÿæ»´ç­”æ•°
 #ifdef PB_DEBUG
 		printk("current_jif = %d, key_jif = %d\n", current_jif, key_jif);
 #endif
@@ -214,7 +214,7 @@ static irqreturn_t GPIOB3_irq_handler(int this_irq, void *dev_id, struct pt_regs
 			return IRQ_HANDLED;
 	}
 	input_buf[tail++] = key_flag;
-	// ¼ÇÂ¼KEYÊ±ÖÓµÎ´ğ
+	// è®°å½•KEYæ—¶é’Ÿæ»´ç­”
 	key_jif = current_jif;
 	tail &= 0xFF;
 	if (tail == head) {
@@ -243,11 +243,11 @@ static irqreturn_t GPIOB4_irq_handler(int this_irq, void *dev_id, struct pt_regs
 		printk("down GPIOB4\n");
 #endif
 	}
-	// ¼ÇÂ¼µ±Ç°Ê±¼ä
+	// è®°å½•å½“å‰æ—¶é—´
 	current_jif = jiffies;
 	key = key_flag = KEYDOWN;
 	if (key == input_buf[tail - 1]) {
-		// ´ËÊ±ÒªÅĞ¶ÏÊ±ÖÓµÎ´ğÊı
+		// æ­¤æ—¶è¦åˆ¤æ–­æ—¶é’Ÿæ»´ç­”æ•°
 #ifdef PB_DEBUG
 		printk("current_jif = %d, key_jif = %d\n", current_jif, key_jif);
 #endif
@@ -255,7 +255,7 @@ static irqreturn_t GPIOB4_irq_handler(int this_irq, void *dev_id, struct pt_regs
 			return IRQ_HANDLED;
 	}
 	input_buf[tail++] = key_flag;
-	// ¼ÇÂ¼KEYÊ±ÖÓµÎ´ğ
+	// è®°å½•KEYæ—¶é’Ÿæ»´ç­”
 	key_jif = current_jif;
 	tail &= 0xFF;
 	if (tail == head) {
@@ -284,11 +284,11 @@ static irqreturn_t GPIOB5_irq_handler(int this_irq, void *dev_id, struct pt_regs
 		printk("down GPIOB5\n");
 #endif
 	}
-	// ¼ÇÂ¼µ±Ç°Ê±¼ä
+	// è®°å½•å½“å‰æ—¶é—´
 	current_jif = jiffies;
 	key = key_flag = KEYCANCLE;
 	if (key == input_buf[tail - 1]) {
-		// ´ËÊ±ÒªÅĞ¶ÏÊ±ÖÓµÎ´ğÊı
+		// æ­¤æ—¶è¦åˆ¤æ–­æ—¶é’Ÿæ»´ç­”æ•°
 #ifdef PB_DEBUG
 		printk("current_jif = %d, key_jif = %d\n", current_jif, key_jif);
 #endif
@@ -296,7 +296,7 @@ static irqreturn_t GPIOB5_irq_handler(int this_irq, void *dev_id, struct pt_regs
 			return IRQ_HANDLED;
 	}
 	input_buf[tail++] = key_flag;
-	// ¼ÇÂ¼KEYÊ±ÖÓµÎ´ğ
+	// è®°å½•KEYæ—¶é’Ÿæ»´ç­”
 	key_jif = current_jif;
 	tail &= 0xFF;
 	if (tail == head) {
@@ -314,10 +314,10 @@ static irqreturn_t GPIOB7_irq_handler(int this_irq, void *dev_id, struct pt_regs
 	unsigned long current_jif;
 	unsigned int key_flag = 0;
 	int i;
-	// GPIOB7 ÏßÉÏÓĞÊı¾İ±ä»¯, Îª¸ßµçÆ½µÄÊ±ºòÔòÒªÑÓ³ÙµÈ´ı2Ãë
+	// GPIOB7 çº¿ä¸Šæœ‰æ•°æ®å˜åŒ–, ä¸ºé«˜ç”µå¹³çš„æ—¶å€™åˆ™è¦å»¶è¿Ÿç­‰å¾…2ç§’
 #define PB_DEBUG
 	if (at91_halt) {
-		// ÒÑ¾­¹Ø»ú¼ü
+		// å·²ç»å…³æœºé”®
 		return IRQ_HANDLED;
 	}
 #if 0
@@ -336,40 +336,40 @@ static irqreturn_t GPIOB7_irq_handler(int this_irq, void *dev_id, struct pt_regs
 #endif
 #define IDR_PB7
 #ifdef IDR_PB7
-	/* ¹ØµôPB7ÖĞ¶Ï */
+	/* å…³æ‰PB7ä¸­æ–­ */
 	AT91_SYS->PIOB_IDR = AT91C_PIO_PB7;
 #endif
 	key_flag = at91_get_gpio_value(AT91_PIN_PB7);
-	if(!key_flag) {			//¼ì²âÎªµÍµçÆ½
+	if(!key_flag) {			//æ£€æµ‹ä¸ºä½ç”µå¹³
 #ifdef PB_DEBUG
 		printk("up GPIOB7: keyflag %d\n", key_flag);
 		printk("GPIOB7 droped\n");
 #endif
 #ifdef IDR_PB7
-			/* ´ò¿ªPB7ÖĞ¶Ï */
+			/* æ‰“å¼€PB7ä¸­æ–­ */
 			AT91_SYS->PIOB_IER = AT91C_PIO_PB7;
 #endif
 		return IRQ_HANDLED;
 	}
-	for (i=0; i < 250; i++) {	//ÅĞ¶Ï°´¹Ø»ú¼ü2Ãë
+	for (i=0; i < 250; i++) {	//åˆ¤æ–­æŒ‰å…³æœºé”®2ç§’
 		/* Pat the watchdog, fixed by wjzhe 20090612 */
 		AT91_SYS->ST_CR = AT91C_ST_WDRST;
 		mdelay(10);
 		key_flag = at91_get_gpio_value(AT91_PIN_PB7);
-		if(!key_flag) {//Èç¹ûÔÚ2ÃëÖ®ÄÚ³öÏÖµÍµçÆ½, ÔòÕı³£ÍË³ö if(!(AT91_SYS->PIOB_PDSR & 0x80))
+		if(!key_flag) {//å¦‚æœåœ¨2ç§’ä¹‹å†…å‡ºç°ä½ç”µå¹³, åˆ™æ­£å¸¸é€€å‡º if(!(AT91_SYS->PIOB_PDSR & 0x80))
 #ifdef PB_DEBUG
 			printk("down GPIOB7\n");
 			printk("GPIOB7 droped\n");
 #endif
 #ifdef IDR_PB7
-			/* ´ò¿ªPB7ÖĞ¶Ï */
+			/* æ‰“å¼€PB7ä¸­æ–­ */
 			AT91_SYS->PIOB_IER = AT91C_PIO_PB7;
 #endif
-			return IRQ_HANDLED;			//¼ì²âÎªµÍµçÆ½
+			return IRQ_HANDLED;			//æ£€æµ‹ä¸ºä½ç”µå¹³
 		}
 	}
 	at91_halt = 1;
-	// ¼ÇÂ¼µ±Ç°Ê±¼ä
+	// è®°å½•å½“å‰æ—¶é—´
 	current_jif = jiffies;
 #ifdef PB_DEBUG
 	printk("TURN OFF\n");
@@ -377,18 +377,18 @@ static irqreturn_t GPIOB7_irq_handler(int this_irq, void *dev_id, struct pt_regs
 	printk("current_jif = %d, key_jif = %d\n", (int)current_jif, (int)key_jif);
 	printk("key_flag is %d\n",key_flag);
 #endif
-	// ¼ÇÂ¼KEYÊ±ÖÓµÎ´ğ
+	// è®°å½•KEYæ—¶é’Ÿæ»´ç­”
 	key_jif = current_jif;
 #ifdef IDR_PB7
-	/* ´ò¿ªPB7ÖĞ¶Ï */
+	/* æ‰“å¼€PB7ä¸­æ–­ */
 	AT91_SYS->PIOB_IER = AT91C_PIO_PB7;
 #endif
 #undef IDR_PB7
 #undef PB_DEBUG
 	return IRQ_HANDLED;
 }
-// ÒòÎª´ËÖĞ¶Ï²»ÊÇ¹²ÏíÖĞ¶Ï, ËùÒÔ²»ĞèÒªµ÷ÓÃ
-// ÆôÓÃÖĞ¶Ï, ½«ÖĞ¶Ïº¯ÊıÌí¼Óµ½ÖĞ¶ÏÁĞ±íÖĞ
+// å› ä¸ºæ­¤ä¸­æ–­ä¸æ˜¯å…±äº«ä¸­æ–­, æ‰€ä»¥ä¸éœ€è¦è°ƒç”¨
+// å¯ç”¨ä¸­æ–­, å°†ä¸­æ–­å‡½æ•°æ·»åŠ åˆ°ä¸­æ–­åˆ—è¡¨ä¸­
 void enable_piob(void)
 {
 	enable_irq(AT91_PIN_PB0);
@@ -399,7 +399,7 @@ void enable_piob(void)
 	enable_irq(AT91_PIN_PB5);
 	enable_irq(AT91_PIN_PB7);
 }
-// ½ûÓÃÖĞ¶Ï, ½«ÖĞ¶Ïº¯Êı´ÓÖĞ¶ÏÁĞ±íÖĞÉ¾³ı
+// ç¦ç”¨ä¸­æ–­, å°†ä¸­æ–­å‡½æ•°ä»ä¸­æ–­åˆ—è¡¨ä¸­åˆ é™¤
 void disable_piob(void)
 {
 	disable_irq(AT91_PIN_PB0);
@@ -411,7 +411,7 @@ void disable_piob(void)
 	disable_irq(AT91_PIN_PB7);
 }
 #else
-// 2.6.12ÒÔÇ°°æ±¾»áµ÷ÓÃÕâ¸öÖĞ¶Ï´¦Àíº¯Êı
+// 2.6.12ä»¥å‰ç‰ˆæœ¬ä¼šè°ƒç”¨è¿™ä¸ªä¸­æ–­å¤„ç†å‡½æ•°
 static unsigned int key;
 static irqreturn_t GPIOB_irq_handler(int this_irq, void *dev_id, struct pt_regs *regs)
 {
@@ -419,14 +419,14 @@ static irqreturn_t GPIOB_irq_handler(int this_irq, void *dev_id, struct pt_regs 
 	unsigned long current_jif;
 	unsigned int key_flag;
 	// input a key, key_flag.input = 1, but piob.input = 0
-	key_flag = AT91_SYS->PIOB_ISR;	//¶ÁÈ¡ÊäÈë±ä»¯ÖĞ¶Ï
+	key_flag = AT91_SYS->PIOB_ISR;	//è¯»å–è¾“å…¥å˜åŒ–ä¸­æ–­
 	key_flag &= 0xff;
-	if (key_flag == 0x80) {			//turn offÉè¶¨¹Ø»úĞÅºÅÓĞĞ§
+	if (key_flag == 0x80) {			//turn offè®¾å®šå…³æœºä¿¡å·æœ‰æ•ˆ
 		int i;
-		for (i=0; i < 100; i++) {	//ÅĞ¶Ï°´¹Ø»ú¼ü2Ãë
+		for (i=0; i < 100; i++) {	//åˆ¤æ–­æŒ‰å…³æœºé”®2ç§’
 			mdelay(20);
 			if(!(AT91_SYS->PIOB_PDSR & 0x80))
-				return IRQ_HANDLED;			//¼ì²âÎªµÍµçÆ½£¨ÎŞ°´¼ü£©
+				return IRQ_HANDLED;			//æ£€æµ‹ä¸ºä½ç”µå¹³ï¼ˆæ— æŒ‰é”®ï¼‰
 			//printk("AT91_SYS->PIOB_PDSR is %x\n",AT91_SYS->PIOB_PDSR);
 		}
 		at91_halt = 1;
@@ -437,17 +437,17 @@ static irqreturn_t GPIOB_irq_handler(int this_irq, void *dev_id, struct pt_regs 
 	if (AT91_SYS->PIOB_PDSR & key_flag) {
 		return IRQ_HANDLED;
 	}
-	// ¼ÇÂ¼µ±Ç°Ê±¼ä
+	// è®°å½•å½“å‰æ—¶é—´
 	current_jif = jiffies;
 	key = key_flag;
 	if (key == input_buf[tail - 1]) {
-		// ´ËÊ±ÒªÅĞ¶ÏÊ±ÖÓµÎ´ğÊı
+		// æ­¤æ—¶è¦åˆ¤æ–­æ—¶é’Ÿæ»´ç­”æ•°
 		//printk("current_jif = %d, key_jif = %d\n", current_jif, key_jif);
 		if ((current_jif - key_jif) < 30)
 			return IRQ_HANDLED;
 	}
 	input_buf[tail++] = key_flag;
-	// ¼ÇÂ¼KEYÊ±ÖÓµÎ´ğ
+	// è®°å½•KEYæ—¶é’Ÿæ»´ç­”
 	key_jif = current_jif;
 	tail &= 0xFF;
 	if (tail == head) {
@@ -461,53 +461,53 @@ static irqreturn_t GPIOB_irq_handler(int this_irq, void *dev_id, struct pt_regs 
 #endif
 static inline void Cfg_piob(void)
 {
-	AT91_SYS->PIOB_ODR = 0x0000FF;			//PIOB0~PIOB7Êä³ö½ûÓÃ
-	AT91_SYS->PIOB_PER = 0x0000FFFF;			//PIOB0~PIOB15Ê¹ÄÜ
-	AT91_SYS->PIOB_IFER = 0x0000FFFF;		//PIOB0~PIOB15ÊäÈëÂË²¨Ê¹ÄÜ
-	AT91_SYS->PIOB_MDDR = 0x0000FFFF;		//PIOB0~PIOB15½ûÓÃ¶àÇı¶¯
-	AT91_SYS->PIOB_PPUER = 0x0000FFFF;		//PIOB0~PIOB7ÉÏÀ­Ê¹ÄÜ
-	AT91_SYS->PIOB_OWDR = 0x0000FF;		//½ûÓÃPIOB0~PIOB7¶ÔPIOB_ODSR(Êä³ö×´Ì¬REG)Ğ´
+	AT91_SYS->PIOB_ODR = 0x0000FF;			//PIOB0~PIOB7è¾“å‡ºç¦ç”¨
+	AT91_SYS->PIOB_PER = 0x0000FFFF;			//PIOB0~PIOB15ä½¿èƒ½
+	AT91_SYS->PIOB_IFER = 0x0000FFFF;		//PIOB0~PIOB15è¾“å…¥æ»¤æ³¢ä½¿èƒ½
+	AT91_SYS->PIOB_MDDR = 0x0000FFFF;		//PIOB0~PIOB15ç¦ç”¨å¤šé©±åŠ¨
+	AT91_SYS->PIOB_PPUER = 0x0000FFFF;		//PIOB0~PIOB7ä¸Šæ‹‰ä½¿èƒ½
+	AT91_SYS->PIOB_OWDR = 0x0000FF;		//ç¦ç”¨PIOB0~PIOB7å¯¹PIOB_ODSR(è¾“å‡ºçŠ¶æ€REG)å†™
 	AT91_SYS->PIOB_OER = 0x0000FF00;
-	//AT91_SYS->PIOB_OWER = AT91C_PIO_PB15;		//Ê¹ÄÜPIOB15¶ÔPIOB_ODSRĞ´ÓĞĞ§
+	//AT91_SYS->PIOB_OWER = AT91C_PIO_PB15;		//ä½¿èƒ½PIOB15å¯¹PIOB_ODSRå†™æœ‰æ•ˆ
 
-	AT91_SYS->PIOB_IER = 0x0000FF;			//PIOB0~PIOB7ÖĞ¶ÏÊ¹ÄÜ
+	AT91_SYS->PIOB_IER = 0x0000FF;			//PIOB0~PIOB7ä¸­æ–­ä½¿èƒ½
 	AT91_SYS->PMC_PCER = 1 << AT91C_ID_PIOB;	// start PIOB clk
 }
-//ÉèÖÃgpiob0~7ÖĞ¶ÏÄ£Ê½£¬8~15Êä³öÄ£Ê½
+//è®¾ç½®gpiob0~7ä¸­æ–­æ¨¡å¼ï¼Œ8~15è¾“å‡ºæ¨¡å¼
 static int gpiob_open(struct inode *inode, struct file *filp)
 {
 	//GPIOB_MINOR = MINOR(inode->i_rdev);
 	//unsigned int gpiob_isr;
 #if 0
-	AT91_SYS->PIOB_ODR |= 0x0000FF;			//PIOB0~PIOB7Êä³ö½ûÓÃ
-	AT91_SYS->PIOB_OER &= (!0x0000FF);		//PIOB0~PIOB7Êä³öÊ¹ÄÜÎŞĞ§
-	AT91_SYS->PIOB_PER |= 0x0000FFFF;			//PIOB0~PIOB7Ê¹ÄÜ
-	AT91_SYS->PIOB_PDR &= (!0x0000FFFF);		//PIOB0~PIOB7½ûÓÃÎŞĞ§
-	AT91_SYS->PIOB_IFDR &= (!0x0000FFFF);		//PIOB0~PIOB7ÊäÈëÂË²¨½ûÓÃÎŞĞ§
-	AT91_SYS->PIOB_IFER |= 0x0000FFFF;		//PIOB0~PIOB7ÊäÈëÂË²¨Ê¹ÄÜ
-	AT91_SYS->PIOB_MDDR |= 0x0000FFFF;		//PIOB0~PIOB7½ûÓÃ¶àÇı¶¯
-	AT91_SYS->PIOB_MDER &= (!0x0000FFFF);		//PIOB0~PIOB7¶àÇı¶¯Ê¹ÄÜÎŞĞ§
-	AT91_SYS->PIOB_PPUER |= 0x0000FFFF;		//PIOB0~PIOB7ÉÏÀ­Ê¹ÄÜ
-	AT91_SYS->PIOB_PPUDR &= (!0x0000FFFF);	//PIOB0~PIOB7ÉÏÀ­½ûÓÃÎŞĞ§
-	AT91_SYS->PIOB_ASR &= (!0x0000FFFF);		//PIOB0~PIOB7ÍâÉèAÑ¡ÔñÎŞĞ§
-	AT91_SYS->PIOB_BSR &= (!0x0000FFFF);		//PIOB0~PIOB7ÍâÉèBÑ¡ÔñÎŞĞ§
-	AT91_SYS->PIOB_OWDR |= 0x0000FFFF;		//½ûÓÃPIOB0~PIOB7¶ÔPIOB_ODSR(Êä³ö×´Ì¬REG)Ğ´
-	AT91_SYS->PIOB_OWER &= (!0x0000FFFF);		//Ê¹ÄÜPIOB0~PIOB7¶ÔPIOB_ODSRĞ´ÎŞĞ§
+	AT91_SYS->PIOB_ODR |= 0x0000FF;			//PIOB0~PIOB7è¾“å‡ºç¦ç”¨
+	AT91_SYS->PIOB_OER &= (!0x0000FF);		//PIOB0~PIOB7è¾“å‡ºä½¿èƒ½æ— æ•ˆ
+	AT91_SYS->PIOB_PER |= 0x0000FFFF;			//PIOB0~PIOB7ä½¿èƒ½
+	AT91_SYS->PIOB_PDR &= (!0x0000FFFF);		//PIOB0~PIOB7ç¦ç”¨æ— æ•ˆ
+	AT91_SYS->PIOB_IFDR &= (!0x0000FFFF);		//PIOB0~PIOB7è¾“å…¥æ»¤æ³¢ç¦ç”¨æ— æ•ˆ
+	AT91_SYS->PIOB_IFER |= 0x0000FFFF;		//PIOB0~PIOB7è¾“å…¥æ»¤æ³¢ä½¿èƒ½
+	AT91_SYS->PIOB_MDDR |= 0x0000FFFF;		//PIOB0~PIOB7ç¦ç”¨å¤šé©±åŠ¨
+	AT91_SYS->PIOB_MDER &= (!0x0000FFFF);		//PIOB0~PIOB7å¤šé©±åŠ¨ä½¿èƒ½æ— æ•ˆ
+	AT91_SYS->PIOB_PPUER |= 0x0000FFFF;		//PIOB0~PIOB7ä¸Šæ‹‰ä½¿èƒ½
+	AT91_SYS->PIOB_PPUDR &= (!0x0000FFFF);	//PIOB0~PIOB7ä¸Šæ‹‰ç¦ç”¨æ— æ•ˆ
+	AT91_SYS->PIOB_ASR &= (!0x0000FFFF);		//PIOB0~PIOB7å¤–è®¾Aé€‰æ‹©æ— æ•ˆ
+	AT91_SYS->PIOB_BSR &= (!0x0000FFFF);		//PIOB0~PIOB7å¤–è®¾Bé€‰æ‹©æ— æ•ˆ
+	AT91_SYS->PIOB_OWDR |= 0x0000FFFF;		//ç¦ç”¨PIOB0~PIOB7å¯¹PIOB_ODSR(è¾“å‡ºçŠ¶æ€REG)å†™
+	AT91_SYS->PIOB_OWER &= (!0x0000FFFF);		//ä½¿èƒ½PIOB0~PIOB7å¯¹PIOB_ODSRå†™æ— æ•ˆ
 	AT91_SYS->PMC_PCER |= 1 << AT91C_ID_PIOB;	// start PIOB clk
 	AT91_SYS->PIOB_OER |= 0x0000FF00;
 	AT91_SYS->PIOB_ODR &= (!0x0000FF00);
 
-	AT91_SYS->PIOB_IDR &= (!0x0000FF);		//PIOB0~PIOB7ÖĞ¶Ï½ûÓÃÎŞĞ§
-	AT91_SYS->PIOB_IER |= 0x0000FF;			//PIOB0~PIOB7ÖĞ¶ÏÊ¹ÄÜ
+	AT91_SYS->PIOB_IDR &= (!0x0000FF);		//PIOB0~PIOB7ä¸­æ–­ç¦ç”¨æ— æ•ˆ
+	AT91_SYS->PIOB_IER |= 0x0000FF;			//PIOB0~PIOB7ä¸­æ–­ä½¿èƒ½
 #else
 	Cfg_piob();
 #endif
-	//AT91_SYS->PIOB_CODR |= 0x0000FF;		//Çå³ıPIOB0~PIOB7ÏßÉÏÇı¶¯µÄÊı¾İ
-	//AT91_SYS->PIOB_SODR &= (!0x0000FF);		//ÉèÖÃPIOB0~PIOB7ÏßÉÏÇı¶¯µÄÊı¾İÎŞĞ§
+	//AT91_SYS->PIOB_CODR |= 0x0000FF;		//æ¸…é™¤PIOB0~PIOB7çº¿ä¸Šé©±åŠ¨çš„æ•°æ®
+	//AT91_SYS->PIOB_SODR &= (!0x0000FF);		//è®¾ç½®PIOB0~PIOB7çº¿ä¸Šé©±åŠ¨çš„æ•°æ®æ— æ•ˆ
 	//AT91_SYS->PIOB_SODR |= 0x0000FF00;
 	//AT91_SYS->PIOB_CODR &= (!0x0000FF00);
-	//AT91_SYS->PIOB_CODR |= 0x0000FFFF;		//Çå³ıPIOB0~PIOB7ÏßÉÏÇı¶¯µÄÊı¾İ
-	//AT91_SYS->PIOB_SODR &= (!0x0000FFFF);		//ÉèÖÃPIOB0~PIOB7ÏßÉÏÇı¶¯µÄÊı¾İÎŞĞ§
+	//AT91_SYS->PIOB_CODR |= 0x0000FFFF;		//æ¸…é™¤PIOB0~PIOB7çº¿ä¸Šé©±åŠ¨çš„æ•°æ®
+	//AT91_SYS->PIOB_SODR &= (!0x0000FFFF);		//è®¾ç½®PIOB0~PIOB7çº¿ä¸Šé©±åŠ¨çš„æ•°æ®æ— æ•ˆ
 	//gpiob_isr = AT91_SYS->PIOB_ISR;
 	//printk("current gpiob_isr: 0x%08x\n", AT91_SYS->PIOB_ISR);
 	//gpiob_isr = AT91_SYS->PIOB_ISR;
@@ -519,7 +519,7 @@ static int gpiob_open(struct inode *inode, struct file *filp)
 	} else {
 		net_on = 1;
 	}
-	// Êı¾İ³õÊ¹»¯
+	// æ•°æ®åˆä½¿åŒ–
 	head = tail = 0;
 	at91_halt = 0;
 	key_on = 1;
@@ -538,23 +538,23 @@ static int gpiob_ioctl(struct inode* inode,struct file* file, unsigned int cmd, 
 		if ((at91_set_gpio_value(PIN_BASE + 0x20 + arg, 0)) < 0) {
 		}
 #else
-		AT91_SYS->PIOB_CODR = 1 << arg;		//Çå³ıPIOB[arg]ÉÏµÄÊı¾İ
+		AT91_SYS->PIOB_CODR = 1 << arg;		//æ¸…é™¤PIOB[arg]ä¸Šçš„æ•°æ®
 #endif
-		//AT91_SYS->PIOB_SODR &= (!0x00000001 << arg);	//ÉèÖÃPIOB[arg]Êı¾İÎŞĞ§
+		//AT91_SYS->PIOB_SODR &= (!0x00000001 << arg);	//è®¾ç½®PIOB[arg]æ•°æ®æ— æ•ˆ
 		break;
 	case SETBIT:
 #ifdef USEGPIO
 		if ((at91_set_gpio_value(PIN_BASE + 0x20 + arg, 1)) < 0) {
 		}
 #else
-		AT91_SYS->PIOB_SODR = 1 << arg;		//ÉèÖÃPIOB[arg]ÉÏµÄÊı¾İ
+		AT91_SYS->PIOB_SODR = 1 << arg;		//è®¾ç½®PIOB[arg]ä¸Šçš„æ•°æ®
 #endif
 #undef USEGPIO
-		//AT91_SYS->PIOB_CODR &= (!0x00000001) << arg;	//Çå³ıPIOB[arg]Êı¾İÎŞĞ§
+		//AT91_SYS->PIOB_CODR &= (!0x00000001) << arg;	//æ¸…é™¤PIOB[arg]æ•°æ®æ— æ•ˆ
 		break;
 	case ENIOB:
 		udelay(1000);
-		AT91_SYS->PIOB_IER |= 0xFF;			//PIOB0~PIOB7ÖĞ¶ÏÊ¹ÄÜ
+		AT91_SYS->PIOB_IER |= 0xFF;			//PIOB0~PIOB7ä¸­æ–­ä½¿èƒ½
 		key_on = 1;
 		enable_piob();
 		break;
@@ -562,7 +562,7 @@ static int gpiob_ioctl(struct inode* inode,struct file* file, unsigned int cmd, 
 		udelay(1000);
 		AT91_SYS->PIOB_IDR |= 0xFF;
 		key_on = 0;
-		disable_piob();// ½ö½ö½«ÖĞ¶Ïº¯Êı´ÓÁ´±íÖĞÉ¾³ı!!!
+		disable_piob();// ä»…ä»…å°†ä¸­æ–­å‡½æ•°ä»é“¾è¡¨ä¸­åˆ é™¤!!!
 		break;
 	case ENONOFF:
 		enable_irq(AT91_PIN_PB7);
@@ -570,37 +570,37 @@ static int gpiob_ioctl(struct inode* inode,struct file* file, unsigned int cmd, 
 	case DISONOFF:
 		disable_irq(AT91_PIN_PB7);
 		break;
-	case GETNET:		// ´Ë¹¦ÄÜ½«±»·ÏÆú
+	case GETNET:		// æ­¤åŠŸèƒ½å°†è¢«åºŸå¼ƒ
 		if ((AT91_SYS->PIOB_PDSR&0x00000040)) {
 			net_on = 0;
 		} else {
 			net_on = 1;
 		}
 		return (put_user(net_on, (int *)arg));
-	case CLEARKEY:		// Çå³ı°´¼üÇı¶¯ÖĞËùÓĞ¼üÖµ
+	case CLEARKEY:		// æ¸…é™¤æŒ‰é”®é©±åŠ¨ä¸­æ‰€æœ‰é”®å€¼
 		head = tail = 0;
 		break;
-	case GETHATL:		// È¡µÃ¹Ø»ú¼ü
+	case GETHATL:		// å–å¾—å…³æœºé”®
 		if (key_on == 0) {
 			return -1;
 		}
 		if (at91_halt) {
 			if (put_user(KEYONOFF, (int *)arg) < 0)
 				return -EFAULT;
-			// ÒÑ¾­È¡×ß¹Ø»úĞÅºÅ, Çå³ş±êÖ¾
+			// å·²ç»å–èµ°å…³æœºä¿¡å·, æ¸…æ¥šæ ‡å¿—
 			at91_halt = 0;
 		} else {
 			put_user(0, (int *)arg);
 		}
 		break;
-	case DISABLEKEY:	// ½ûÖ¹°´¼üÖĞ¶Ï
+	case DISABLEKEY:	// ç¦æ­¢æŒ‰é”®ä¸­æ–­
 		//AT91_SYS->PIOB_IER &= (!0x0000FF);
 		udelay(1000);
 		AT91_SYS->PIOB_IDR = 0x0000FF;
 		key_on = 0;
-		//disable_piob();// ½ö½ö½«ÖĞ¶Ïº¯Êı´ÓÁ´±íÖĞÉ¾³ı!!!
+		//disable_piob();// ä»…ä»…å°†ä¸­æ–­å‡½æ•°ä»é“¾è¡¨ä¸­åˆ é™¤!!!
 		break;
-	case ENABLEKEY:		// ÆôÓÃ°´¼üÖĞ¶Ï
+	case ENABLEKEY:		// å¯ç”¨æŒ‰é”®ä¸­æ–­
 		//AT91_SYS->PIOB_IDR &= (!0x0000FF);
 		udelay(1000);
 		AT91_SYS->PIOB_IER = 0x0000FF;
@@ -617,23 +617,23 @@ static int gpiob_write(struct file *file, const char* buf, size_t count, loff_t 
 {
 	return -1;		// can not write to key
 }
-// ¶ÁÈ¡°´¼ü¼üÖµ
+// è¯»å–æŒ‰é”®é”®å€¼
 static int gpiob_read(struct file *file, char* buff, size_t count, loff_t *offp)
 {
 	int ret;
 	if (key_on == 0)
 		return -1;
 	//printk("head: %d, tail:%d\n", head, tail);
-	// ÅĞ¶ÏÊÇ·ñ²ÉÑùµ½°´¼ü
+	// åˆ¤æ–­æ˜¯å¦é‡‡æ ·åˆ°æŒ‰é”®
 	if (head == tail) {
 		return 0;
 	}
-	// ½«¼üÖµ´«µ½ÓÃ»§¿Õ¼ä
+	// å°†é”®å€¼ä¼ åˆ°ç”¨æˆ·ç©ºé—´
 	ret = put_user(input_buf[head], buff);
 	if (ret < 0) {
 		return ret;
 	}
-	// Ò»´ÎÖ»ÄÜ¶ÁÒ»¸ö°´¼ü, ÒÔºóµÄÄÚÈİ½«±»ÖÃ0
+	// ä¸€æ¬¡åªèƒ½è¯»ä¸€ä¸ªæŒ‰é”®, ä»¥åçš„å†…å®¹å°†è¢«ç½®0
 	count--;
 	while (count--) {
 		buff++;
@@ -642,7 +642,7 @@ static int gpiob_read(struct file *file, char* buff, size_t count, loff_t *offp)
 			return ret;
 		}
 	}
-	// µ÷ÕûÊı×éÏÂ±ê
+	// è°ƒæ•´æ•°ç»„ä¸‹æ ‡
 	if (head >= 0xFF) {
 		head = 0;
 	} else {
@@ -662,58 +662,58 @@ struct file_operations gpiob_fops = {
 static __init int gpiob_init(void)
 {
 	int ret;
-	// ×¢²áÉè±¸, Éè±¸ºÅÎª135
-	ret = register_chrdev(GPIOB_MAJOR, "GPIOB", &gpiob_fops);				//×¢²áÉè±¸
+	// æ³¨å†Œè®¾å¤‡, è®¾å¤‡å·ä¸º135
+	ret = register_chrdev(GPIOB_MAJOR, "GPIOB", &gpiob_fops);				//æ³¨å†Œè®¾å¤‡
 	if (ret < 0) {
 		printk(KERN_ERR "GPIOB: couldn't get a major %d for PIOB.\n", GPIOB_MAJOR);
 		return -EIO;
 	}
-	// ½øĞĞÉêÇëÖĞ¶Ï, Ò»¹²7ÌõI/O
+	// è¿›è¡Œç”³è¯·ä¸­æ–­, ä¸€å…±7æ¡I/O
 #ifdef NEWPIO
-    ret = request_irq(AT91_PIN_PB0, GPIOB0_irq_handler, 0, "GPIOB", NULL);		//×¢²áÖĞ¶ÏIRQ3
+    ret = request_irq(AT91_PIN_PB0, GPIOB0_irq_handler, 0, "GPIOB", NULL);		//æ³¨å†Œä¸­æ–­IRQ3
 	if (ret < 0) {
 		printk("GPIOB0: INTERRUPT REQUEST ERROR.\n");
 		return -EBUSY;
     }
-    ret = request_irq(AT91_PIN_PB1, GPIOB1_irq_handler, 0, "GPIOB", NULL);		//×¢²áÖĞ¶ÏIRQ3
+    ret = request_irq(AT91_PIN_PB1, GPIOB1_irq_handler, 0, "GPIOB", NULL);		//æ³¨å†Œä¸­æ–­IRQ3
 	if (ret < 0) {
 		printk("GPIOB1: INTERRUPT REQUEST ERROR.\n");
 		return -EBUSY;
     }
-    ret = request_irq(AT91_PIN_PB2, GPIOB2_irq_handler, 0, "GPIOB", NULL);		//×¢²áÖĞ¶ÏIRQ3
+    ret = request_irq(AT91_PIN_PB2, GPIOB2_irq_handler, 0, "GPIOB", NULL);		//æ³¨å†Œä¸­æ–­IRQ3
 	if (ret < 0) {
 		printk("GPIOB2: INTERRUPT REQUEST ERROR.\n");
 		return -EBUSY;
     }
-    ret = request_irq(AT91_PIN_PB3, GPIOB3_irq_handler, 0, "GPIOB", NULL);		//×¢²áÖĞ¶ÏIRQ3
+    ret = request_irq(AT91_PIN_PB3, GPIOB3_irq_handler, 0, "GPIOB", NULL);		//æ³¨å†Œä¸­æ–­IRQ3
 	if (ret < 0) {
 		printk("GPIOB3: INTERRUPT REQUEST ERROR.\n");
 		return -EBUSY;
     }
-    ret = request_irq(AT91_PIN_PB4, GPIOB4_irq_handler, 0, "GPIOB", NULL);		//×¢²áÖĞ¶ÏIRQ3
+    ret = request_irq(AT91_PIN_PB4, GPIOB4_irq_handler, 0, "GPIOB", NULL);		//æ³¨å†Œä¸­æ–­IRQ3
 	if (ret < 0) {
 		printk("GPIOB4: INTERRUPT REQUEST ERROR.\n");
 		return -EBUSY;
     }
-    ret = request_irq(AT91_PIN_PB5, GPIOB5_irq_handler, 0, "GPIOB", NULL);		//×¢²áÖĞ¶ÏIRQ3
+    ret = request_irq(AT91_PIN_PB5, GPIOB5_irq_handler, 0, "GPIOB", NULL);		//æ³¨å†Œä¸­æ–­IRQ3
 	if (ret < 0) {
 		printk("GPIOB5: INTERRUPT REQUEST ERROR.\n");
 		return -EBUSY;
     }
-    ret = request_irq(AT91_PIN_PB7, GPIOB7_irq_handler, 0, "GPIOB", NULL);		//×¢²áÖĞ¶ÏIRQ3
+    ret = request_irq(AT91_PIN_PB7, GPIOB7_irq_handler, 0, "GPIOB", NULL);		//æ³¨å†Œä¸­æ–­IRQ3
 	if (ret < 0) {
 		printk("GPIOB7: INTERRUPT REQUEST ERROR.\n");
 		return -EBUSY;
     }
 #else
-    ret = request_irq(GPIOB_IRQ, GPIOB_irq_handler, 0, "GPIOB", NULL);		//×¢²áÖĞ¶ÏIRQ3
+    ret = request_irq(GPIOB_IRQ, GPIOB_irq_handler, 0, "GPIOB", NULL);		//æ³¨å†Œä¸­æ–­IRQ3
 	if (ret < 0)
 	{
 		printk("GPIOB:INTERRUPT REQUEST ERROR.\n");
 		return ret;
     }
 #endif
-	/*ret = request_irq(GPIOB_IRQ, GPIOB_irq_handler, 0, "GPIOB", NULL);		//×¢²áÖĞ¶ÏIRQ3
+	/*ret = request_irq(GPIOB_IRQ, GPIOB_irq_handler, 0, "GPIOB", NULL);		//æ³¨å†Œä¸­æ–­IRQ3
 	if (ret < 0) {
 		printk("GPIOB: INTERRUPT REQUEST ERROR.\n");
 		return -EBUSY;
@@ -723,22 +723,22 @@ static __init int gpiob_init(void)
 #endif
 	Cfg_piob();
 	disable_piob();
-	// ±ØĞë½«GPIOB15ÖÃÎª1
+	// å¿…é¡»å°†GPIOB15ç½®ä¸º1
 	if ((ret = at91_set_gpio_value(AT91_PIN_PB15, 1)) < 0) {
 		return ret;
 	}
-	//ÓÅÏÈ¼¶
+	//ä¼˜å…ˆçº§
 	AT91_SYS->AIC_SMR[GPIOB_IRQ] = AT91C_AIC_SRCTYPE_EXT_POSITIVE_EDGE;// | AT91C_AIC_PRIOR_HIGHEST;
 	AT91_SYS->PIOB_IDR = 0xFFFF;
 	//AT91_SYS->PIOB_IER &= (!0x0000FF);
 	//AT91_SYS->PIOB_IER &= (!0x0000FF00);
 	//AT91_SYS->PIOB_IDR = 0x0000FF00;
 	//printk("current gpiob_isr: 0x%08x\n", AT91_SYS->PIOB_ISR);
-	// ½«ÖĞ¶Ï½ûÓÃ
+	// å°†ä¸­æ–­ç¦ç”¨
 	printk("AT91 Key_input driver v1.4\n");
 	return ret;
 }
-// ÊÍ·ÅÉè±¸, ´Ëº¯ÊıÊµ¼ÊÃ»Ê²Ã´ÒâÒå
+// é‡Šæ”¾è®¾å¤‡, æ­¤å‡½æ•°å®é™…æ²¡ä»€ä¹ˆæ„ä¹‰
 static void __exit cleanup_piob(void)
 {
 #ifdef NEWPIO
@@ -752,7 +752,7 @@ static void __exit cleanup_piob(void)
 #else
 	free_irq(GPIOB_IRQ, NULL);
 #endif
-	unregister_chrdev(GPIOB_MAJOR, "GPIOB");				//×¢ÏúÉè±¸
+	unregister_chrdev(GPIOB_MAJOR, "GPIOB");				//æ³¨é”€è®¾å¤‡
 }
 
 module_init(gpiob_init);

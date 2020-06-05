@@ -1,24 +1,24 @@
 /*
  * Copyright (c) 2007, NKTY Company
  * All rights reserved.
- * ÎÄ¼şÃû³Æ£ºat91_gpiob.c
- * Õª    Òª£ºDATAFLASHÇı¶¯³ÌĞò, ¶ÔSPI×ÜÏß½øĞĞ²Ù×÷, ÏÖÔÚÖ»Ö§³ÖSPI0
- * 			 µ÷ÓÃat91_spi.cÀïµÄ´«Êäº¯Êı, ĞèÒªAT91_SPIµÄÖ§³Ö,
- *			 ĞŞ¸Ä¶ÔSPI_CSR0¼Ä´æÆ÷µÄÅäÖÃ, ½«DLYBCTÉèÖÃÎª1
- *			 ¼ÓÈë¶ÔAT45DB642DĞ¾Æ¬µÄÖ§³Ö, ĞÂµÄ¶ÁÃüÁî, ³ÌĞò¿ÉÒÔ×Ô¶¯ÅĞ¶ÏĞ¾Æ¬
- *			 SPI×ÜÏß¿ÉÒÔÎÈ¶¨µÄ¹¤×÷ÔÚ10MHz
+ * æ–‡ä»¶åç§°ï¼šat91_gpiob.c
+ * æ‘˜    è¦ï¼šDATAFLASHé©±åŠ¨ç¨‹åº, å¯¹SPIæ€»çº¿è¿›è¡Œæ“ä½œ, ç°åœ¨åªæ”¯æŒSPI0
+ * 			 è°ƒç”¨at91_spi.cé‡Œçš„ä¼ è¾“å‡½æ•°, éœ€è¦AT91_SPIçš„æ”¯æŒ,
+ *			 ä¿®æ”¹å¯¹SPI_CSR0å¯„å­˜å™¨çš„é…ç½®, å°†DLYBCTè®¾ç½®ä¸º1
+ *			 åŠ å…¥å¯¹AT45DB642DèŠ¯ç‰‡çš„æ”¯æŒ, æ–°çš„è¯»å‘½ä»¤, ç¨‹åºå¯ä»¥è‡ªåŠ¨åˆ¤æ–­èŠ¯ç‰‡
+ *			 SPIæ€»çº¿å¯ä»¥ç¨³å®šçš„å·¥ä½œåœ¨10MHz
  * 
- * µ±Ç°°æ±¾£º2.2
- * ×÷    Õß£ºwjzhe
- * Íê³ÉÈÕÆÚ£º2007Äê8ÔÂ8ÈÕ
+ * å½“å‰ç‰ˆæœ¬ï¼š2.2
+ * ä½œ    è€…ï¼šwjzhe
+ * å®Œæˆæ—¥æœŸï¼š2007å¹´8æœˆ8æ—¥
  *
- * È¡´ú°æ±¾£º2.1
- * Ô­×÷Õß  £ºwjzhe
- * Íê³ÉÈÕÆÚ£º2007Äê4ÔÂ19ÈÕ
+ * å–ä»£ç‰ˆæœ¬ï¼š2.1
+ * åŸä½œè€…  ï¼šwjzhe
+ * å®Œæˆæ—¥æœŸï¼š2007å¹´4æœˆ19æ—¥
  *
- * È¡´ú°æ±¾£º1.0
- * Ô­×÷Õß  £ºfengyun
- * Íê³ÉÈÕÆÚ£º2006Äê4ÔÂ5ÈÕ
+ * å–ä»£ç‰ˆæœ¬ï¼š1.0
+ * åŸä½œè€…  ï¼šfengyun
+ * å®Œæˆæ—¥æœŸï¼š2006å¹´4æœˆ5æ—¥
  */
 
 #include <linux/init.h>
@@ -74,7 +74,7 @@ struct dataflash_local
 	unsigned short page_offset;	/* page offset in flash address */
 };
 
-static unsigned int spi_csr[NR_SPI_DEVICES];// ÓÃÀ´±£´æCSR[dev]µÄÊı¾İ
+static unsigned int spi_csr[NR_SPI_DEVICES];// ç”¨æ¥ä¿å­˜CSR[dev]çš„æ•°æ®
 
 /* Detected DataFlash devices */
 static int nr_devices = 0;
@@ -219,7 +219,7 @@ static int dataflash_erase(int pageaddr, int cnt, int flag)
 
 			dataflash_waitready();		/* poll status until ready */
 			spi_release_bus(priv->spi);
-			pageaddr += 8;// Ò»¿é8Ò³
+			pageaddr += 8;// ä¸€å—8é¡µ
 		}
 	}
 
@@ -242,7 +242,7 @@ static int dataflash_ioctl(struct inode * inode,struct file* file, unsigned int 
 				return ret;
 			}
 			cnt = addr & 0xFFFF;
-			addr = addr >> 16;		// ´ËµØÖ·ÎªÒ³µØÖ·
+			addr = addr >> 16;		// æ­¤åœ°å€ä¸ºé¡µåœ°å€
 			if ((addr + cnt) >= 8192)
 				return -EINVAL;
 			if (dataflash_erase(addr, cnt, 1) < 0)
@@ -253,7 +253,7 @@ static int dataflash_ioctl(struct inode * inode,struct file* file, unsigned int 
 				return ret;
 			}
 			cnt = addr & 0xFFFF;
-			addr = addr >> 16;		// ´ËµØÖ·Îª¿éµØÖ·
+			addr = addr >> 16;		// æ­¤åœ°å€ä¸ºå—åœ°å€
 			if ((addr + cnt) >= 1024)
 				return -EINVAL;
 			if (dataflash_erase(addr, cnt, 0) < 0)
@@ -318,7 +318,7 @@ static int dataflash_read(struct file *file, char *buf, size_t count, loff_t *of
 
 	if (count == 0)
 		return 0;
-	if (count > BYTEOFDFPAGE * 3)// Ä¿Ç°Çı¶¯²»ÔÊĞí¶Á³¬¹ı4Ò³Êı¾İ
+	if (count > BYTEOFDFPAGE * 3)// ç›®å‰é©±åŠ¨ä¸å…è®¸è¯»è¶…è¿‡4é¡µæ•°æ®
 		return -EINVAL;
 
 	/* Get flash page/byte address */
@@ -378,12 +378,12 @@ static int dataflash_write(struct file *file, const char *buf, size_t count, lof
 {
 	struct dataflash_local *priv = dflocal;
 	unsigned int addr, writelen, pageaddr;
-	size_t poffset;		// Ò³ÄÚµØÖ·
+	size_t poffset;		// é¡µå†…åœ°å€
 	u_char *writebuf;
 	unsigned short status;
 	int res = 0;
 	char* command;
-	char* tmpbuf = NULL;// ËÆºõÓÃÀ´µÚ¶ş´Î´«ÊäÊ±½ÓÊÕ»º³å
+	char* tmpbuf = NULL;// ä¼¼ä¹ç”¨æ¥ç¬¬äºŒæ¬¡ä¼ è¾“æ—¶æ¥æ”¶ç¼“å†²
 
 	if (!buf)
 		return -EINVAL;
@@ -398,7 +398,7 @@ static int dataflash_write(struct file *file, const char *buf, size_t count, lof
 	buf += sizeof(addr);
 	poffset = addr & 0x7ff;
 	pageaddr = addr >> priv->page_offset;
-	if (count > (priv->page_size - poffset))// Ö»ÔÊĞíĞ´Ò»Ò³, ²»¿çÒ³
+	if (count > (priv->page_size - poffset))// åªå…è®¸å†™ä¸€é¡µ, ä¸è·¨é¡µ
 		return -EINVAL;
 
 	command = kmalloc(4, GFP_KERNEL);
@@ -411,7 +411,7 @@ static int dataflash_write(struct file *file, const char *buf, size_t count, lof
 		kfree(command);
 		return -ENOMEM;
 	}
-	// ½«ÓÃ»§Êı¾İ¿½±´µ½ÄÚºËÖĞ
+	// å°†ç”¨æˆ·æ•°æ®æ‹·è´åˆ°å†…æ ¸ä¸­
 	if ((res = copy_from_user(writebuf, buf, count)) < 0)
 		return res;
 
@@ -422,12 +422,12 @@ static int dataflash_write(struct file *file, const char *buf, size_t count, lof
 		kfree(writebuf);
 		return -ENOMEM;
 	}
-	// Ö»¿ÉÄÜĞ´Ò»Ò³ËùÒÔ²»ÓÃÑ­»·
+	// åªå¯èƒ½å†™ä¸€é¡µæ‰€ä»¥ä¸ç”¨å¾ªç¯
 	/* Gain access to the SPI bus */
 	spi_access_bus(priv->spi);
 
 	/* (1) Transfer to Buffer1 */
-	if (poffset) {	// Èç¹û²»ÊÇ´ÓÒ»Ò³µÄ¿ªÊ¼Ğ´Êı¾İÔòÒª°ÑÇ°ÃæµÄÊı¾İ¶Áµ½BUF1
+	if (poffset) {	// å¦‚æœä¸æ˜¯ä»ä¸€é¡µçš„å¼€å§‹å†™æ•°æ®åˆ™è¦æŠŠå‰é¢çš„æ•°æ®è¯»åˆ°BUF1
 		unsigned int raddr;
 		raddr = pageaddr << priv->page_offset;
 		command[0] = OP_TRANSFER_BUF1;
@@ -503,7 +503,7 @@ static int add_dataflash(int channel, char *name, int IDsize,
 
 	priv->spi = channel;
 	priv->page_size = pagesize;
-	priv->page_offset = pageoffset;// µØÖ·BITÓĞ¹Ø, ²»ÊÇÒ³ÄÚµØÖ·
+	priv->page_offset = pageoffset;// åœ°å€BITæœ‰å…³, ä¸æ˜¯é¡µå†…åœ°å€
 
 	if (strlen(name) == strlen(NEWNAME)) {
 		if (!strcmp(name, NEWNAME)) {
@@ -644,8 +644,8 @@ static int dataflash_open(struct inode *inode, struct file *filp)
 		return -ENODEV;
 	/* DataFlash (SPI chip select dev) */
 	dataflash_detect(dev);
-	// ÏÂÃæÒªĞŞ¸ÄCSRÓĞ¹ØDLYBCT²¿·Ö, Á½´Î´«ÊäÖ®¼äÁô
-	// 32 * DATAFLASH_DLYBCT / at91_master_clock Ê±¼ä, ¹¤×÷¸üÎÈ¶¨
+	// ä¸‹é¢è¦ä¿®æ”¹CSRæœ‰å…³DLYBCTéƒ¨åˆ†, ä¸¤æ¬¡ä¼ è¾“ä¹‹é—´ç•™
+	// 32 * DATAFLASH_DLYBCT / at91_master_clock æ—¶é—´, å·¥ä½œæ›´ç¨³å®š
 	if (at45_spi_baud < 2)
 		at45_spi_baud = 2;
 	if (at45_spi_baud > 255)

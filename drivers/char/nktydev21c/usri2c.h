@@ -51,8 +51,8 @@
 
 #define ZLG7290_CMDBUF1 0x7
 #define ZLG7290_CMDBUF2 0x8
-#define ZLG7290_FLASHONOFF 0xC// 0x00×î¿ìÉÁË¸
-#define ZLG7290_SCANNUM 0xD//ÊıÂë¹ÜÊıÁ¿
+#define ZLG7290_FLASHONOFF 0xC// 0x00æœ€å¿«é—ªçƒ
+#define ZLG7290_SCANNUM 0xD//æ•°ç ç®¡æ•°é‡
 #define ZLG7290_DPRAM 0x10//--8 registers
 /*
 D7 D6 D5 D4 D3 D2 D1 D0 D7 D6 D5 D4 D3 D2 D1 D0

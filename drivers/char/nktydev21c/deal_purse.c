@@ -1,17 +1,17 @@
 /*
  * Copyright (c) 2007, NKTY Company
  * All rights reserved.
- * ÎÄ¼şÃû³Æ£ºdeal_purse.c
- * Õª    Òª£º¶¨Òå´¦ÀíĞÂPOSµÄ½Ó¿Úº¯Êı, ËùÓĞµ÷ÓÃµÄµ×²ãº¯ÊıÀ´×Ôat91_uart.c, uart_dev.c
- *			 Ôö¼Ó¶Ôterm_ram½á¹¹ÌåµÄĞÂ³ÉÔ±²Ù×÷
+ * æ–‡ä»¶åç§°ï¼šdeal_purse.c
+ * æ‘˜    è¦ï¼šå®šä¹‰å¤„ç†æ–°POSçš„æ¥å£å‡½æ•°, æ‰€æœ‰è°ƒç”¨çš„åº•å±‚å‡½æ•°æ¥è‡ªat91_uart.c, uart_dev.c
+ *			 å¢åŠ å¯¹term_ramç»“æ„ä½“çš„æ–°æˆå‘˜æ“ä½œ
  * 			 
- * µ±Ç°°æ±¾£º1.1
- * ×÷    Õß£ºwjzhe
- * Íê³ÉÈÕÆÚ£º2007Äê9ÔÂ3ÈÕ
+ * å½“å‰ç‰ˆæœ¬ï¼š1.1
+ * ä½œ    è€…ï¼šwjzhe
+ * å®Œæˆæ—¥æœŸï¼š2007å¹´9æœˆ3æ—¥
  *
- * È¡´ú°æ±¾£º1.0
- * Ô­×÷Õß  £ºwjzhe
- * Íê³ÉÈÕÆÚ£º2007Äê6ÔÂ14ÈÕ
+ * å–ä»£ç‰ˆæœ¬ï¼š1.0
+ * åŸä½œè€…  ï¼šwjzhe
+ * å®Œæˆæ—¥æœŸï¼š2007å¹´6æœˆ14æ—¥
  */
 #include "deal_purse.h"
  
@@ -20,7 +20,7 @@
 extern int recv_data_safe(char *buf, unsigned char num);
 #undef DEBUG
 /*
- * ¼ÆËãĞ£ÑéÖµ
+ * è®¡ç®—æ ¡éªŒå€¼
  */
 static int com_verify(term_ram *ptrm, unsigned char *buf, int cnt)
 {
@@ -33,7 +33,7 @@ static int com_verify(term_ram *ptrm, unsigned char *buf, int cnt)
 }
 //#define DEBUG
 /*
- * ´òÓ¡Êä³östruct tradenum, ½öÔÚ´íÎóÊä³öÊ±µ÷ÓÃ, µ±Ç°ÎÄ¼şÊ¹ÓÃ
+ * æ‰“å°è¾“å‡ºstruct tradenum, ä»…åœ¨é”™è¯¯è¾“å‡ºæ—¶è°ƒç”¨, å½“å‰æ–‡ä»¶ä½¿ç”¨
  */
 #ifdef DEBUG
 static void out_tnum(struct tradenum *t_num)
@@ -44,14 +44,14 @@ static void out_tnum(struct tradenum *t_num)
 }
 #endif
 /*
- * ¼ÆËãÊÇ·ñÓĞºÚÃûµ¥²Ù×÷ĞèÇó, ·µ»ØĞèÒªÏÂ·¢µÄÌõÊı
+ * è®¡ç®—æ˜¯å¦æœ‰é»‘åå•æ“ä½œéœ€æ±‚, è¿”å›éœ€è¦ä¸‹å‘çš„æ¡æ•°
  * write by wjzhe, June 12, 2007
  */
 int compute_blk(term_ram *ptrm, struct black_info *pblkinfo)
 {
 	//int ret;
-	// ÅĞ¶ÏÊÇ·ñ´æÔÚÕıÈ·µÄ½»Ò×ºÅºÍ°æ±¾ºÅ
-	// Ö»ÔÚ½»Ò×ºÅÄêÓĞ´íÎó»òÕß½»Ò×ºÅÎª0µÄÇé¿öÖ÷¶¯¹¥È¡½»Ò×ºÅºÍ°æ±¾ºÅ
+	// åˆ¤æ–­æ˜¯å¦å­˜åœ¨æ­£ç¡®çš„äº¤æ˜“å·å’Œç‰ˆæœ¬å·
+	// åªåœ¨äº¤æ˜“å·å¹´æœ‰é”™è¯¯æˆ–è€…äº¤æ˜“å·ä¸º0çš„æƒ…å†µä¸»åŠ¨æ”»å–äº¤æ˜“å·å’Œç‰ˆæœ¬å·
 	if ((ptrm->blkinfo.trade_num.s_tm.hyear != 0x20)
 		|| (ptrm->blkinfo.edition == 0)
 		/* && (ptrm->blkinfo.trade_num.num == 0)*/) {
@@ -81,13 +81,13 @@ int compute_blk(term_ram *ptrm, struct black_info *pblkinfo)
 	}
 #endif
 #if 0
-	// ±È¶Ô½»Ò×ºÅÊÇ·ñºÍµ±Ç°µÄÒ»ÖÂ
+	// æ¯”å¯¹äº¤æ˜“å·æ˜¯å¦å’Œå½“å‰çš„ä¸€è‡´
 	ret = memcmp(&blkinfo->trade_num, &ptrm->blkinfo.trade_num, sizeof(ptrm->blkinfo.trade_num));
 	printk("memcmp: %d\n", ret);
 	if (ret == 0)
 		return 0;
 #endif
-	// ±ØĞë±£Ö¤½»Ò×ºÅÁ¬Ğø, ´Ë·µ»ØÖµ²ÅÕıÈ·
+	// å¿…é¡»ä¿è¯äº¤æ˜“å·è¿ç»­, æ­¤è¿”å›å€¼æ‰æ­£ç¡®
 #ifdef DEBUG
 	//printk("LOCAL: %d, TERM %d, blk %d\n", pblkinfo->trade_num.num, ptrm->blkinfo.trade_num.num, pblkinfo->trade_num.num - ptrm->blkinfo.trade_num.num);
 #endif
@@ -95,7 +95,7 @@ int compute_blk(term_ram *ptrm, struct black_info *pblkinfo)
 }
 
 /*
- * ÕÛ°ë²éÕÒºÚÃûµ¥, ±È¶Ô½»Ò×ºÅ´óĞ¡
+ * æŠ˜åŠæŸ¥æ‰¾é»‘åå•, æ¯”å¯¹äº¤æ˜“å·å¤§å°
  * write by wjzhe, June 12, 2007
  */
 static black_acc *search_blk2(const unsigned long num, black_acc *pbacc, int cnt)
@@ -139,7 +139,7 @@ end:
  * flag: 0->ctl0; 1->ctl2
  * send data to 485, return count is ok, -1 is timeout, -2 is other error
  * created by wjzhe, 10/16/2006
- * Î»Ê±¼ä34.7us
+ * ä½æ—¶é—´34.7us
  */
 static int send_data2(char *buf, size_t count, term_ram *ptrm)	// attention: can continue sending?
 {
@@ -148,24 +148,24 @@ static int send_data2(char *buf, size_t count, term_ram *ptrm)	// attention: can
 	AT91_SYS->PIOC_SODR &= (!0x00001000);
 	AT91_SYS->PIOC_CODR |= 0x00001000;
 	udelay(1);
-	// ·¢ËÍÊı¾İÊ±²»ĞèÒªÉèÖÃÍ¨µÀ, Ïê¼ûÔ­ÀíÍ¼
+	// å‘é€æ•°æ®æ—¶ä¸éœ€è¦è®¾ç½®é€šé“, è¯¦è§åŸç†å›¾
 	if (!(ptrm->term_no & 0x80)) {
-		// Ç°ËÄÍ¨µÀÓÃUART0
-		// ²»·¢µØÖ·Î»
+		// å‰å››é€šé“ç”¨UART0
+		// ä¸å‘åœ°å€ä½
 		uart_ctl0->US_CR &= !(AT91C_US_SENDA);
 		for (i = 0; i < count; i++) {
-			// ½«bufÊı¾İ¿½±´µ½·¢ËÍ»º³å
+			// å°†bufæ•°æ®æ‹·è´åˆ°å‘é€ç¼“å†²
 			uart_ctl0->US_THR = *buf;
-			// µÈ´ı·¢ËÍÍê±Ï
+			// ç­‰å¾…å‘é€å®Œæ¯•
 			if (!uart_poll(&uart_ctl0->US_CSR, AT91C_US_TXEMPTY))
 				return -1;
-			// Ğ£Ñé
+			// æ ¡éªŒ
 			ptrm->add_verify += (unsigned char)(*buf);
 			ptrm->dif_verify ^= (unsigned char)(*buf);
 			buf++;
 		}
 	} else {
-		// ºóËÄÍ¨µÀÓÃUART2
+		// åå››é€šé“ç”¨UART2
 		uart_ctl2->US_CR &= !(AT91C_US_SENDA);
 		for (i = 0; i < count; i++) {
 			uart_ctl2->US_THR = *buf;
@@ -187,7 +187,7 @@ static int send_data2(char *buf, size_t count, term_ram *ptrm)	// attention: can
 }
 
 /*
- * ·¢ËÍºÚÃûµ¥Êı¾İ, NÌõ
+ * å‘é€é»‘åå•æ•°æ®, Næ¡
  * write by wjzhe, June 12, 2007
  */
 static int send_blkacc(term_ram *ptrm, black_acc *pbacc, int cnt)
@@ -198,11 +198,11 @@ static int send_blkacc(term_ram *ptrm, black_acc *pbacc, int cnt)
 	if (pbacc == NULL)
 		return -1;
 	for (i = 0; i < cnt; i++) {
-		// ·¢ËÍËÄ×Ö½Ú¿¨ºÅ
+		// å‘é€å››å­—èŠ‚å¡å·
 		ret = send_data2((char *)&pbacc[i].card_num, 4, ptrm);
 		if (ret < 0)
 			goto send_blkacc_failed;
-		// ·¢ËÍÒ»×Ö½Ú²Ù×÷¼ÇÂ¼
+		// å‘é€ä¸€å­—èŠ‚æ“ä½œè®°å½•
 		ret = send_data2((char *)&pbacc[i].opt, 1, ptrm);
 		if (ret < 0)
 			goto send_blkacc_failed;
@@ -214,17 +214,17 @@ send_blkacc_failed:
 }
 
 /*
- * ·¢ºÚÃûµ¥½»Ò×ºÅ, 9 bytes, ½«Ğ£ÑéĞ´Èëram
+ * å‘é»‘åå•äº¤æ˜“å·, 9 bytes, å°†æ ¡éªŒå†™å…¥ram
  * write by wjzhe, June 12, 2007
  */
 static int send_trade_num(struct tradenum *t_num, term_ram *ptrm)
 {
 	int ret;
-	// ·¢4×Ö½Ú¼ÇÂ¼ºÅ
+	// å‘4å­—èŠ‚è®°å½•å·
 	ret =  send_data2((char *)&t_num->num, sizeof(t_num->num), ptrm);
 	if (ret < 0)
 		return -1;
-	// ·¢5×Ö½ÚÊ±¼ä
+	// å‘5å­—èŠ‚æ—¶é—´
 	ret = send_data2((char *)t_num->tm, sizeof(t_num->tm), ptrm);
 	if (ret < 0)
 		return -1;
@@ -232,7 +232,7 @@ static int send_trade_num(struct tradenum *t_num, term_ram *ptrm)
 }
 
 /*
- * ÊÕºÚÃûµ¥½»Ò×ºÅ, 9 bytes, ½«Ğ£ÑéĞ´Èëram
+ * æ”¶é»‘åå•äº¤æ˜“å·, 9 bytes, å°†æ ¡éªŒå†™å…¥ram
  * write by wjzhe, June 12, 2007
  */
 static int recv_trade_num(struct tradenum *t_num, term_ram *ptrm)
@@ -240,7 +240,7 @@ static int recv_trade_num(struct tradenum *t_num, term_ram *ptrm)
 	unsigned char *tmp;
 	int i, ret;
 	tmp = (unsigned char *)&t_num->num;
-	// ÏÈÊÕ4×Ö½Ú¼ÇÂ¼ºÅ
+	// å…ˆæ”¶4å­—èŠ‚è®°å½•å·
 	for (i = 0; i < sizeof(t_num->num); i++) {
 		ret = recv_data(tmp, ptrm->term_no);
 		if (ret < 0) {
@@ -253,7 +253,7 @@ static int recv_trade_num(struct tradenum *t_num, term_ram *ptrm)
 		ptrm->add_verify += *tmp;
 		tmp++;
 	}
-	// ÔÙÊÕ5×Ö½ÚÊ±¼ä
+	// å†æ”¶5å­—èŠ‚æ—¶é—´
 	tmp = (unsigned char *)t_num->tm;
 	for (i = 0; i < sizeof(t_num->tm); i++) {
 		ret = recv_data(tmp, ptrm->term_no);
@@ -271,19 +271,19 @@ static int recv_trade_num(struct tradenum *t_num, term_ram *ptrm)
 }
 
 /*
- * ·¢ËÍµ±Ç°Ğ£ÑéĞÅÏ¢
+ * å‘é€å½“å‰æ ¡éªŒä¿¡æ¯
  * write by wjzhe, June 12, 2007
  */
 static int send_verify(term_ram *ptrm)
 {
 	int ret;
-	// ·¢1×Ö½ÚÀÛ¼ÓĞ£Ñé
+	// å‘1å­—èŠ‚ç´¯åŠ æ ¡éªŒ
 	ret = send_byte(ptrm->add_verify, ptrm->term_no);
 	if (ret < 0) {
 		ptrm->status = NOCOM;
 		return -1;
 	}
-	// ·¢1×Ö½ÚÒì»òĞ£Ñé
+	// å‘1å­—èŠ‚å¼‚æˆ–æ ¡éªŒ
 	ret = send_byte(ptrm->dif_verify, ptrm->term_no);
 	if (ret < 0) {
 		ptrm->status = NOCOM;
@@ -293,14 +293,14 @@ static int send_verify(term_ram *ptrm)
 }
 
 /*
- * ½ÓÊÕ²¢Ğ£Ñéµ±Ç°Ğ£ÑéĞÅÏ¢, ·µ»Ø<0ËµÃ÷Ğ£Ñé´íÎó»òÕß½ÓÊÕÊ§°Ü
+ * æ¥æ”¶å¹¶æ ¡éªŒå½“å‰æ ¡éªŒä¿¡æ¯, è¿”å›<0è¯´æ˜æ ¡éªŒé”™è¯¯æˆ–è€…æ¥æ”¶å¤±è´¥
  * write by wjzhe, June 12, 2007
  */
 static int chk_verify(term_ram *ptrm)
 {
 	int ret;
 	unsigned char trmadd, trmdif;
-	// ÏÈÊÕ1×Ö½ÚÀÛ¼ÓºÍ
+	// å…ˆæ”¶1å­—èŠ‚ç´¯åŠ å’Œ
 	ret = recv_data((char *)&trmadd, ptrm->term_no);
 	if (ret < 0) {
 		if (ret == -1) {
@@ -312,7 +312,7 @@ static int chk_verify(term_ram *ptrm)
 		usart_delay(2);
 		return ret;
 	}
-	// ÔÙÊÕ1×Ö½ÚÒì»òºÍ
+	// å†æ”¶1å­—èŠ‚å¼‚æˆ–å’Œ
 	ret = recv_data((char *)&trmdif, ptrm->term_no);
 	if (ret < 0) {
 		if (ret == -1) {
@@ -324,7 +324,7 @@ static int chk_verify(term_ram *ptrm)
 		usart_delay(1);
 		return ret;
 	}
-	// ÑéÖ¤Ğ£ÑéºÍ
+	// éªŒè¯æ ¡éªŒå’Œ
 	if ((trmadd != ptrm->add_verify) || (trmdif != ptrm->dif_verify)) {
 		printk("verify %d:%d, %d:%d\n", ptrm->add_verify, trmadd,
 			ptrm->dif_verify, trmdif);
@@ -333,8 +333,8 @@ static int chk_verify(term_ram *ptrm)
 	return 0;
 }
 /*
- * ½ÓÊÕ°ü³¤¶È, Èë¿Ú²ÎÊıÎªµ±Ç°ÖÕ¶ËÊôĞÔÖ¸Õë
- * º¯Êı·µ»ØËù½ÓÊÕµÄ°ü³¤¶ÈÖµ, ·µ»Ø0xFFËµÃ÷½ÓÊÕ´íÎó
+ * æ¥æ”¶åŒ…é•¿åº¦, å…¥å£å‚æ•°ä¸ºå½“å‰ç»ˆç«¯å±æ€§æŒ‡é’ˆ
+ * å‡½æ•°è¿”å›æ‰€æ¥æ”¶çš„åŒ…é•¿åº¦å€¼, è¿”å›0xFFè¯´æ˜æ¥æ”¶é”™è¯¯
  */
 unsigned char recv_len(term_ram *ptrm)
 {
@@ -357,19 +357,19 @@ unsigned char recv_len(term_ram *ptrm)
 }
 
 /*
-0x88:(1)Êı¾İ½ÓÊÕÕıÈ·(2)µ±ÃüÁî×ÖĞèÒª²Ù×÷Ê±±í½ÓÊÕÓë²Ù×÷¾ù³É¹¦£»
-0x99:½öÔÚÃüÁî×ÖĞèÒªÖÕ¶ËÖ´ĞĞ¾ßÌå²Ù×÷Ê±²úÉú£¬±í½ÓÊÕÕıÈ·µ«²Ù×÷Ê§°Ü£»
-0xAA:½ÓÊÕ´íÎó£»0xBB£ºÑÏÖØ´íÎó
- * flag == 0 ½ÓÊÕÕıÈ·
- * flag > 1  ÖÕ¶Ë»úÖ´ĞĞ¾ßÌå²Ù×÷, ½ÓÊÕÕıÈ·, µ«²Ù×÷Ê§°Ü
- * flag < 0  ½ÓÊÕ´íÎó
- * ´Ëº¯ÊıÓÃÀ´·¢ËÍGA°ü, Íê³ÉÒ»´ÎGA²Ù×÷
+0x88:(1)æ•°æ®æ¥æ”¶æ­£ç¡®(2)å½“å‘½ä»¤å­—éœ€è¦æ“ä½œæ—¶è¡¨æ¥æ”¶ä¸æ“ä½œå‡æˆåŠŸï¼›
+0x99:ä»…åœ¨å‘½ä»¤å­—éœ€è¦ç»ˆç«¯æ‰§è¡Œå…·ä½“æ“ä½œæ—¶äº§ç”Ÿï¼Œè¡¨æ¥æ”¶æ­£ç¡®ä½†æ“ä½œå¤±è´¥ï¼›
+0xAA:æ¥æ”¶é”™è¯¯ï¼›0xBBï¼šä¸¥é‡é”™è¯¯
+ * flag == 0 æ¥æ”¶æ­£ç¡®
+ * flag > 1  ç»ˆç«¯æœºæ‰§è¡Œå…·ä½“æ“ä½œ, æ¥æ”¶æ­£ç¡®, ä½†æ“ä½œå¤±è´¥
+ * flag < 0  æ¥æ”¶é”™è¯¯
+ * æ­¤å‡½æ•°ç”¨æ¥å‘é€GAåŒ…, å®Œæˆä¸€æ¬¡GAæ“ä½œ
  */
 static int send_ga(term_ram *ptrm, int flag)
 {
 	int ret;
 	ptrm->add_verify = ptrm->dif_verify = 0;
-	// ·¢1×Ö½ÚÖÕ¶ËºÅ
+	// å‘1å­—èŠ‚ç»ˆç«¯å·
 	ret = send_byte(ptrm->term_no, ptrm->term_no);
 	if (ret < 0) {
 		ptrm->status = NOCOM;
@@ -402,7 +402,7 @@ static int send_ga(term_ram *ptrm, int flag)
 		ptrm->add_verify += 0xAA;
 		ptrm->dif_verify ^= 0xAA;
 	}
-	// ·¢°ü³¤¶È
+	// å‘åŒ…é•¿åº¦
 	ret = send_byte(2, ptrm->term_no);
 	if (ret < 0) {
 		ptrm->status = NOCOM;
@@ -410,7 +410,7 @@ static int send_ga(term_ram *ptrm, int flag)
 	}
 	ptrm->add_verify += 2;
 	ptrm->dif_verify ^= 2;
-	// ·¢Ğ£Ñé
+	// å‘æ ¡éªŒ
 	ret = send_verify(ptrm);
 	return ret;
 }
@@ -425,14 +425,14 @@ static int recv_data1(char *buf, unsigned char num)
 	int ret = 0;
 	if (!buf)
 		return -EINVAL;
-	// ×öÍ¨µÀÅĞ¶Ï
+	// åšé€šé“åˆ¤æ–­
 	if (!(num & 0x80)) {
-		// ³¬Ê±µÈ´ı
+		// è¶…æ—¶ç­‰å¾…
 		if (!uart_poll(&uart_ctl0->US_CSR, AT91C_US_RXRDY)) {
 			ret = NOTERMINAL;
 			goto out;
 		}
-		// ÅĞ¶Ï±êÖ¾Î»
+		// åˆ¤æ–­æ ‡å¿—ä½
 		if(((uart_ctl0->US_CSR & AT91C_US_OVRE) == AT91C_US_OVRE) ||
 			((uart_ctl0->US_CSR & AT91C_US_FRAME) == AT91C_US_FRAME)) {
 			*(volatile char *)buf = uart_ctl0->US_RHR;
@@ -441,15 +441,15 @@ static int recv_data1(char *buf, unsigned char num)
  			ret = NOCOM;
 			goto out;
 		}
-		// ¿½±´Êı¾İ
+		// æ‹·è´æ•°æ®
 		*(volatile char *)buf = uart_ctl0->US_RHR;
  	} else {
-		// ³¬Ê±µÈ´ı
+		// è¶…æ—¶ç­‰å¾…
 		if (!uart_poll(&uart_ctl2->US_CSR, AT91C_US_RXRDY)) {
 			ret =  NOTERMINAL;
 			goto out;
 		}
-		// ÅĞ¶Ï±êÖ¾Î»
+		// åˆ¤æ–­æ ‡å¿—ä½
 		if(((uart_ctl2->US_CSR & AT91C_US_OVRE) == AT91C_US_OVRE) ||
 			((uart_ctl2->US_CSR & AT91C_US_FRAME) == AT91C_US_FRAME)) {
 			*(volatile char *)buf = uart_ctl2->US_RHR;
@@ -458,7 +458,7 @@ static int recv_data1(char *buf, unsigned char num)
  			ret = NOCOM;
 			goto out;
 		}
-		// ¿½±´Êı¾İ
+		// æ‹·è´æ•°æ®
 		*(volatile char *)buf = uart_ctl2->US_RHR;
 	}
 out:
@@ -466,7 +466,7 @@ out:
 }
 #endif
 /*
- * ½ÓÊÕGA, ·µ»Ø0Õı³£, <0´íÎó
+ * æ¥æ”¶GA, è¿”å›0æ­£å¸¸, <0é”™è¯¯
  * write by wjzhe, June 12, 2007
  */
 static int recv_ga(term_ram *ptrm)
@@ -474,7 +474,7 @@ static int recv_ga(term_ram *ptrm)
 	int ret;
 	unsigned char recvno, ga, len;
 	ptrm->add_verify = ptrm->dif_verify = 0;
-	// ÊÕÖÕ¶ËºÅ
+	// æ”¶ç»ˆç«¯å·
 	// modified by wjzhe, 2008-9-4
 	ret = recv_data_safe((char *)&recvno, ptrm->term_no);
 	if (ret < 0) {
@@ -485,7 +485,7 @@ static int recv_ga(term_ram *ptrm)
 		if (ret == -2) {
 			ptrm->status = -2;
 		}
-		// ·¢ÏÖÊÕGAµÄ»úÆ÷ºÅ´íÎóÁË, ÎÒÃÇÒªµÈ´ıËùÓĞµÄÊı¾İÈ«²¿Íê³ÉºóÔÙÍË³ö
+		// å‘ç°æ”¶GAçš„æœºå™¨å·é”™è¯¯äº†, æˆ‘ä»¬è¦ç­‰å¾…æ‰€æœ‰çš„æ•°æ®å…¨éƒ¨å®Œæˆåå†é€€å‡º
 		usart_delay(5);
 		return ret;
 	}
@@ -497,7 +497,7 @@ static int recv_ga(term_ram *ptrm)
 	}
 	ptrm->add_verify += recvno;
 	ptrm->dif_verify ^= recvno;
-	// ÊÕGA
+	// æ”¶GA
 	ret = recv_data((char *)&ga, ptrm->term_no);
 	if (ret < 0) {
 		printk("recv ga failed, ret: %d\n", ret);
@@ -525,20 +525,20 @@ static int recv_ga(term_ram *ptrm)
 	}
 	ptrm->add_verify += ga;
 	ptrm->dif_verify ^= ga;
-	// ÊÕ°ü³¤¶È
+	// æ”¶åŒ…é•¿åº¦
 	len = recv_len(ptrm);
 	if (len == 0xFF) {
 		printk("purse_send_time: recv len failed\n");
 		usart_delay(3);
 		return -1;
 	}
-	// ÊÕĞ£Ñé
+	// æ”¶æ ¡éªŒ
 	ret = chk_verify(ptrm);
 	return ret;
 }
 
 /*
- * ·¢ËÍÉÏµç³õÊ¹»¯Êı¾İ°ü, ÇëÇóÊ±¼ä, ºÚÃûµ¥°æ±¾ºÅ, ¼°²ÎÊıÅäÖÃĞÅÏ¢
+ * å‘é€ä¸Šç”µåˆä½¿åŒ–æ•°æ®åŒ…, è¯·æ±‚æ—¶é—´, é»‘åå•ç‰ˆæœ¬å·, åŠå‚æ•°é…ç½®ä¿¡æ¯
  * write by wjzhe, June 8 2007
  */
 int purse_send_conf(term_ram *ptrm, unsigned char *tm, struct black_info *blkinfo)
@@ -551,13 +551,13 @@ int purse_send_conf(term_ram *ptrm, unsigned char *tm, struct black_info *blkinf
 	unsigned char *tmp = (unsigned char *)&termblk.edition;
 	//unsigned char verify;
 	memset(&termblk, 0, sizeof(termblk));
-	// ÊÕ1×Ö½Ú°ü³¤¶È
+	// æ”¶1å­—èŠ‚åŒ…é•¿åº¦
 	len = recv_len(ptrm);
 	if (len == 0xFF) {
 		printk("purse_send_conf: recv len failed\n");
 		return -1;
 	}
-	// ÊÕ4×Ö½ÚºÚÃûµ¥°æ±¾ºÅ
+	// æ”¶4å­—èŠ‚é»‘åå•ç‰ˆæœ¬å·
 	for (i = 0; i < sizeof(termblk.edition); i++) {
 		ret = recv_data(tmp, ptrm->term_no);
 		if (ret < 0) {
@@ -574,11 +574,11 @@ int purse_send_conf(term_ram *ptrm, unsigned char *tm, struct black_info *blkinf
 		ptrm->add_verify += *tmp;
 		tmp++;
 	}
-	// ÊÕ9×Ö½Ú½»Ò×ºÅ
+	// æ”¶9å­—èŠ‚äº¤æ˜“å·
 	ret = recv_trade_num(&termblk.trade_num, ptrm);
 	if (ret < 0)
 		return -1;
-	// ÊÕPSAM¿¨±àºÅ
+	// æ”¶PSAMå¡ç¼–å·
 	tmp = (unsigned char *)&psamno;
 	for (i = 0; i < sizeof(psamno); i++) {
 		ret = recv_data(tmp, ptrm->term_no);
@@ -596,7 +596,7 @@ int purse_send_conf(term_ram *ptrm, unsigned char *tm, struct black_info *blkinf
 		ptrm->add_verify += *tmp;
 		tmp++;
 	}
-	// ÊÕ2×Ö½ÚĞ£ÑéºÍ
+	// æ”¶2å­—èŠ‚æ ¡éªŒå’Œ
 	ret = chk_verify(ptrm);
 	if (ret < 0) {
 		printk("%d send conf chk error\n", ptrm->term_no);
@@ -604,44 +604,44 @@ int purse_send_conf(term_ram *ptrm, unsigned char *tm, struct black_info *blkinf
 	}
 	// save terminal black info.
 	memcpy(&ptrm->blkinfo, &termblk, sizeof(termblk));
-	// Èç¹ûºÚÃûµ¥°æ±¾ºÅ²»Ò»ÖÂÔò½«½»Ò×ºÅÇåÁã, 20100307
+	// å¦‚æœé»‘åå•ç‰ˆæœ¬å·ä¸ä¸€è‡´åˆ™å°†äº¤æ˜“å·æ¸…é›¶, 20100307
 	if (ptrm->blkinfo.edition != blkinfo->edition) {
 		ptrm->blkinfo.trade_num.num = 0;
 	}
 #if 0
-	// ´ËÊ±Òª½øĞĞËÑË÷PSAM¿¨¿â, ½«¶ÔÓ¦µÄÃÜÂëÌîÈëÖÕ¶Ë²ÎÊıÖĞ
+	// æ­¤æ—¶è¦è¿›è¡Œæœç´¢PSAMå¡åº“, å°†å¯¹åº”çš„å¯†ç å¡«å…¥ç»ˆç«¯å‚æ•°ä¸­
 	psl = search_psam(psamno, psinfo);
-	if (psl) {// Èç¹ûÓĞÕıÈ·µÄÊı¾İÔò±£´æÖÕ¶ËPSAM¿¨ÃÜÂë
+	if (psl) {// å¦‚æœæœ‰æ­£ç¡®çš„æ•°æ®åˆ™ä¿å­˜ç»ˆç«¯PSAMå¡å¯†ç 
 		memcpy(ptrm->pterm->param.psam_passwd, psl->pwd, sizeof(psl->pwd));
 	}
 #endif
 #if BWT_66J10
 	udelay(BWT_66J10);
 #endif
-	// Çå¿ÕĞ£Ñé
+	// æ¸…ç©ºæ ¡éªŒ
 	ptrm->add_verify = 0;
 	ptrm->dif_verify = 0;
-	// ·¢1×Ö½ÚÖÕ¶ËºÅ
+	// å‘1å­—èŠ‚ç»ˆç«¯å·
 	ret = send_byte(ptrm->term_no, ptrm->term_no);
 	if (ret < 0) {
 		goto send_failed;
 	}
 	ptrm->add_verify += ptrm->term_no;
 	ptrm->dif_verify ^= ptrm->term_no;
-	// ·¢ÃüÁî×Ö0x12
+	// å‘å‘½ä»¤å­—0x12
 	ret = send_byte(PURSE_RET_PAR, ptrm->term_no);
 	if (ret < 0) {
 		goto send_failed;
 	}
 	ptrm->add_verify += PURSE_RET_PAR;
 	ptrm->dif_verify ^= PURSE_RET_PAR;
-	// ·¢1×Ö½Ú°ü³¤¶È
+	// å‘1å­—èŠ‚åŒ…é•¿åº¦
 	len = 45 + 2 * ptrm->pterm->fee_n;
 	//printk("send conf len is %d, fee_n is %d\n", len, ptrm->pterm->fee_n);//added by duyy, 2013.12.3
 	ret = send_data2((char *)&len, sizeof(len), ptrm);
 	if (ret < 0)
 		goto send_failed;
-	// ·¢ËÍÅäÖÃÊı¾İ45+2N (Ê±¼ä7£«ÅäÖÃ²ÎÊı°ü16£«²Í´ÎÉèÖÃ16£«ĞÂºÚÃûµ¥°æ±¾ºÅ4)
+	// å‘é€é…ç½®æ•°æ®45+2N (æ—¶é—´7ï¼‹é…ç½®å‚æ•°åŒ…16ï¼‹é¤æ¬¡è®¾ç½®16ï¼‹æ–°é»‘åå•ç‰ˆæœ¬å·4)
 	ret = send_data2(tm, 7, ptrm);
 	if (ret < 0) {
 		goto send_failed;
@@ -658,7 +658,7 @@ int purse_send_conf(term_ram *ptrm, unsigned char *tm, struct black_info *blkinf
 	if (ret < 0) {
 		goto send_failed;
 	}
-	// 2N: ¹ÜÀí·ÑÏµÊı, N¶ÔÓ¦ÈËÔ±ÀàĞÍÊı
+	// 2N: ç®¡ç†è´¹ç³»æ•°, Nå¯¹åº”äººå‘˜ç±»å‹æ•°
 	for (i = 0; i < ptrm->pterm->fee_n; i++) {
 		ret = send_data2(ptrm->pterm->mfee(i), 2, ptrm);
 		if (ret < 0) {
@@ -666,7 +666,7 @@ int purse_send_conf(term_ram *ptrm, unsigned char *tm, struct black_info *blkinf
 		}
 	}
 	//printk("send managefee over\n");//added by duyy, 2013.12.3
-	// ·¢Ğ£ÑéºÍ
+	// å‘æ ¡éªŒå’Œ
 	ret = send_verify(ptrm);
 	if (ret < 0)
 		goto send_failed;
@@ -682,7 +682,7 @@ send_failed:
 }
 
 /*
- * ·¢ËÍÉÏµç²ÎÊı£¬²»º¬¹ÜÀí·ÑÏµÊı
+ * å‘é€ä¸Šç”µå‚æ•°ï¼Œä¸å«ç®¡ç†è´¹ç³»æ•°
  * write by duyy, 2012.1.31
  */
 /*int purse_send_confnmf(term_ram *ptrm, unsigned char *tm, struct black_info *blkinfo)
@@ -694,13 +694,13 @@ send_failed:
 	unsigned char *tmp = (unsigned char *)&termblk.edition;
 	//unsigned char verify;
 	memset(&termblk, 0, sizeof(termblk));
-	// ÊÕ1×Ö½Ú°ü³¤¶È
+	// æ”¶1å­—èŠ‚åŒ…é•¿åº¦
 	len = recv_len(ptrm);
 	if (len == 0xFF) {
 		printk("purse_send_confnmf: recv len failed\n");
 		return -1;
 	}
-	// ÊÕ4×Ö½ÚºÚÃûµ¥°æ±¾ºÅ
+	// æ”¶4å­—èŠ‚é»‘åå•ç‰ˆæœ¬å·
 	for (i = 0; i < sizeof(termblk.edition); i++) {
 		ret = recv_data(tmp, ptrm->term_no);
 		if (ret < 0) {
@@ -717,11 +717,11 @@ send_failed:
 		ptrm->add_verify += *tmp;
 		tmp++;
 	}
-	// ÊÕ9×Ö½Ú½»Ò×ºÅ
+	// æ”¶9å­—èŠ‚äº¤æ˜“å·
 	ret = recv_trade_num(&termblk.trade_num, ptrm);
 	if (ret < 0)
 		return -1;
-	// ÊÕPSAM¿¨±àºÅ
+	// æ”¶PSAMå¡ç¼–å·
 	tmp = (unsigned char *)&psamno;
 	for (i = 0; i < sizeof(psamno); i++) {
 		ret = recv_data(tmp, ptrm->term_no);
@@ -739,13 +739,13 @@ send_failed:
 		ptrm->add_verify += *tmp;
 		tmp++;
 	}
-	// ÊÕ2×Ö½ÚĞ£ÑéºÍ
+	// æ”¶2å­—èŠ‚æ ¡éªŒå’Œ
 	ret = chk_verify(ptrm);
 	if (ret < 0)
 		return -1;
 	// save terminal black info.
 	memcpy(&ptrm->blkinfo, &termblk, sizeof(termblk));
-	// Èç¹ûºÚÃûµ¥°æ±¾ºÅ²»Ò»ÖÂÔò½«½»Ò×ºÅÇåÁã, 20100307
+	// å¦‚æœé»‘åå•ç‰ˆæœ¬å·ä¸ä¸€è‡´åˆ™å°†äº¤æ˜“å·æ¸…é›¶, 20100307
 	if (ptrm->blkinfo.edition != blkinfo->edition) {
 		ptrm->blkinfo.trade_num.num = 0;
 	}
@@ -753,29 +753,29 @@ send_failed:
 #if BWT_66J10
 	udelay(BWT_66J10);
 #endif
-	// Çå¿ÕĞ£Ñé
+	// æ¸…ç©ºæ ¡éªŒ
 	ptrm->add_verify = 0;
 	ptrm->dif_verify = 0;
-	// ·¢1×Ö½ÚÖÕ¶ËºÅ
+	// å‘1å­—èŠ‚ç»ˆç«¯å·
 	ret = send_byte(ptrm->term_no, ptrm->term_no);
 	if (ret < 0) {
 		goto send_failed;
 	}
 	ptrm->add_verify += ptrm->term_no;
 	ptrm->dif_verify ^= ptrm->term_no;
-	// ·¢ÃüÁî×Ö0x62
+	// å‘å‘½ä»¤å­—0x62
 	ret = send_byte(PURSE_RET_PARNMF, ptrm->term_no);
 	if (ret < 0) {
 		goto send_failed;
 	}
 	ptrm->add_verify += PURSE_RET_PARNMF;
 	ptrm->dif_verify ^= PURSE_RET_PARNMF;
-	// ·¢1×Ö½Ú°ü³¤¶È
+	// å‘1å­—èŠ‚åŒ…é•¿åº¦
 	len = 45;
 	ret = send_data2((char *)&len, sizeof(len), ptrm);
 	if (ret < 0)
 		goto send_failed;
-	// ·¢ËÍÅäÖÃÊı¾İ45 (Ê±¼ä7£«ÅäÖÃ²ÎÊı°ü16£«²Í´ÎÉèÖÃ16£«ĞÂºÚÃûµ¥°æ±¾ºÅ4)
+	// å‘é€é…ç½®æ•°æ®45 (æ—¶é—´7ï¼‹é…ç½®å‚æ•°åŒ…16ï¼‹é¤æ¬¡è®¾ç½®16ï¼‹æ–°é»‘åå•ç‰ˆæœ¬å·4)
 	ret = send_data2(tm, 7, ptrm);
 	if (ret < 0) {
 		goto send_failed;
@@ -792,7 +792,7 @@ send_failed:
 	if (ret < 0) {
 		goto send_failed;
 	}
-	// ·¢Ğ£ÑéºÍ
+	// å‘æ ¡éªŒå’Œ
 	ret = send_verify(ptrm);
 	if (ret < 0)
 		goto send_failed;
@@ -807,20 +807,20 @@ send_failed:
 }
 */
 /*
- * ·¢ËÍ¹ÜÀí·ÑÏµÊı
+ * å‘é€ç®¡ç†è´¹ç³»æ•°
  * write by duyy, 2012.1.31
  */
 /*int purse_send_managefee(term_ram *ptrm)
 {
 	int ret;
 	unsigned char len;
-	// ÊÕ°ü³¤¶È
+	// æ”¶åŒ…é•¿åº¦
 	len = recv_len(ptrm);
 	if (len == 0xFF) {
 		printk("purse_send_managefee: recv len failed\n");
 		return -1;
 	}
-	// ÊÕ2×Ö½ÚĞ£ÑéºÍ
+	// æ”¶2å­—èŠ‚æ ¡éªŒå’Œ
 	ret = chk_verify(ptrm);
 	if (ret < 0) {
 		printk("purse send managefee chk error\n");
@@ -831,34 +831,34 @@ send_failed:
 #endif
 	ptrm->add_verify = 0;
 	ptrm->dif_verify = 0;
-	// ·¢ÖÕ¶ËºÅ
+	// å‘ç»ˆç«¯å·
 	ret = send_byte(ptrm->term_no, ptrm->term_no);
 	if (ret < 0) {
 		goto send_failed;
 	}
 	ptrm->add_verify += ptrm->term_no;
 	ptrm->dif_verify ^= ptrm->term_no;
-	// ·¢ÃüÁî×Ö0x64
+	// å‘å‘½ä»¤å­—0x64
 	ret = send_byte(PURSE_RET_MF, ptrm->term_no);
 	if (ret < 0) {
 		goto send_failed;
 	}
 	ptrm->add_verify += PURSE_RET_MF;
 	ptrm->dif_verify ^= PURSE_RET_MF;
-	// ·¢ËÍ°ü³¤¶È
+	// å‘é€åŒ…é•¿åº¦
 	len = 2 * ptrm->pterm->fee_n + 2;
 	ret = send_data2((char *)&len, sizeof(len), ptrm);
 	if (ret < 0) {
 		goto send_failed;
 	}
-	// 2N: ¹ÜÀí·ÑÏµÊı, N¶ÔÓ¦ÈËÔ±ÀàĞÍÊı
+	// 2N: ç®¡ç†è´¹ç³»æ•°, Nå¯¹åº”äººå‘˜ç±»å‹æ•°
 	for (i = 0; i < ptrm->pterm->fee_n; i++) {
 		ret = send_data2(ptrm->pterm->mfee(i), 2, ptrm);
 		if (ret < 0) {
 			goto send_failed;
 		}
 	}
-	// ·¢2×Ö½ÚĞ£Ñé
+	// å‘2å­—èŠ‚æ ¡éªŒ
 	ret = send_verify(ptrm);
 	if (ret < 0)
 		goto send_failed;
@@ -868,20 +868,20 @@ send_failed:
 	return -1;
 }*/
 /*
- * ·¢ËÍµ±Ç°Ê±¼ä(YY, YY, MM, DD, HH, MM, SS)
+ * å‘é€å½“å‰æ—¶é—´(YY, YY, MM, DD, HH, MM, SS)
  * write by wjzhe, June 8 2007
  */
 int purse_send_time(term_ram *ptrm, unsigned char *tm)
 {
 	int ret;
 	unsigned char len;
-	// ÊÕ°ü³¤¶È
+	// æ”¶åŒ…é•¿åº¦
 	len = recv_len(ptrm);
 	if (len == 0xFF) {
 		printk("purse_send_time: recv len failed\n");
 		return -1;
 	}
-	// ÊÕ2×Ö½ÚĞ£ÑéºÍ
+	// æ”¶2å­—èŠ‚æ ¡éªŒå’Œ
 	ret = chk_verify(ptrm);
 	if (ret < 0) {
 		printk("purse send time chk error\n");
@@ -892,32 +892,32 @@ int purse_send_time(term_ram *ptrm, unsigned char *tm)
 #endif
 	ptrm->add_verify = 0;
 	ptrm->dif_verify = 0;
-	// ·¢ÖÕ¶ËºÅ
+	// å‘ç»ˆç«¯å·
 	ret = send_byte(ptrm->term_no, ptrm->term_no);
 	if (ret < 0) {
 		goto send_time_failed;
 	}
 	ptrm->add_verify += ptrm->term_no;
 	ptrm->dif_verify ^= ptrm->term_no;
-	// ·¢ÃüÁî×Ö0x16
+	// å‘å‘½ä»¤å­—0x16
 	ret = send_byte(PURSE_RET_TIME, ptrm->term_no);
 	if (ret < 0) {
 		goto send_time_failed;
 	}
 	ptrm->add_verify += PURSE_RET_TIME;
 	ptrm->dif_verify ^= PURSE_RET_TIME;
-	// ·¢ËÍ°ü³¤¶È
+	// å‘é€åŒ…é•¿åº¦
 	len = 9;
 	ret = send_data2((char *)&len, sizeof(len), ptrm);
 	if (ret < 0) {
 		goto send_time_failed;
 	}
-	// ·¢µ±Ç°Ê±¼ä7×Ö½Ú
+	// å‘å½“å‰æ—¶é—´7å­—èŠ‚
 	ret = send_data2(tm, 7, ptrm);
 	if (ret < 0) {
 		goto send_time_failed;
 	}
-	// ·¢2×Ö½ÚĞ£Ñé
+	// å‘2å­—èŠ‚æ ¡éªŒ
 	ret = send_verify(ptrm);
 	if (ret < 0)
 		goto send_time_failed;
@@ -928,9 +928,9 @@ send_time_failed:
 }
 
 /*
- * ½ÓÊÕÖÕ¶Ë»úºÚÃûµ¥½»Ò×ºÅ, ·µ»ØÍ¨ÓÃÓ¦´ğ°üGA
- * ºÚÃûµ¥½»Ò×ĞòÁĞºÅYYMDHXXXX£ºYYMDHÎªÄê¡¢ÔÂ¡¢ÈÕ¡¢Ê±
- * XXXXÎªµİÔöÊ½ĞòÁĞºÅ£¬»áÒ»Ö±½øĞĞµİÔö£¬¸üĞÂºÚÃûµ¥°æ±¾ºóÒ²²»ÇåÁã
+ * æ¥æ”¶ç»ˆç«¯æœºé»‘åå•äº¤æ˜“å·, è¿”å›é€šç”¨åº”ç­”åŒ…GA
+ * é»‘åå•äº¤æ˜“åºåˆ—å·YYMDHXXXXï¼šYYMDHä¸ºå¹´ã€æœˆã€æ—¥ã€æ—¶
+ * XXXXä¸ºé€’å¢å¼åºåˆ—å·ï¼Œä¼šä¸€ç›´è¿›è¡Œé€’å¢ï¼Œæ›´æ–°é»‘åå•ç‰ˆæœ¬åä¹Ÿä¸æ¸…é›¶
  * write by wjzhe, June 8 2007
  */
 int purse_recv_btno(term_ram *ptrm)
@@ -939,27 +939,27 @@ int purse_recv_btno(term_ram *ptrm)
 	unsigned char len;
 	int ret;
 	memset(&t_num, 0, sizeof(t_num));
-	// ÊÕ°ü³¤¶È
+	// æ”¶åŒ…é•¿åº¦
 	len = recv_len(ptrm);
 	if (len == 0xFF) {
 		printk("purse_send_time: recv len failed\n");
 		return -1;
 	}
-	// ÊÕ9×Ö½ÚºÚÃûµ¥½»Ò×ĞòÁĞºÅ
+	// æ”¶9å­—èŠ‚é»‘åå•äº¤æ˜“åºåˆ—å·
 	ret = recv_trade_num(&t_num, ptrm);
 	if (ret < 0) {
 		printk("%d purse recv btno: recv trade num failed\n",
 			ptrm->term_no);
 		return -1;
 	}
-	// ÊÕ2×Ö½ÚĞ£ÑéºÍ
+	// æ”¶2å­—èŠ‚æ ¡éªŒå’Œ
 	ret = chk_verify(ptrm);
 	if (ret < 0) {
 		printk("purse recv btno: chk verify failed\n");
 		if (ret != ERRVERIFY) {
 			usart_delay(2);
 		}
-		// ·¢GA´íÎó°ü
+		// å‘GAé”™è¯¯åŒ…
 		ret = send_ga(ptrm, ret);
 		if (ret < 0) {
 			goto recv_btno_failed;
@@ -969,12 +969,12 @@ int purse_recv_btno(term_ram *ptrm)
 #if BWT_66J10
 	udelay(BWT_66J10);
 #endif
-	// ·¢GA°ü
+	// å‘GAåŒ…
 	ret = send_ga(ptrm, 0);
 	if (ret < 0) {
 		goto recv_btno_failed;
 	}
-	// ÔÚË³Àû·¢ÍêGAÖ®ºó, ¼ÇÂ¼ÖÕ¶ËµÄ½»Ò×ºÅ
+	// åœ¨é¡ºåˆ©å‘å®ŒGAä¹‹å, è®°å½•ç»ˆç«¯çš„äº¤æ˜“å·
 	memcpy(&ptrm->blkinfo.trade_num, &t_num, sizeof(t_num));
 	return 0;
 recv_btno_failed:
@@ -983,7 +983,7 @@ recv_btno_failed:
 }
 
 /*
- * ½ÓÊÕÖÕ¶Ë»úÎ´ÉÏ´«Á÷Ë®
+ * æ¥æ”¶ç»ˆç«¯æœºæœªä¸Šä¼ æµæ°´
  * write by wjzhe, June 8 2007
  * add cpu card support, modified by wjzhe, Sem 11 2009
  */
@@ -994,14 +994,14 @@ int purse_recv_flow(term_ram *ptrm)
 	unsigned char *tmp;
 	unsigned char nouse[4], len;
 	memset(&m1flow, 0, sizeof(m1flow));
-	// ÊÕ°ü³¤¶È
+	// æ”¶åŒ…é•¿åº¦
 	len = recv_len(ptrm);
 	if (len == 0xFF) {
 		printk("purse_send_time: recv len failed\n");
 		return -1;
 	}
-	// ½ÓÊÕ48×Ö½ÚÁ÷Ë®ĞÅÏ¢
-	// Á÷Ë®Ê±¼ä
+	// æ¥æ”¶48å­—èŠ‚æµæ°´ä¿¡æ¯
+	// æµæ°´æ—¶é—´
 	tmp = (unsigned char *)&m1flow.date.hyear;
 	for (i = 0; i < sizeof(m1flow.date); i++) {
 		ret = recv_data((char *)tmp, ptrm->term_no);
@@ -1013,7 +1013,7 @@ int purse_recv_flow(term_ram *ptrm)
 		ptrm->add_verify += *tmp;
 		tmp--;
 	}
-	// ¿¨ºÅ
+	// å¡å·
 	tmp = (unsigned char *)&m1flow.card_num;
 	for (i = 0; i < sizeof(m1flow.card_num); i++) {
 		ret = recv_data(tmp, ptrm->term_no);
@@ -1031,7 +1031,7 @@ int purse_recv_flow(term_ram *ptrm)
 		ptrm->dif_verify ^= *tmp;
 		tmp++;
 	}
-	// ÕËºÅ
+	// è´¦å·
 	tmp = (unsigned char *)&m1flow.acc_num;
 	for (i = 0; i < sizeof(m1flow.acc_num); i++) {
 		ret = recv_data(tmp, ptrm->term_no);
@@ -1069,7 +1069,7 @@ int purse_recv_flow(term_ram *ptrm)
 		tmp++;
 	}
 #else
-	// µ±Ç°²Í´ÎÏû·Ñ×Ü¶î->4-byte
+	// å½“å‰é¤æ¬¡æ¶ˆè´¹æ€»é¢->4-byte
 	tmp = (unsigned char *)&m1flow.money_sum;
 	for (i = 0; i < sizeof(m1flow.money_sum); i++) {
 		ret = recv_data(tmp, ptrm->term_no);
@@ -1087,7 +1087,7 @@ int purse_recv_flow(term_ram *ptrm)
 		ptrm->dif_verify ^= *tmp;
 		tmp++;
 	}
-	// 2×Ö½Ú´ıÀ©Õ¹->2-byte
+	// 2å­—èŠ‚å¾…æ‰©å±•->2-byte
 	for (i = 0; i < 2; i++) {
 		ret = recv_data(&nouse[i], ptrm->term_no);
 		if (ret < 0) {
@@ -1102,7 +1102,7 @@ int purse_recv_flow(term_ram *ptrm)
 		ptrm->add_verify += nouse[i];
 		ptrm->dif_verify ^= nouse[i];
 	}
-	// ¹ÜÀí·Ñ²î¶î->3-byte
+	// ç®¡ç†è´¹å·®é¢->3-byte
 	tmp = (unsigned char *)&m1flow.manage_fee;
 	for (i = 0; i < 3; i++) {
 		ret = recv_data(tmp, ptrm->term_no);
@@ -1121,7 +1121,7 @@ int purse_recv_flow(term_ram *ptrm)
 		tmp++;
 	}
 #endif
-	// ½áËã»ú±»ÉèÖÃ±àºÅ
+	// ç»“ç®—æœºè¢«è®¾ç½®ç¼–å·
 	tmp = (unsigned char *)&m1flow.tml_num;
 	for (i = 0; i < sizeof(m1flow.tml_num); i++) {
 		ret = recv_data(tmp, ptrm->term_no);
@@ -1139,7 +1139,7 @@ int purse_recv_flow(term_ram *ptrm)
 		ptrm->add_verify += *tmp;
 		tmp++;
 	}
-	// ½áËã»ú±»ÉèÖÃÇøºÅ
+	// ç»“ç®—æœºè¢«è®¾ç½®åŒºå·
 	tmp = (unsigned char *)&m1flow.areano;
 	for (i = 0; i < sizeof(m1flow.areano); i++) {
 		ret = recv_data(tmp, ptrm->term_no);
@@ -1157,7 +1157,7 @@ int purse_recv_flow(term_ram *ptrm)
 		ptrm->add_verify += *tmp;
 		tmp++;
 	}
-	// ½áËã»úÖĞPSAM¿¨±àºÅ, cpu¿¨3×Ö½Ú, M1¿¨2×Ö½Ú
+	// ç»“ç®—æœºä¸­PSAMå¡ç¼–å·, cpuå¡3å­—èŠ‚, M1å¡2å­—èŠ‚
 	tmp = (unsigned char *)&m1flow.psam_num;
 #ifdef CPUCARD
 	for (i = 0; i < 3; i++) {
@@ -1179,7 +1179,7 @@ int purse_recv_flow(term_ram *ptrm)
 		ptrm->add_verify += *tmp;
 		tmp++;
 	}
-	// ½áËã»úÖĞPSAM¿¨½»Ò×ĞòºÅ
+	// ç»“ç®—æœºä¸­PSAMå¡äº¤æ˜“åºå·
 	tmp = (unsigned char *)&m1flow.psam_trd_num;
 	for (i = 0; i < sizeof(m1flow.psam_trd_num); i++) {
 		ret = recv_data(tmp, ptrm->term_no);
@@ -1197,7 +1197,7 @@ int purse_recv_flow(term_ram *ptrm)
 		ptrm->add_verify += *tmp;
 		tmp++;
 	}
-	// Ç®°ü½»Ò×ĞòºÅ
+	// é’±åŒ…äº¤æ˜“åºå·
 	tmp = (unsigned char *)&m1flow.walt_num;
 	for (i = 0; i < sizeof(m1flow.walt_num); i++) {
 		ret = recv_data(tmp, ptrm->term_no);
@@ -1215,7 +1215,7 @@ int purse_recv_flow(term_ram *ptrm)
 		ptrm->add_verify += *tmp;
 		tmp++;
 	}
-	// ½»Ò×½ğ¶î
+	// äº¤æ˜“é‡‘é¢
 	tmp = (unsigned char *)&m1flow.consume_sum;
 	for (i = 0; i < sizeof(m1flow.consume_sum); i++) {
 		ret = recv_data(tmp, ptrm->term_no);
@@ -1233,7 +1233,7 @@ int purse_recv_flow(term_ram *ptrm)
 		ptrm->add_verify += *tmp;
 		tmp++;
 	}
-	// Ç®°ü½»Ò×ºóÓà¶î
+	// é’±åŒ…äº¤æ˜“åä½™é¢
 	tmp = (unsigned char *)&m1flow.remain_money;
 	for (i = 0; i < sizeof(m1flow.remain_money); i++) {
 		ret = recv_data(tmp, ptrm->term_no);
@@ -1252,7 +1252,7 @@ int purse_recv_flow(term_ram *ptrm)
 		tmp++;
 	}
 #ifdef CPUCARD
-	// ¹ÜÀí·Ñ²î¶î3-byte
+	// ç®¡ç†è´¹å·®é¢3-byte
 	tmp = (unsigned char *)&m1flow.manage_fee;
 	for (i = 0; i < 3; i++) {
 		ret = recv_data(tmp, ptrm->term_no);
@@ -1270,7 +1270,7 @@ int purse_recv_flow(term_ram *ptrm)
 		ptrm->add_verify += *tmp;
 		tmp++;
 	}
-	// ´ıÀ©Õ¹1-byte
+	// å¾…æ‰©å±•1-byte
 	for (i = 0; i < 1; i++) {
 		ret = recv_data(&nouse[i], ptrm->term_no);
 		if (ret < 0) {
@@ -1286,7 +1286,7 @@ int purse_recv_flow(term_ram *ptrm)
 		ptrm->dif_verify ^= nouse[i];
 	}
 #endif
-	// ²ËÆ··Ö×é±àºÅ
+	// èœå“åˆ†ç»„ç¼–å·
 	tmp = (unsigned char *)&m1flow.food_grp_num;
 	for (i = 0; i < sizeof(m1flow.food_grp_num); i++) {
 		ret = recv_data(tmp, ptrm->term_no);
@@ -1304,7 +1304,7 @@ int purse_recv_flow(term_ram *ptrm)
 		ptrm->add_verify += *tmp;
 		tmp++;
 	}
-	// ½»Ò×ÀàĞÍ±êÊ¶
+	// äº¤æ˜“ç±»å‹æ ‡è¯†
 	tmp = (unsigned char *)&m1flow.deal_type;
 	for (i = 0; i < sizeof(m1flow.deal_type); i++) {
 		ret = recv_data(tmp, ptrm->term_no);
@@ -1322,7 +1322,7 @@ int purse_recv_flow(term_ram *ptrm)
 		ptrm->add_verify += *tmp;
 		tmp++;
 	}
-	// Á÷Ë®ÀàĞÍ
+	// æµæ°´ç±»å‹
 	tmp = (unsigned char *)&m1flow.flow_type;
 	for (i = 0; i < sizeof(m1flow.flow_type); i++) {
 		ret = recv_data(tmp, ptrm->term_no);
@@ -1362,7 +1362,7 @@ int purse_recv_flow(term_ram *ptrm)
 		ptrm->add_verify += *tmp;
 		tmp++;
 	}
-	// ÊÇ·ñÉÏ´«±êÖ¾
+	// æ˜¯å¦ä¸Šä¼ æ ‡å¿—
 	for (i = 0; i < 1; i++) {
 		ret = recv_data(&nouse[2], ptrm->term_no);
 		if (ret < 0) {
@@ -1377,23 +1377,23 @@ int purse_recv_flow(term_ram *ptrm)
 		ptrm->dif_verify ^= nouse[2];
 		ptrm->add_verify += nouse[2];
 	}
-	// ½ÓÊÕ2×Ö½ÚĞ£Ñé
+	// æ¥æ”¶2å­—èŠ‚æ ¡éªŒ
 	if ((ret = chk_verify(ptrm)) < 0) {
 		if (ret != ERRVERIFY) {
 			usart_delay(2);
 		} else 
-		// ½ö½öÔÚĞ£Ñé´íÎóµÄÇé¿öÏÂ·µ»ØGA
+		// ä»…ä»…åœ¨æ ¡éªŒé”™è¯¯çš„æƒ…å†µä¸‹è¿”å›GA
 		send_ga(ptrm, ret);
 		return -1;
 	}
-	// ½øĞĞÁ÷Ë®´æ´¢Ç°ÅĞ¶ÏÊÇ·ñÊÇÎ´ÉÏ´«Á÷Ë®
+	// è¿›è¡Œæµæ°´å­˜å‚¨å‰åˆ¤æ–­æ˜¯å¦æ˜¯æœªä¸Šä¼ æµæ°´
 	if (nouse[2] == 0xFE) {
 #ifdef DEBUG
 		printk("flow no.: %d; tradenum: %d\n", maxflowno + 1, m1flow.psam_trd_num);
 #endif
 #ifdef FLOWFILTER
-		// ·¢ËÍÍ¨ÓÃÓ¦´ğ°ü(µØÖ·, ÄÚÈİ, Ğ£Ñé)
-		if (send_ga(ptrm, 0) < 0) {// ´ËÇé¿öºÜÄÑ³öÏÖ, ³ı·ÇUARTÓ²¼şÓĞ´íÎó
+		// å‘é€é€šç”¨åº”ç­”åŒ…(åœ°å€, å†…å®¹, æ ¡éªŒ)
+		if (send_ga(ptrm, 0) < 0) {// æ­¤æƒ…å†µå¾ˆéš¾å‡ºç°, é™¤éUARTç¡¬ä»¶æœ‰é”™è¯¯
 			ptrm->status = NOTERMINAL;
 			return -1;
 		}
@@ -1405,10 +1405,10 @@ int purse_recv_flow(term_ram *ptrm)
 	}
 	if (ptrm->psam_trd_num) {
 		if (m1flow.psam_trd_num <= ptrm->psam_trd_num) {
-			// ÒÑ¾­ÉÏ´«µÄÁ÷Ë®
-			// ·¢ËÍÍ¨ÓÃÓ¦´ğ°ü(µØÖ·, ÄÚÈİ, Ğ£Ñé)
+			// å·²ç»ä¸Šä¼ çš„æµæ°´
+			// å‘é€é€šç”¨åº”ç­”åŒ…(åœ°å€, å†…å®¹, æ ¡éªŒ)
 #ifdef FLOWFILTER
-			if (send_ga(ptrm, 0) < 0) {// ´ËÇé¿öºÜÄÑ³öÏÖ, ³ı·ÇUARTÓ²¼şÓĞ´íÎó
+			if (send_ga(ptrm, 0) < 0) {// æ­¤æƒ…å†µå¾ˆéš¾å‡ºç°, é™¤éUARTç¡¬ä»¶æœ‰é”™è¯¯
 				ptrm->status = NOTERMINAL;
 				return -1;
 			}
@@ -1425,21 +1425,21 @@ int purse_recv_flow(term_ram *ptrm)
 	//if (!(m1flow.flow_type & (1 << 1)))
 	//ptrm->flow_flag = ptrm->term_no;
 	// term_money plus
-	// ´Ë´¦Ã»½øĞĞTACÂëÑéÖ¤, Ö»ÊÇ¼òµ¥µÄÅĞ¶ÏÊÇ·ñÊÇÕıÈ·Á÷Ë®
+	// æ­¤å¤„æ²¡è¿›è¡ŒTACç éªŒè¯, åªæ˜¯ç®€å•çš„åˆ¤æ–­æ˜¯å¦æ˜¯æ­£ç¡®æµæ°´
 	if (!(m1flow.flow_type & (1 << 1))) {
-	// Ö»ÓĞÕı³£Á÷Ë®²Å¼ÇÂ¼ÖÕ¶Ë½»Ò×ĞòºÅ
+	// åªæœ‰æ­£å¸¸æµæ°´æ‰è®°å½•ç»ˆç«¯äº¤æ˜“åºå·
 		ptrm->psam_trd_num = m1flow.psam_trd_num;
 		ptrm->term_money += m1flow.consume_sum;
 		ptrm->term_cnt++;
 	}
-	// Á÷Ë®ºÅµÄ´¦Àí
+	// æµæ°´å·çš„å¤„ç†
 	m1flow.flow_num = maxflowno++;
 	//printk("recv cpu flow tail: %d\n", tail);
 	tail = flowptr.tail;
 	if (tail >= FLOWANUM) {
 		printk("uart recv flow no space\n");
-		// ·¢ËÍÍ¨ÓÃÓ¦´ğ°ü(µØÖ·, ÄÚÈİ, Ğ£Ñé)
-		if (send_ga(ptrm, -1) < 0) {// ´ËÇé¿öºÜÄÑ³öÏÖ, ³ı·ÇUARTÓ²¼şÓĞ´íÎó
+		// å‘é€é€šç”¨åº”ç­”åŒ…(åœ°å€, å†…å®¹, æ ¡éªŒ)
+		if (send_ga(ptrm, -1) < 0) {// æ­¤æƒ…å†µå¾ˆéš¾å‡ºç°, é™¤éUARTç¡¬ä»¶æœ‰é”™è¯¯
 			ptrm->status = NOTERMINAL;
 			return -1;
 		}
@@ -1454,8 +1454,8 @@ int purse_recv_flow(term_ram *ptrm)
 	flowptr.tail = tail;
 	flow_sum++;
 	space_remain--;
-	// ·¢ËÍÍ¨ÓÃÓ¦´ğ°ü(µØÖ·, ÄÚÈİ, Ğ£Ñé)
-	if (send_ga(ptrm, 0) < 0) {// ´ËÇé¿öºÜÄÑ³öÏÖ, ³ı·ÇUARTÓ²¼şÓĞ´íÎó
+	// å‘é€é€šç”¨åº”ç­”åŒ…(åœ°å€, å†…å®¹, æ ¡éªŒ)
+	if (send_ga(ptrm, 0) < 0) {// æ­¤æƒ…å†µå¾ˆéš¾å‡ºç°, é™¤éUARTç¡¬ä»¶æœ‰é”™è¯¯
 		ptrm->status = NOTERMINAL;
 		return -1;
 	}
@@ -1463,17 +1463,17 @@ int purse_recv_flow(term_ram *ptrm)
 }
 
 /*
- * ÊµÊ±¸üĞÂÖÕ¶Ë»úÈ«²¿ºÚÃûµ¥Êı¾İ
-±¾½»»¥ÓÉÉÏÎ»»ú·¢Æğ£¬Ö÷¶¯ÏÂ´«ºÚÃûµ¥Êı¾İ£¬ÖÕ¶Ë½ÓÊÕºó½«´æÈëFLASHÖĞ£»
-ÉÏÎ»»ú·¢ËÍ±¾ÃüÁî°üÊ±Òª±£Ö¤ºÚÃûµ¥½»Ò×ºÅºÍÖÕ¶Ëµ±Ç°µÄ½»Ò×ºÅÁ¬Ğø£¬
-·ñÔòÖÕ¶Ë½«²»´æ´¢¸ÃÊı¾İ°üÄÚÊı¾İ£»
-ÖÕ¶Ë·µ»ØÍ¨ÓÃÓ¦´ğ°üÔÚÊı¾İĞ´ÈëFLASHÖ®ºó£»
-ºÍ¶¨ÆÚ¸üĞÂºÚÃûµ¥Êı¾İµÄÒìÍ¬£ºÏàÍ¬µãÊÇ±¾ÃüÁîµÄÖ÷¶¯·½¶¼ÊÇÉÏÎ»»ú£¬
-´«ËÍÊı¾İ¸ñÊ½Ò²ÏàÍ¬£¬µ«²»Í¬µãÊÇ½»»¥Á÷³Ì£¬¶¨ÆÚ¸üĞÂ½»»¥ÊÇµã¶ÔµãÑ­»·½»»¥µÄ£¬
-¶ø±¾ÃüÁîÖ»ÓĞÒ»´Î½»»¥£¬ÉÏÎ»»úÍê³É±¾½»»¥ºó¿ÉÒÔÂíÉÏ×ªµ½ÆäËûÖÕ¶ËÉÏ£¬
-ÏÂÒ»´Î´«ËÍÊı¾İÊ±ÔÙ´ÎÍêÕûÖ´ĞĞ±¾½»»¥Á÷³Ì¡£
- * Èë¿Ú: µ±Ç°ÖÕ¶ËÊôĞÔÖ¸Õë, ÏµÍ³ºÚÃûµ¥ĞÅÏ¢, ºÚÃûµ¥±íÍ·Ö¸Õë
- * ·µ»Ø0ÕıÈ·, <0´íÎó
+ * å®æ—¶æ›´æ–°ç»ˆç«¯æœºå…¨éƒ¨é»‘åå•æ•°æ®
+æœ¬äº¤äº’ç”±ä¸Šä½æœºå‘èµ·ï¼Œä¸»åŠ¨ä¸‹ä¼ é»‘åå•æ•°æ®ï¼Œç»ˆç«¯æ¥æ”¶åå°†å­˜å…¥FLASHä¸­ï¼›
+ä¸Šä½æœºå‘é€æœ¬å‘½ä»¤åŒ…æ—¶è¦ä¿è¯é»‘åå•äº¤æ˜“å·å’Œç»ˆç«¯å½“å‰çš„äº¤æ˜“å·è¿ç»­ï¼Œ
+å¦åˆ™ç»ˆç«¯å°†ä¸å­˜å‚¨è¯¥æ•°æ®åŒ…å†…æ•°æ®ï¼›
+ç»ˆç«¯è¿”å›é€šç”¨åº”ç­”åŒ…åœ¨æ•°æ®å†™å…¥FLASHä¹‹åï¼›
+å’Œå®šæœŸæ›´æ–°é»‘åå•æ•°æ®çš„å¼‚åŒï¼šç›¸åŒç‚¹æ˜¯æœ¬å‘½ä»¤çš„ä¸»åŠ¨æ–¹éƒ½æ˜¯ä¸Šä½æœºï¼Œ
+ä¼ é€æ•°æ®æ ¼å¼ä¹Ÿç›¸åŒï¼Œä½†ä¸åŒç‚¹æ˜¯äº¤äº’æµç¨‹ï¼Œå®šæœŸæ›´æ–°äº¤äº’æ˜¯ç‚¹å¯¹ç‚¹å¾ªç¯äº¤äº’çš„ï¼Œ
+è€Œæœ¬å‘½ä»¤åªæœ‰ä¸€æ¬¡äº¤äº’ï¼Œä¸Šä½æœºå®Œæˆæœ¬äº¤äº’åå¯ä»¥é©¬ä¸Šè½¬åˆ°å…¶ä»–ç»ˆç«¯ä¸Šï¼Œ
+ä¸‹ä¸€æ¬¡ä¼ é€æ•°æ®æ—¶å†æ¬¡å®Œæ•´æ‰§è¡Œæœ¬äº¤äº’æµç¨‹ã€‚
+ * å…¥å£: å½“å‰ç»ˆç«¯å±æ€§æŒ‡é’ˆ, ç³»ç»Ÿé»‘åå•ä¿¡æ¯, é»‘åå•è¡¨å¤´æŒ‡é’ˆ
+ * è¿”å›0æ­£ç¡®, <0é”™è¯¯
  * write by wjzhe, June 8 2007
  */
 //#define DEBUG
@@ -1488,7 +1488,7 @@ int purse_send_bkin(term_ram *ptrm, struct black_info *blkinfo, black_acc *blkac
 	black_acc *phead;
 	if (blkacc == NULL)
 		return 0;
-	// »ñÈ¡ÒªÏÂÔØºÚÃûµ¥µÄÌõÊı, Ö»ÊÇ»ñµÃ¼òµ¥µÄÌõÊı
+	// è·å–è¦ä¸‹è½½é»‘åå•çš„æ¡æ•°, åªæ˜¯è·å¾—ç®€å•çš„æ¡æ•°
 	ret = compute_blk(ptrm, blkinfo);
 	if (ret == -E485COM) {
 #ifdef DEBUG
@@ -1496,13 +1496,13 @@ int purse_send_bkin(term_ram *ptrm, struct black_info *blkinfo, black_acc *blkac
 #endif
 		return -1;
 	} else if (ptrm->blkinfo.edition != blkinfo->edition) {
-		// °æ±¾ºÅ²»¶Ô, Òª½øĞĞºÚÃûµ¥¸üĞÂ
+		// ç‰ˆæœ¬å·ä¸å¯¹, è¦è¿›è¡Œé»‘åå•æ›´æ–°
 #ifdef DEBUG
 		printk("edition error send all, POS: %d, SRV: %d\n",
 			ptrm->blkinfo.edition, blkinfo->edition);
 #endif
 		if (ret == 0) {
-			// Ñ¹¸ùÃ»ÓĞÊı¾İ??
+			// å‹æ ¹æ²¡æœ‰æ•°æ®??
 		}
 	} else if ((ret <= 0) && (flag)) {
 #ifdef DEBUG
@@ -1511,25 +1511,25 @@ int purse_send_bkin(term_ram *ptrm, struct black_info *blkinfo, black_acc *blkac
 		return 0;
 	}
 	if (ret < 0) {
-		// ²¢²»ĞèÒªÏÂÔØºÚÃûµ¥, ÖÕ¶Ë»úµÄ½»Ò×ºÅ±ÈÕâ±ß»¹´ó
+		// å¹¶ä¸éœ€è¦ä¸‹è½½é»‘åå•, ç»ˆç«¯æœºçš„äº¤æ˜“å·æ¯”è¿™è¾¹è¿˜å¤§
 #ifdef DEBUG
 		printk("less than 0 not need black\n");
 #endif
 		phead = NULL;
 		ret = 0;
-	} else if ((ptrm->blkinfo.trade_num.num > 0)	// ²éÕÒºÚÃûµ¥±í
-		// ÖÕ¶Ë»úµÄ°æ±¾ºÅÒ»ÖÂÇÒ½»Ò×ºÅ>0²Å»á²éÕÒºÚÃûµ¥±í
+	} else if ((ptrm->blkinfo.trade_num.num > 0)	// æŸ¥æ‰¾é»‘åå•è¡¨
+		// ç»ˆç«¯æœºçš„ç‰ˆæœ¬å·ä¸€è‡´ä¸”äº¤æ˜“å·>0æ‰ä¼šæŸ¥æ‰¾é»‘åå•è¡¨
 		/*&& (ptrm->blkinfo.edition == blkinfo->edition)*/) {
 		phead = search_blk2(ptrm->blkinfo.trade_num.num, blkacc, blkinfo->count);
 		if (phead == NULL) {
-			// ´Ë½»Ò×ºÅ²»ÔÚºÚÃûµ¥ÁĞ±íÖĞ, ÎŞ·¨½øĞĞºÚÃûµ¥¸üĞÂ
+			// æ­¤äº¤æ˜“å·ä¸åœ¨é»‘åå•åˆ—è¡¨ä¸­, æ— æ³•è¿›è¡Œé»‘åå•æ›´æ–°
 #ifdef DEBUG
 			printk("trade number is not in black list\n");
 			out_tnum(&ptrm->blkinfo.trade_num);
 #endif
 			return -1;
 		}
-		// µ±Ç°µÃµ½µÄºÚÃûµ¥ÒÑ¾­ÊÇÏÂÔØºóµÄ, ĞèÒª+1
+		// å½“å‰å¾—åˆ°çš„é»‘åå•å·²ç»æ˜¯ä¸‹è½½åçš„, éœ€è¦+1
 		phead += 1;
 	} else if (blkinfo->count > 0) {
 #ifdef DEBUG
@@ -1541,7 +1541,7 @@ int purse_send_bkin(term_ram *ptrm, struct black_info *blkinfo, black_acc *blkac
 		phead = NULL;
 		ret = 0;
 	}
-	// ÕâÒ»´ÎĞèÒªÏÂ·¢nÌõºÚÃûµ¥Êı¾İ
+	// è¿™ä¸€æ¬¡éœ€è¦ä¸‹å‘næ¡é»‘åå•æ•°æ®
 	if (ret <= MAXBLKCNT) {
 		n = ret;
 		n |= 3 << 6;
@@ -1558,12 +1558,12 @@ int purse_send_bkin(term_ram *ptrm, struct black_info *blkinfo, black_acc *blkac
 	printk("send %d %02x black acc, ret %d, blkinfo->count %d, \nblkinfo->trade_num.num %d\n",
 		n & 0x3F, n, ret, blkinfo->count, blkinfo->trade_num.num);
 #endif
-	// ½ĞºÅ
+	// å«å·
 	sendno = ptrm->term_no | 0x80;
 	ret = send_addr(sendno, ptrm->term_no);
 	if (ret < 0)
 		goto send_bkin_failed;
-	// »ØºÅ
+	// å›å·
 	ret = recv_data_safe((char *)&recvno, ptrm->term_no);
 	if (ret < 0) {
 #ifdef DEBUG
@@ -1572,7 +1572,7 @@ int purse_send_bkin(term_ram *ptrm, struct black_info *blkinfo, black_acc *blkac
 		ptrm->status = ret;
 		return ret;
 	}
-	// ÅĞ¶Ï»úÆ÷ºÅÊÇ·ñÒ»ÖÂ
+	// åˆ¤æ–­æœºå™¨å·æ˜¯å¦ä¸€è‡´
 	if ((recvno & 0x7F) != (ptrm->term_no & 0x7F)) {
 #ifdef DEBUG
 		printk("send bkin return term no. error %02x: %02x\n", recvno, ptrm->term_no);
@@ -1582,20 +1582,20 @@ int purse_send_bkin(term_ram *ptrm, struct black_info *blkinfo, black_acc *blkac
 	}
 	ptrm->add_verify = 0;
 	ptrm->dif_verify = 0;
-	// ·¢1×Ö½ÚÖÕ¶ËºÅ
+	// å‘1å­—èŠ‚ç»ˆç«¯å·
 	ret = send_byte(ptrm->term_no, ptrm->term_no);
 	if (ret < 0) {
 		goto send_bkin_failed;
 	}
 	com_verify(ptrm, &ptrm->term_no, sizeof(ptrm->term_no));
-	// ·¢ÃüÁî×Ö
+	// å‘å‘½ä»¤å­—
 	ret = send_byte(PURSE_PUT_BLK, ptrm->term_no);
 	if (ret < 0) {
 		goto send_bkin_failed;
 	}
 	ptrm->add_verify += PURSE_PUT_BLK;
 	ptrm->dif_verify ^= PURSE_PUT_BLK;
-	// ·¢°ü³¤¶È
+	// å‘åŒ…é•¿åº¦
 	len += 12 + 5 * (n & 0x3F);
 	ret = send_data2(&len, sizeof(len), ptrm);
 	if (ret < 0) {
@@ -1604,22 +1604,22 @@ int purse_send_bkin(term_ram *ptrm, struct black_info *blkinfo, black_acc *blkac
 #endif
 		return -1;
 	}
-	// ·¢1×Ö½Ú°üÍ·
-	// bit5-bit0±¾°üÊı¾İ°üº¬ºÚÃûµ¥ÊıÁ¿
-	// bit7, bit6 == 0x3ºÚÃûµ¥È«²¿·¢ËÍÍê±Ï
+	// å‘1å­—èŠ‚åŒ…å¤´
+	// bit5-bit0æœ¬åŒ…æ•°æ®åŒ…å«é»‘åå•æ•°é‡
+	// bit7, bit6 == 0x3é»‘åå•å…¨éƒ¨å‘é€å®Œæ¯•
 	ret = send_byte(n, ptrm->term_no);
 	if (ret < 0)
 		goto send_bkin_failed;
 	com_verify(ptrm, &n, sizeof(n));
-	// ·¢9×Ö½Ú½»Ò×ºÅ
+	// å‘9å­—èŠ‚äº¤æ˜“å·
 	if (phead == NULL || ((n & 0x3F) == 0)) {
 		// BUG, n == 0, fixed by wjzhe
-		// ¶Ôphead½øĞĞÅĞ¶Ï!!!
+		// å¯¹pheadè¿›è¡Œåˆ¤æ–­!!!
 		ret = send_trade_num(&blkinfo->trade_num, ptrm);
 		if (ret < 0)
 			goto send_bkin_failed;
 	} else {
-		// BUG, Èç¹ûn == 0Ôòsegment fault
+		// BUG, å¦‚æœn == 0åˆ™segment fault
 		ret = send_trade_num(&phead[(n & 0x3F) - 1].t_num, ptrm);
 		if (ret < 0)
 			goto send_bkin_failed;
@@ -1630,35 +1630,35 @@ int purse_send_bkin(term_ram *ptrm, struct black_info *blkinfo, black_acc *blkac
 	ret = send_data2((char *)phead[(n & 0x3F) - 1].t_num.tm, sizeof(phead[(n & 0x3F) - 1].t_num.tm), ptrm);
 	if (ret < 0)
 		goto send_bkin_failed;*/
-	// ·¢5 * N×Ö½ÚºÚÃûµ¥Êı¾İ
+	// å‘5 * Nå­—èŠ‚é»‘åå•æ•°æ®
 	//n &= 0x3F;
 	if ((ret = send_blkacc(ptrm, phead, n & 0x3F)) < 0)
 		return -1;
-	// ·¢ºÚÃûµ¥°æ±¾ºÅ
+	// å‘é»‘åå•ç‰ˆæœ¬å·
 	if (n & 0xC0) {
 		ret = send_data2((char *)&blkinfo->edition, sizeof(blkinfo->edition), ptrm);
 		if (ret < 0)
 			goto send_bkin_failed;
 	}
-	// ·¢2×Ö½ÚĞ£Ñé
+	// å‘2å­—èŠ‚æ ¡éªŒ
 	ret = send_verify(ptrm);
 	if (ret < 0)
 		goto send_bkin_failed;
 #if BWR_66J10
 	udelay(200);
 #endif
-	// ÊÕGA
+	// æ”¶GA
 	if (recv_ga(ptrm) < 0) {
 		pr_debug("send bkin recv GA error: %d\n", ret);
 #if 0
-		ptrm->blkerr++;			// ÊÕGA³öÏÖ´íÎóÁË
+		ptrm->blkerr++;			// æ”¶GAå‡ºç°é”™è¯¯äº†
 #endif
 		return -1;
 	}
 	if ((n & 0xC0) && (!ptrm->black_flag)) {
 		ptrm->black_flag = 1;
 	}
-	// ×ö´¦Àí
+	// åšå¤„ç†
 	if (phead)
 		memcpy(&ptrm->blkinfo.trade_num, &phead[n - 1].t_num, sizeof(phead[n - 1].t_num));
 	return 0;
@@ -1672,7 +1672,7 @@ send_bkin_failed:
 
 #if 0
 /*
- * ¶¨ÆÚ¸üĞÂÖÕ¶Ë»úÈ«²¿ºÚÃûµ¥Êı¾İ, Î´Íê
+ * å®šæœŸæ›´æ–°ç»ˆç«¯æœºå…¨éƒ¨é»‘åå•æ•°æ®, æœªå®Œ
  * write by wjzhe, June 8 2007
  */
 int purse_send_bkta(term_ram *ptrm, struct black_info *blkinfo)
@@ -1682,21 +1682,21 @@ int purse_send_bkta(term_ram *ptrm, struct black_info *blkinfo)
 #endif
 	unsigned char recvno, cmd, *tmp;
 	int ret, i;
-	// ·¢1×Ö½ÚµØÖ·
+	// å‘1å­—èŠ‚åœ°å€
 	ret = send_data2((char *)&ptrm->term_no, 1, ptrm);
 	if (ret < 0)
 		goto send_bkta_failed;
-	// ·¢0x32, ÖÕ¶Ë½øĞĞFLASH²Á³ı
+	// å‘0x32, ç»ˆç«¯è¿›è¡ŒFLASHæ“¦é™¤
 	ret = send_byte(PURSE_PUT_ABLK, ptrm->term_no);
 	if (ret < 0)
 		goto send_bkta_failed;
 	ptrm->add_verify += ptrm->term_no;
 	ptrm->dif_verify ^= ptrm->term_no;
-	// ·¢Ğ£Ñé
+	// å‘æ ¡éªŒ
 	ret = send_verify(ptrm);
 	if (ret < 0)
 		goto send_bkta_failed;
-	// ÊÕÓ¦´ğĞÅÏ¢°ü
+	// æ”¶åº”ç­”ä¿¡æ¯åŒ…
 	ptrm->add_verify = 0;
 	ptrm->dif_verify = 0;
 	// term number
@@ -1761,14 +1761,14 @@ int purse_send_bkta(term_ram *ptrm, struct black_info *blkinfo)
 	} else if (ret == 0) {
 		return 0;
 	}
-// Ñ­»·×öÒÔÏÂ²Ù×÷
-	// ·¢1×Ö½Ú°üÍ·,
-	// bit5-bit0±¾°üÊı¾İ°üº¬ºÚÃûµ¥ÊıÁ¿
-	// bit7, bit6 == 0x3ºÚÃûµ¥È«²¿·¢ËÍÍê±Ï
-	// ·¢9×Ö½Ú½»Ò×ºÅ
-	// ·¢5 * N×Ö½ÚºÚÃûµ¥Êı¾İ
-	// ·¢2×Ö½ÚĞ£Ñé
-	// ÊÕGA
+// å¾ªç¯åšä»¥ä¸‹æ“ä½œ
+	// å‘1å­—èŠ‚åŒ…å¤´,
+	// bit5-bit0æœ¬åŒ…æ•°æ®åŒ…å«é»‘åå•æ•°é‡
+	// bit7, bit6 == 0x3é»‘åå•å…¨éƒ¨å‘é€å®Œæ¯•
+	// å‘9å­—èŠ‚äº¤æ˜“å·
+	// å‘5 * Nå­—èŠ‚é»‘åå•æ•°æ®
+	// å‘2å­—èŠ‚æ ¡éªŒ
+	// æ”¶GA
 
 	return 0;
 send_bkta_failed:
@@ -1781,7 +1781,7 @@ bkta_recv_failed:
 #endif
 
 /*
- * ¹ã²¥·½Ê½¸üĞÂÖÕ¶Ë»úÈ«²¿ºÚÃûµ¥Êı¾İ, ´Ë¹ı³ÌÖ»·¢Êı¾İ
+ * å¹¿æ’­æ–¹å¼æ›´æ–°ç»ˆç«¯æœºå…¨éƒ¨é»‘åå•æ•°æ®, æ­¤è¿‡ç¨‹åªå‘æ•°æ®
  * write by wjzhe, June 11 2007
  */
 int purse_broadcast_blk(black_acc *pbacc, struct black_info *pbinfo, term_ram *ptrm, int cnt)
@@ -1798,40 +1798,40 @@ int purse_broadcast_blk(black_acc *pbacc, struct black_info *pbinfo, term_ram *p
 	//unsigned char vadd = 0, vdif = 0, *tmp;
 	int once, left = pbinfo->count, ret, i;
 	unsigned char len = 0;
-	term_ram term_tmp;// ´ËÊı¾İÎªĞéÄâÊı¾İ, ²»ÄÜÒıÓÃÆäÖÕ¶ËÊôĞÔ
+	term_ram term_tmp;// æ­¤æ•°æ®ä¸ºè™šæ‹Ÿæ•°æ®, ä¸èƒ½å¼•ç”¨å…¶ç»ˆç«¯å±æ€§
 	if (pbinfo->count <= 0)
 		return 0;
 	memset(&term_tmp, 0, sizeof(term_tmp));
-	// ·¢ËÍ²Á³ıÃüÁî
-	// ¸øÇ°ËÄÍ¨µÀËùÓĞ»úÆ÷½øĞĞ¹ã²¥
+	// å‘é€æ“¦é™¤å‘½ä»¤
+	// ç»™å‰å››é€šé“æ‰€æœ‰æœºå™¨è¿›è¡Œå¹¿æ’­
 	term_tmp.term_no = FC;
 	ret = send_addr(BC, term_tmp.term_no);
 	if (ret < 0)
 		return -1;
 	term_tmp.add_verify += BC;
 	term_tmp.dif_verify ^= BC;
-	// ·¢ÃüÁî
+	// å‘å‘½ä»¤
 	ret = send_byte(PURSE_BCT_ERASE, term_tmp.term_no);
 	if (ret < 0)
 		return -1;
 	term_tmp.add_verify += PURSE_BCT_ERASE;
 	term_tmp.dif_verify ^= PURSE_BCT_ERASE;
-	// ·¢°ü³¤¶È
+	// å‘åŒ…é•¿åº¦
 	ret = send_byte(11, term_tmp.term_no);
 	if (ret < 0)
 		return -1;
 	term_tmp.add_verify += 11;
 	term_tmp.dif_verify ^= 11;
-	// ·¢½»Ò×ºÅ, ĞÂµÄÆğÊ¼½»Ò×ºÅ
+	// å‘äº¤æ˜“å·, æ–°çš„èµ·å§‹äº¤æ˜“å·
 	ret = send_trade_num(&pbacc->t_num, &term_tmp);
 	if (ret < 0)
 		return -1;
-	// ·¢Ğ£Ñé
+	// å‘æ ¡éªŒ
 	ret = send_verify(&term_tmp);
 	if (ret < 0) {
 		return -1;
 	}
-	// ¸øºóËÄÍ¨µÀËùÓĞ»úÆ÷·¢ÃüÁî
+	// ç»™åå››é€šé“æ‰€æœ‰æœºå™¨å‘å‘½ä»¤
 	memset(&term_tmp, 0, sizeof(term_tmp));
 	term_tmp.term_no = LC;
 	ret = send_addr(BC, term_tmp.term_no);
@@ -1839,30 +1839,30 @@ int purse_broadcast_blk(black_acc *pbacc, struct black_info *pbinfo, term_ram *p
 		return -1;
 	term_tmp.add_verify += BC;
 	term_tmp.dif_verify ^= BC;
-	// ·¢ÃüÁî
+	// å‘å‘½ä»¤
 	ret = send_byte(PURSE_BCT_ERASE, term_tmp.term_no);
 	if (ret < 0)
 		return -1;
 	term_tmp.add_verify += PURSE_BCT_ERASE;
 	term_tmp.dif_verify ^= PURSE_BCT_ERASE;
-	// ·¢°ü³¤¶È
+	// å‘åŒ…é•¿åº¦
 	ret = send_byte(11, term_tmp.term_no);
 	if (ret < 0)
 		return -1;
 	term_tmp.add_verify += 11;
 	term_tmp.dif_verify ^= 11;
-	// ·¢½»Ò×ºÅ
+	// å‘äº¤æ˜“å·
 	ret = send_trade_num(&pbacc->t_num, &term_tmp);
 	if (ret < 0)
 		return -1;
-	// ·¢Ğ£Ñé
+	// å‘æ ¡éªŒ
 	ret = send_verify(&term_tmp);
 	if (ret < 0) {
 		return -1;
 	}
-	// ´Ë´¦ĞèÒªµÈ´ıÒ»¶ÎÊ±¼ä
+	// æ­¤å¤„éœ€è¦ç­‰å¾…ä¸€æ®µæ—¶é—´
 	mdelay(3000);
-	// ±éÀúËùÓĞÖÕ¶Ë½»Ò×ºÅ, ²é¿´ÊÇ·ñÎªĞÂµÄÆğÊ¼½»Ò×ºÅ-1, ²»ÊÇÔòÍË³ö
+	// éå†æ‰€æœ‰ç»ˆç«¯äº¤æ˜“å·, æŸ¥çœ‹æ˜¯å¦ä¸ºæ–°çš„èµ·å§‹äº¤æ˜“å·-1, ä¸æ˜¯åˆ™é€€å‡º
 	for (i = 0; i < cnt; i++) {
 		memcpy(&term_tmp, ptrm, sizeof(term_tmp));
 		sel_ch(term_tmp.term_no);
@@ -1882,17 +1882,17 @@ int purse_broadcast_blk(black_acc *pbacc, struct black_info *pbinfo, term_ram *p
 		ptrm++;
 	}
 /*
-1: bit5-bit0±¾°üÊı¾İ°üº¬µÄºÚÃûµ¥ÊıÁ¿£¬bit7bit6=11b,ºÚÃûµ¥È«²¿·¢Íê£»
-9£ºBYTE8-BYTE0:¸üĞÂ±¾°üÊı¾İºóĞÂµÄ½»Ò×ºÅ£»
-5N:5×Ö½Ú/ºÚÃûµ¥£¬×î¸ß×Ö½Ú±êÊ¶½â¹Ò¹ÒÊ§£»
-(4)£º£¨¿ÉÄÜ»áÓĞ£©ºÚÃûµ¥¸üĞÂ½áÊøÊ±ÓĞ°æ±¾ºÅ
+1: bit5-bit0æœ¬åŒ…æ•°æ®åŒ…å«çš„é»‘åå•æ•°é‡ï¼Œbit7bit6=11b,é»‘åå•å…¨éƒ¨å‘å®Œï¼›
+9ï¼šBYTE8-BYTE0:æ›´æ–°æœ¬åŒ…æ•°æ®åæ–°çš„äº¤æ˜“å·ï¼›
+5N:5å­—èŠ‚/é»‘åå•ï¼Œæœ€é«˜å­—èŠ‚æ ‡è¯†è§£æŒ‚æŒ‚å¤±ï¼›
+(4)ï¼šï¼ˆå¯èƒ½ä¼šæœ‰ï¼‰é»‘åå•æ›´æ–°ç»“æŸæ—¶æœ‰ç‰ˆæœ¬å·
 */
 	while (left) {
 		unsigned char n = 0;
 		unsigned char cmd = 0;
 		memset(&term_tmp, 0, sizeof(term_tmp));
 		len = 0;
-		// Ê£Óàleft±ÊÊı¾İ, ×î´óÒ»´Î20
+		// å‰©ä½™leftç¬”æ•°æ®, æœ€å¤§ä¸€æ¬¡20
 		if (left > MAXBLKCNT) {
 			once = MAXBLKCNT;
 			n = once;
@@ -1902,50 +1902,50 @@ int purse_broadcast_blk(black_acc *pbacc, struct black_info *pbinfo, term_ram *p
 			n |= 0xC0;
 			len = 4;
 		}
-		// Ç°ËÄÍ¨µÀ
-		// ·¢1×Ö½ÚµØÖ·ĞÅÏ¢0xFF
+		// å‰å››é€šé“
+		// å‘1å­—èŠ‚åœ°å€ä¿¡æ¯0xFF
 		term_tmp.term_no = FC;
 		cmd = BC;
 		ret = send_addr(cmd, term_tmp.term_no);
 		if (ret < 0)
 			return -1;
 		com_verify(&term_tmp, &cmd, 1);
-		// ·¢0x37
+		// å‘0x37
 		ret = send_byte(PURSE_BCT_BLK, term_tmp.term_no);
 		if (ret < 0)
 			return -1;
 		term_tmp.add_verify += PURSE_BCT_BLK;
 		term_tmp.dif_verify ^= PURSE_BCT_BLK;
-		// ·¢°ü³¤¶È
+		// å‘åŒ…é•¿åº¦
 		len += 12 + 5 * (n & 0x3F);
 		//len += 12 + 5 * (n & 0x3F) + ((n & 0xC0) ? 4 : 0);
 		ret = send_data2(&len, sizeof(len), &term_tmp);
 		if (ret < 0)
 			return -1;
-		// Ñ­»··¢1+9+5N+(4)+2(N <= 10)
+		// å¾ªç¯å‘1+9+5N+(4)+2(N <= 10)
 		ret = send_byte(n, term_tmp.term_no);
 		if (ret < 0)
 			return -1;
 		com_verify(&term_tmp, &n, 1);
-		// ·¢9×Ö½Ú½»Ò×ºÅ
+		// å‘9å­—èŠ‚äº¤æ˜“å·
 		ret = send_trade_num(&pbacc[once - 1].t_num, &term_tmp);
 		if (ret < 0)
 			return -1;
-		// ·¢5 * N×Ö½ÚºÚÃûµ¥Êı¾İ
+		// å‘5 * Nå­—èŠ‚é»‘åå•æ•°æ®
 		if ((ret = send_blkacc(&term_tmp, pbacc, once)) < 0)
 			return -1;
-		if (n & 0xC0) {// ËµÃ÷ÊÇ×îºóÒ»°üÊı¾İ
-			// ·¢ËÄ×Ö½Ú°æ±¾ºÅ
+		if (n & 0xC0) {// è¯´æ˜æ˜¯æœ€åä¸€åŒ…æ•°æ®
+			// å‘å››å­—èŠ‚ç‰ˆæœ¬å·
 			ret = send_data2((char *)&pbinfo->edition, sizeof(pbinfo->edition), &term_tmp);
 			if (ret < 0)
 				return -1;
 		}
-		// ·¢Ğ£Ñé
+		// å‘æ ¡éªŒ
 		ret = send_verify(&term_tmp);
 		if (ret < 0)
 			return -1;
-		// ¼ÌĞø½øĞĞºóËÄÍ¨µÀ
-		// ·¢1×Ö½ÚµØÖ·ĞÅÏ¢0xFF
+		// ç»§ç»­è¿›è¡Œåå››é€šé“
+		// å‘1å­—èŠ‚åœ°å€ä¿¡æ¯0xFF
 		memset(&term_tmp, 0, sizeof(term_tmp));
 		term_tmp.term_no = LC;
 		//cmd = BC;
@@ -1953,41 +1953,41 @@ int purse_broadcast_blk(black_acc *pbacc, struct black_info *pbinfo, term_ram *p
 		if (ret < 0)
 			return -1;
 		com_verify(&term_tmp, &cmd, 1);
-		// ·¢0x37
+		// å‘0x37
 		ret = send_byte(PURSE_BCT_BLK, term_tmp.term_no);
 		if (ret < 0)
 			return -1;
 		term_tmp.add_verify += PURSE_BCT_BLK;
 		term_tmp.dif_verify ^= PURSE_BCT_BLK;
-		// ·¢°ü³¤¶È
+		// å‘åŒ…é•¿åº¦
 		ret = send_data2(&len, sizeof(len), &term_tmp);
 		if (ret < 0)
 			return -1;
-		// Ñ­»··¢1+9+5N+(4)+2(N <= 10)
+		// å¾ªç¯å‘1+9+5N+(4)+2(N <= 10)
 		ret = send_byte(n, term_tmp.term_no);
 		if (ret < 0)
 			return -1;
 		com_verify(&term_tmp, &n, 1);
-		// ·¢9×Ö½Ú½»Ò×ºÅ
+		// å‘9å­—èŠ‚äº¤æ˜“å·
 		ret = send_trade_num(&pbacc[once - 1].t_num, &term_tmp);
 		if (ret < 0)
 			return -1;
-		// ·¢5 * N×Ö½ÚºÚÃûµ¥Êı¾İ
+		// å‘5 * Nå­—èŠ‚é»‘åå•æ•°æ®
 		if ((ret = send_blkacc(&term_tmp, pbacc, once)) < 0)
 			return -1;
-		if (n & 0xC0) {// ËµÃ÷ÊÇ×îºóÒ»°üÊı¾İ
-			// ·¢ËÄ×Ö½Ú°æ±¾ºÅ
+		if (n & 0xC0) {// è¯´æ˜æ˜¯æœ€åä¸€åŒ…æ•°æ®
+			// å‘å››å­—èŠ‚ç‰ˆæœ¬å·
 			ret = send_data2((char *)&pbinfo->edition, sizeof(pbinfo->edition), &term_tmp);
 			if (ret < 0)
 				return -1;
 		}
-		// ·¢Ğ£Ñé
+		// å‘æ ¡éªŒ
 		ret = send_verify(&term_tmp);
 		if (ret < 0)
 			return -1;
-		// Í¨Ñ¶½áÊø, ½øĞĞ±¾µØÊı¾İ´¦Àí
+		// é€šè®¯ç»“æŸ, è¿›è¡Œæœ¬åœ°æ•°æ®å¤„ç†
 		pbacc += once;
-		// µ±ºÚÃûµ¥³¬¹ıADDTIMENUMÌõºó, ÑÓ³ÙÊ±¼ä¸ÄÎª15ms
+		// å½“é»‘åå•è¶…è¿‡ADDTIMENUMæ¡å, å»¶è¿Ÿæ—¶é—´æ”¹ä¸º15ms
 		if (pbacc->t_num.num > ADDTIMENUM)
 			mdelay(15);
 		else
@@ -1998,7 +1998,7 @@ int purse_broadcast_blk(black_acc *pbacc, struct black_info *pbinfo, term_ram *p
 }
 
 /*
- * Ç¿ÖÆ¸üĞÂµ¥Æ·ÖÖºÍ¿ì½İ·½Ê½ÏÂ¸÷°´¼ü´ú±í½ğ¶î
+ * å¼ºåˆ¶æ›´æ–°å•å“ç§å’Œå¿«æ·æ–¹å¼ä¸‹å„æŒ‰é”®ä»£è¡¨é‡‘é¢
  * write by wjzhe, June 11 2007
  */
 int purse_update_key(term_ram *ptrm)
@@ -2007,35 +2007,35 @@ int purse_update_key(term_ram *ptrm)
 	int ret;
 {
 	unsigned char price[32] = {0};
-	// ¼üÖµÈ«0ÔòÍË³ö
+	// é”®å€¼å…¨0åˆ™é€€å‡º
 	if (!memcmp(ptrm->pterm->price, price, sizeof(price))) {
 		return 0;
 	}
 }
 	ptrm->add_verify = 0;
 	ptrm->dif_verify = 0;
-	// ½ĞºÅ
+	// å«å·
 	sendno = ptrm->term_no | 0x80;
 	ret = send_addr(sendno, ptrm->term_no);
 	if (ret < 0)
 		goto update_key_failed;
 	com_verify(ptrm, &sendno, sizeof(sendno));
-	// »ØºÅ
+	// å›å·
 	ret = recv_data_safe((char *)&recvno, ptrm->term_no);
 	if (ret < 0) {
 		//pr_debug("purse update key recv no. %d: error %d\n", ptrm->term_no, ret);
 		ptrm->status = ret;
 		return ret;
 	}
-	// ÅĞ¶Ï»úÆ÷ºÅÊÇ·ñÒ»ÖÂ
+	// åˆ¤æ–­æœºå™¨å·æ˜¯å¦ä¸€è‡´
 	com_verify(ptrm, &recvno, sizeof(recvno));
 	if ((recvno & 0x7F) != (ptrm->term_no & 0x7F)) {
 		printk("update key return term no. error %02x: %02x\n", recvno, ptrm->term_no);
 		ptrm->status = NOCOM;
 		return -1;
 	}
-	// ·¢1×Ö½ÚµØÖ·
-	// ·¢ÖÕ¶ËºÅ²»ÄÜ | 0x80
+	// å‘1å­—èŠ‚åœ°å€
+	// å‘ç»ˆç«¯å·ä¸èƒ½ | 0x80
 	sendno = ptrm->term_no;
 	ptrm->add_verify = 0;
 	ptrm->dif_verify = 0;
@@ -2044,30 +2044,30 @@ int purse_update_key(term_ram *ptrm)
 		goto update_key_failed;
 	ptrm->add_verify += sendno;
 	ptrm->dif_verify ^= sendno;
-	// ·¢0x34ÃüÁî×Ö
+	// å‘0x34å‘½ä»¤å­—
 	ret = send_byte(PURSE_UPDATE_KEY, ptrm->term_no);
 	if (ret < 0)
 		goto update_key_failed;
 	ptrm->add_verify += PURSE_UPDATE_KEY;
 	ptrm->dif_verify ^= PURSE_UPDATE_KEY;
-	// ·¢°ü³¤¶È
+	// å‘åŒ…é•¿åº¦
 	ret =  send_byte(34, ptrm->term_no);
 	if (ret < 0)
 		goto update_key_failed;
 	ptrm->add_verify += 34;
 	ptrm->dif_verify ^= 34;
-	// ·¢°üÊı¾İ2+30, 2:µ¥Æ·ÖÖ·½Ê½ÏÂµ¥¼Û£»30:¿ì½İ·½Ê½ÏÂ15¸ö°´¼ü´ú±í½ğ¶î£»
+	// å‘åŒ…æ•°æ®2+30, 2:å•å“ç§æ–¹å¼ä¸‹å•ä»·ï¼›30:å¿«æ·æ–¹å¼ä¸‹15ä¸ªæŒ‰é”®ä»£è¡¨é‡‘é¢ï¼›
 	ret = send_data2((char *)ptrm->pterm->price, 32, ptrm);
 	if (ret < 0)
 		goto update_key_failed;
-	// ·¢2×Ö½ÚĞ£ÑéÊı¾İ
+	// å‘2å­—èŠ‚æ ¡éªŒæ•°æ®
 	ret = send_verify(ptrm);
 	if (ret < 0)
 		goto update_key_failed;
 #if BWR_66J10
 	udelay(200);
 #endif
-	// ÊÕGA
+	// æ”¶GA
 	ret = recv_ga(ptrm);
 	if (ret < 0) {
 		printk("%d purse update key recv GA error\n", ptrm->term_no);
@@ -2080,7 +2080,7 @@ update_key_failed:
 }
 
 /*
- * »ñµÃÖÕ¶Ë»úºÚÃûµ¥°æ±¾ºÅºÍ½»Ò×ºÅ
+ * è·å¾—ç»ˆç«¯æœºé»‘åå•ç‰ˆæœ¬å·å’Œäº¤æ˜“å·
  * write by wjzhe, June 11 2007
  */
 int purse_get_edition(term_ram *ptrm)
@@ -2089,21 +2089,21 @@ int purse_get_edition(term_ram *ptrm)
 	int ret, i;
 	struct black_info info;
 	memset(&info, 0, sizeof(info));
-	// ·¢term_num | 0x80
-	// ½ĞºÅ
+	// å‘term_num | 0x80
+	// å«å·
 	sendno = ptrm->term_no | 0x80;
 	ret = send_addr(sendno, ptrm->term_no);
 	if (ret < 0)
 		goto get_edition_failed;
 	//com_verify(ptrm, &sendno, sizeof(sendno));
-	// ÊÕterm_num, ×öÅĞ¶Ï
-	// »ØºÅ
+	// æ”¶term_num, åšåˆ¤æ–­
+	// å›å·
 	ret = recv_data_safe((char *)&recvno, ptrm->term_no);
 	if (ret < 0) {
 		ptrm->status = ret;
 		return ret;
 	}
-	// ÅĞ¶Ï»úÆ÷ºÅÊÇ·ñÒ»ÖÂ
+	// åˆ¤æ–­æœºå™¨å·æ˜¯å¦ä¸€è‡´
 	if ((recvno & 0x7F) != (ptrm->term_no & 0x7F)) {
 		printk("get edition return term no. error %02x: %02x\n", recvno, ptrm->term_no);
 		ptrm->status = NOCOM;
@@ -2111,33 +2111,33 @@ int purse_get_edition(term_ram *ptrm)
 	}
 	//com_verify(ptrm, &recvno, sizeof(recvno));
 	ptrm->add_verify = ptrm->dif_verify = 0;
-	// ·¢1×Ö½Úterm_num
+	// å‘1å­—èŠ‚term_num
 	ret = send_byte(ptrm->term_no, ptrm->term_no);
 	if (ret < 0) {
 		goto get_edition_failed;
 	}
 	com_verify(ptrm, &ptrm->term_no, sizeof(ptrm->term_no));
-	// ·¢1×Ö½Ú0x47
+	// å‘1å­—èŠ‚0x47
 	ret = send_byte(PURSE_GET_TNO, ptrm->term_no);
 	if (ret < 0) {
 		goto get_edition_failed;
 	}
 	ptrm->add_verify += PURSE_GET_TNO;
 	ptrm->dif_verify ^= PURSE_GET_TNO;
-	// ·¢°ü³¤¶È
+	// å‘åŒ…é•¿åº¦
 	ret = send_byte(2, ptrm->term_no);
 	if (ret < 0)
 		goto get_edition_failed;
 	ptrm->add_verify += 2;
 	ptrm->dif_verify ^= 2;
-	// ·¢2×Ö½ÚĞ£Ñé
+	// å‘2å­—èŠ‚æ ¡éªŒ
 	if (send_verify(ptrm) < 0)
 		goto get_edition_failed;
 //#if BWT_66J10
 //	udelay(BWT_66J10);
 //#endif
 	ptrm->add_verify = ptrm->dif_verify = 0;
-	// ÊÕ1×Ö½Úterm_num
+	// æ”¶1å­—èŠ‚term_num
 	ret = recv_data_safe((char *)&recvno, ptrm->term_no);
 	if (ret < 0) {
 		ptrm->status = ret;
@@ -2148,7 +2148,7 @@ int purse_get_edition(term_ram *ptrm)
 		printk("get edition return term no. error %02x: %02x\n", recvno, ptrm->term_no);
 		return -1;
 	}
-	// ÊÕÃüÁî×Ö0x48
+	// æ”¶å‘½ä»¤å­—0x48
 	ret = recv_data((char *)&cmd, ptrm->term_no);
 	if (ret < 0) {
 		ptrm->status = ret;
@@ -2159,12 +2159,12 @@ int purse_get_edition(term_ram *ptrm)
 		printk("send bkin return cmd error %02x: %02x\n", cmd, ptrm->term_no);
 		return -1;
 	}
-	// ÊÕ°ü³¤¶È
+	// æ”¶åŒ…é•¿åº¦
 	len = recv_len(ptrm);
 	if (len == 0xFF)
 		return -1;
-	// ÊÕ13×Ö½ÚÊı¾İ, °æ±¾ºÅ4×Ö½Ú, ºÚÃûµ¥½»Ò×ºÅ9×Ö½Ú
-	// ÊÕ4×Ö½ÚºÚÃûµ¥°æ±¾ºÅ
+	// æ”¶13å­—èŠ‚æ•°æ®, ç‰ˆæœ¬å·4å­—èŠ‚, é»‘åå•äº¤æ˜“å·9å­—èŠ‚
+	// æ”¶4å­—èŠ‚é»‘åå•ç‰ˆæœ¬å·
 	tmp = (unsigned char *)&info.edition;//&ptrm->blkinfo.edition;
 	for (i = 0; i < sizeof(info.edition); i++) {
 		ret = recv_data(tmp, ptrm->term_no);
@@ -2182,7 +2182,7 @@ int purse_get_edition(term_ram *ptrm)
 		ptrm->add_verify += *tmp;
 		tmp++;
 	}
-	// ÊÕ9×Ö½Ú½»Ò×ºÅ
+	// æ”¶9å­—èŠ‚äº¤æ˜“å·
 	tmp = (unsigned char *)&info.trade_num.num;
 	for (i = 0; i < sizeof(info.trade_num.num); i++) {
 		ret = recv_data(tmp, ptrm->term_no);
@@ -2217,7 +2217,7 @@ int purse_get_edition(term_ram *ptrm)
 		ptrm->add_verify += *tmp;
 		tmp++;
 	}
-	// ÊÕĞ£Ñé2×Ö½Ú
+	// æ”¶æ ¡éªŒ2å­—èŠ‚
 	if (chk_verify(ptrm) < 0)
 		return -1;
 	memcpy(&ptrm->blkinfo, &info, sizeof(ptrm->blkinfo));
@@ -2228,7 +2228,7 @@ get_edition_failed:
 }
 
 /*
- * ĞÂPOS»ú¹âµç¿¨½»»¥²½ÖèÒ»
+ * æ–°POSæœºå…‰ç”µå¡äº¤äº’æ­¥éª¤ä¸€
  * write by wjzhe, June 13, 2007
  */
 int purse_recv_leid(term_ram *ptrm, int allow, int itm)
@@ -2269,7 +2269,7 @@ int purse_recv_leid(term_ram *ptrm, int allow, int itm)
 		tmp++;
 	}
 #ifdef PRE_REDUCE
-	// ÊÕ3×Ö½Ú¿ÉÄÜÏû·Ñ½ğ¶î
+	// æ”¶3å­—èŠ‚å¯èƒ½æ¶ˆè´¹é‡‘é¢
 	tmp = (unsigned char *)&pos_money;
 	for (i = 0; i < 4; i++) {
 		ret = recv_data(tmp, ptrm->term_no);
@@ -2319,35 +2319,35 @@ int purse_recv_leid(term_ram *ptrm, int allow, int itm)
 		feature = 4;
 
 #ifdef CONFIG_UART_V2
-		// ¸ù¾İÏû·ÑÏŞÖÆ½øĞĞÕË»§ÅĞ¶Ï
+		// æ ¹æ®æ¶ˆè´¹é™åˆ¶è¿›è¡Œè´¦æˆ·åˆ¤æ–­
 		if (pacc->flag & ACCF_LOSS) {
-			// ÕâÊÇ¹ÒÊ§¿¨
+			// è¿™æ˜¯æŒ‚å¤±å¡
 			feature |= 1 << 5;
 			goto acc_end;
 		}
 
 		if (pacc->flag & ACCF_WOFF) {
-			// ×¢Ïú
+			// æ³¨é”€
 			feature = 1;
 			goto acc_end;
 		}
 
 		if (pacc->flag & ACCF_FREEZE) {
-			// ¶³½á
+			// å†»ç»“
 			feature = 1;
 			goto acc_end;
 		}
 #if 0 //moidied by duyy, 2013.5.8
-		// ´ËÖÕ¶ËÊÇ·ñÔÊĞíÊ¹ÓÃ
+		// æ­¤ç»ˆç«¯æ˜¯å¦å…è®¸ä½¿ç”¨
 		if (!is_term_allow(pacc->power_id & 0xF, ptrm->pterm->power_id & 0xF)) {
 			feature = 1;
 			goto acc_end;
 		}
 #endif
-		//Éí·İ¡¢ÖÕ¶Ë¡¢Ê±¶ÎÆ¥ÅäÅĞ¶Ï£¬write by duyy, 2013.5.8
-		timenum = ptmnum[pacc->power_id & 0xF][ptrm->pterm->power_id & 0xF];//Éí·İ¡¢ÖÕ¶Ë¶ÔÓ¦µÄÊ±¶ÎĞòºÅ
+		//èº«ä»½ã€ç»ˆç«¯ã€æ—¶æ®µåŒ¹é…åˆ¤æ–­ï¼Œwrite by duyy, 2013.5.8
+		timenum = ptmnum[pacc->power_id & 0xF][ptrm->pterm->power_id & 0xF];//èº«ä»½ã€ç»ˆç«¯å¯¹åº”çš„æ—¶æ®µåºå·
 		//printk("cardno:%ld timenum = %x\n", cardno, timenum);
-		if (timenum & 0x80){//modified by duyy, 2013.5.8,×î¸ßÎ»bit7±íÊ¾½ûÖ¹Ïû·Ñ£¬ÆäÓàÎªÔÊĞíÏû·Ñ£¬ÅĞ¶Ï½ûÖ¹Ê±¶Î
+		if (timenum & 0x80){//modified by duyy, 2013.5.8,æœ€é«˜ä½bit7è¡¨ç¤ºç¦æ­¢æ¶ˆè´¹ï¼Œå…¶ä½™ä¸ºå…è®¸æ¶ˆè´¹ï¼Œåˆ¤æ–­ç¦æ­¢æ—¶æ®µ
 			feature = 1;
 			//printk("whole day prohibit\n");
 			goto acc_end;
@@ -2369,7 +2369,7 @@ int purse_recv_leid(term_ram *ptrm, int allow, int itm)
 		money = pacc->money;
 #else
 		if ((pacc->feature & 0xC0) == 0x80) {
-			// ÕâÊÇ¹ÒÊ§¿¨
+			// è¿™æ˜¯æŒ‚å¤±å¡
 			feature |= 1 << 5;
 		}
 #ifdef PRE_REDUCE
@@ -2378,8 +2378,8 @@ int purse_recv_leid(term_ram *ptrm, int allow, int itm)
 #endif
 		if ((pacc->feature & 0xC0) == 0x40 || (pacc->feature & 0xF) == 0
 			) {
-			// ´Ë¿¨´ïµ½²ÍÏŞ
-			// ´Ë¿¨ÒªÊäÃÜÂë
+			// æ­¤å¡è¾¾åˆ°é¤é™
+			// æ­¤å¡è¦è¾“å¯†ç 
 			feature |= 1 << 3;
 		}
 ///////////////////////////////////////////////////////////////////////////////////
@@ -2387,7 +2387,7 @@ int purse_recv_leid(term_ram *ptrm, int allow, int itm)
 			 ((pacc->feature & 0x30) == 0) ||
 			 ((ptrm->pterm->power_id & 0x0F) == ((pacc->feature & 0x30) >> 4))
 			 ) {
-			//money[0] = pacc->money & 0xFF;// ¸ÃÖÕ¶ËÎª1ÀàÖÕ¶Ë»òÕÊ»§Îª1ÀàÉí·İ»òÕÊ»§Éí·İÓëÖÕ¶ËÀàĞÍ¶ÔÓ¦£¬ÔòÔÊĞíÆäÏû·Ñ
+			//money[0] = pacc->money & 0xFF;// è¯¥ç»ˆç«¯ä¸º1ç±»ç»ˆç«¯æˆ–å¸æˆ·ä¸º1ç±»èº«ä»½æˆ–å¸æˆ·èº«ä»½ä¸ç»ˆç«¯ç±»å‹å¯¹åº”ï¼Œåˆ™å…è®¸å…¶æ¶ˆè´¹
 			//money[1] = (pacc->money >> 8) & 0xFF;
 			//money[2] = (pacc->money >> 16) & 0xF;
 			if (pacc->money < 0) {
@@ -2404,7 +2404,7 @@ int purse_recv_leid(term_ram *ptrm, int allow, int itm)
 #ifdef CONFIG_UART_V2
 acc_end:
 #endif
-	// ÅĞ¶ÏÊÇ·ñÔÊĞíÍÑ»úÊ¹ÓÃ¹âµç¿¨
+	// åˆ¤æ–­æ˜¯å¦å…è®¸è„±æœºä½¿ç”¨å…‰ç”µå¡
 	if (!allow) {
 #ifdef DEBUG
 		printk("not allow: %d\n", cardno);
@@ -2421,7 +2421,7 @@ acc_end:
 #endif
 	ptrm->add_verify = 0;
 	ptrm->dif_verify = 0;
-	// ·¢ÖÕ¶ËºÅ
+	// å‘ç»ˆç«¯å·
 	ret = send_byte(ptrm->term_no, ptrm->term_no);
 	if (ret < 0) {
 		ptrm->status = NOCOM;
@@ -2429,7 +2429,7 @@ acc_end:
 	}
 	ptrm->dif_verify ^= ptrm->term_no;
 	ptrm->add_verify += ptrm->term_no;
-	// ·¢ÃüÁî×Ö
+	// å‘å‘½ä»¤å­—
 	ret = send_byte(PURSE_SEND_CARDNO, ptrm->term_no);
 	if (ret < 0) {
 		ptrm->status = NOCOM;
@@ -2437,7 +2437,7 @@ acc_end:
 	}
 	ptrm->dif_verify ^= PURSE_SEND_CARDNO;
 	ptrm->add_verify += PURSE_SEND_CARDNO;
-	// ·¢°ü³¤¶È
+	// å‘åŒ…é•¿åº¦
 	len = 7;
 	ret = send_byte(len, ptrm->term_no);
 	if (ret < 0) {
@@ -2446,7 +2446,7 @@ acc_end:
 	}
 	ptrm->dif_verify ^= len;
 	ptrm->add_verify += len;
-	// ·¢Éí·İĞÅÏ¢
+	// å‘èº«ä»½ä¿¡æ¯
 	if ((ret = send_byte(feature, ptrm->term_no)) < 0) {
 		ptrm->status = NOCOM;
 		return -1;
@@ -2457,7 +2457,7 @@ acc_end:
 	//money = binl2bcd(money) & 0xFFFFFF;
 	tmp = (unsigned char *)&money;
 	//tmp += 2;
-	// ·¢4×Ö½ÚÓà¶î
+	// å‘4å­—èŠ‚ä½™é¢
 	for (i = 0; i < sizeof(money); i++) {
 		if (send_byte(*tmp, ptrm->term_no) < 0)
 			return -1;
@@ -2465,20 +2465,20 @@ acc_end:
 		ptrm->add_verify += *tmp;
 		tmp++;
 	}
-	// ·¢Ğ£Ñé
+	// å‘æ ¡éªŒ
 	if (send_verify(ptrm) < 0)
 		return -1;
-	ptrm->flow_flag = 0;		// ÔÊĞíÖÕ¶Ë½ÓÊÕÁ÷Ë®
+	ptrm->flow_flag = 0;		// å…è®¸ç»ˆç«¯æ¥æ”¶æµæ°´
 	// if not exist then send 1 and remain money 0
 	// next check dis_verify, send 0 if right, send 0xF if wrong
 #ifdef CONFIG_RECORD_CASHTERM
-	// ÖÕ¶Ë¿ÉÒÔ½ÓÊÕÁ÷Ë®ÁË, ±£´æ×´Ì¬
+	// ç»ˆç«¯å¯ä»¥æ¥æ”¶æµæ°´äº†, ä¿å­˜çŠ¶æ€
 	if ((ptrm->pterm->param.term_type & 0x20)
 		&& (cashterm_ptr < CASHBUFSZ)) {//modified by duyy, 2013.6.21
 		for (i = 0; i < CASHBUFSZ; i++){
-			//ÏÈÅĞ¶ÏÏàÍ¬³öÄÉ»úºÅµÄĞÅÏ¢ÊÇ·ñÓĞ´æ´¢
+			//å…ˆåˆ¤æ–­ç›¸åŒå‡ºçº³æœºå·çš„ä¿¡æ¯æ˜¯å¦æœ‰å­˜å‚¨
 			if (ptrm->term_no ==  cashbuf[i].termno){
-				//³öÄÉ»úºÅÏàÍ¬ÔòÊı¾İÖ±½Ó¸²¸Ç´æ´¢
+				//å‡ºçº³æœºå·ç›¸åŒåˆ™æ•°æ®ç›´æ¥è¦†ç›–å­˜å‚¨
 				cashbuf[i].feature = feature;
 				cashbuf[i].consume = 0;
 				cashbuf[i].status = CASH_CARDIN;
@@ -2494,12 +2494,12 @@ acc_end:
 #endif
 					cashbuf[i].money = pacc->money;
 				}
-				// ÕâÊ±ºòĞ´ÈëÖÕ¶Ë½ğ¶îÂğ?
+				// è¿™æ—¶å€™å†™å…¥ç»ˆç«¯é‡‘é¢å—?
 				cashbuf[i].term_money = ptrm->term_money;
 				return 0;
 			}
 		}
-		// ¼ÇÂ¼·Ç·¨¿¨
+		// è®°å½•éæ³•å¡
 		cashbuf[cashterm_ptr].feature = feature;
 		cashbuf[cashterm_ptr].consume = 0;
 		cashbuf[cashterm_ptr].status = CASH_CARDIN;
@@ -2515,7 +2515,7 @@ acc_end:
 #endif
 			cashbuf[cashterm_ptr].money = pacc->money;
 		}
-		// ÕâÊ±ºòĞ´ÈëÖÕ¶Ë½ğ¶îÂğ?
+		// è¿™æ—¶å€™å†™å…¥ç»ˆç«¯é‡‘é¢å—?
 		cashbuf[cashterm_ptr].term_money = ptrm->term_money;
 		cashterm_ptr++;
 		if (cashterm_ptr == CASHBUFSZ){
@@ -2538,7 +2538,7 @@ int purse_recv_leflow(term_ram *ptrm, unsigned char *tm)
 	unsigned char *tmp, nouse, len;
 	acc_ram *pacc;
 	memset(&leflow, 0, sizeof(leflow));
-	// ÊÕ°ü³¤¶È
+	// æ”¶åŒ…é•¿åº¦
 	len = recv_len(ptrm);
 	if (len == 0xFF)
 		return -1;
@@ -2560,7 +2560,7 @@ int purse_recv_leflow(term_ram *ptrm, unsigned char *tm)
 		ptrm->add_verify += *tmp;
 		tmp++;
 	}
-	// ÊÕ1×Ö½Ú½áËã»ú±àºÅ
+	// æ”¶1å­—èŠ‚ç»“ç®—æœºç¼–å·
 	tmp = (unsigned char *)&leflow.tml_num;
 	for (i = 0; i < sizeof(leflow.tml_num); i++) {
 		ret = recv_data((char *)tmp, ptrm->term_no);
@@ -2577,7 +2577,7 @@ int purse_recv_leflow(term_ram *ptrm, unsigned char *tm)
 		ptrm->dif_verify ^= *tmp;
 		tmp++;
 	}
-	// ÊÕ1×Ö½ÚÇøºÅ
+	// æ”¶1å­—èŠ‚åŒºå·
 	tmp = (unsigned char *)&leflow.areano;
 	for (i = 0; i < sizeof(leflow.areano); i++) {
 		ret = recv_data((char *)tmp, ptrm->term_no);
@@ -2594,7 +2594,7 @@ int purse_recv_leflow(term_ram *ptrm, unsigned char *tm)
 		ptrm->dif_verify ^= *tmp;
 		tmp++;
 	}
-	// ÊÕ2×Ö½ÚPSAM¿¨±àºÅ
+	// æ”¶2å­—èŠ‚PSAMå¡ç¼–å·
 	tmp = (unsigned char *)&leflow.psam_num;
 	for (i = 0; i < 2; i++) {
 		ret = recv_data((char *)tmp, ptrm->term_no);
@@ -2611,7 +2611,7 @@ int purse_recv_leflow(term_ram *ptrm, unsigned char *tm)
 		ptrm->dif_verify ^= *tmp;
 		tmp++;
 	}
-	// ÊÕ4×Ö½ÚPSAM¿¨½»Ò×ĞòºÅ
+	// æ”¶4å­—èŠ‚PSAMå¡äº¤æ˜“åºå·
 	tmp = (unsigned char *)&leflow.psam_trd_num;
 	for (i = 0; i < 4; i++) {
 		ret = recv_data((char *)tmp, ptrm->term_no);
@@ -2702,9 +2702,9 @@ int purse_recv_leflow(term_ram *ptrm, unsigned char *tm)
 	// adjust money limit
 	limit = pacc->feature & 0xF;
 	if ((limit != 0xF) && limit) {
-		// ĞèÒªµ÷Õû²ÍÏŞ
+		// éœ€è¦è°ƒæ•´é¤é™
 		limit -= leflow.consume_sum / 100 + 1;
-		if (!(leflow.consume_sum % 100)) {// ¸ÕºÃÂú100Ê±, ÈÏÎªÊÇÒ»´Î
+		if (!(leflow.consume_sum % 100)) {// åˆšå¥½æ»¡100æ—¶, è®¤ä¸ºæ˜¯ä¸€æ¬¡
 			limit++;
 		}
 		if (limit < 0)
@@ -2714,7 +2714,7 @@ int purse_recv_leflow(term_ram *ptrm, unsigned char *tm)
 	//if (leflow.consume_sum < 0) {
 	//	printk("error!!!!!!!!\n");
 	//}
-	// ÕË»§¿â¸ÄĞ´
+	// è´¦æˆ·åº“æ”¹å†™
 	pacc->money -= leflow.consume_sum;
 	if (pacc->money < 0) {
 		printk("account money below zero!!!\n");
@@ -2724,7 +2724,7 @@ int purse_recv_leflow(term_ram *ptrm, unsigned char *tm)
 	pacc->feature &= 0xF0;
 	pacc->feature |= limit;
 #endif
-	// ÖÕ¶Ë»úÊı¾İ¼ÇÂ¼
+	// ç»ˆç«¯æœºæ•°æ®è®°å½•
 	ptrm->term_cnt++;
 	ptrm->term_money += leflow.consume_sum;
 	// init leflow
@@ -2738,16 +2738,16 @@ int purse_recv_leflow(term_ram *ptrm, unsigned char *tm)
 	leflow.date.sec = *tm;
 	//leflow.tml_num = ptrm->term_no;
 	leflow.acc_num = pacc->acc_num;
-	// Á÷Ë®ºÅµÄ´¦Àí
+	// æµæ°´å·çš„å¤„ç†
 	//flow_no = maxflowno;
 	leflow.flow_num = maxflowno++;
 	//maxflowno = flow_no;
 	// set ptrm->flow_flag
 	ptrm->flow_flag = ptrm->term_no;
-	// Á÷Ë®ÇøÍ·Î²µÄ´¦Àí
+	// æµæ°´åŒºå¤´å°¾çš„å¤„ç†
 	tail = flowptr.tail;
 	if (tail >= FLOWANUM) {
-		// Á÷Ë®»º´æÇøÂú?
+		// æµæ°´ç¼“å­˜åŒºæ»¡?
 		printk("uart 485 flow buffer no space\n");
 		ret = send_ga(ptrm, -1);
 		return -1;
@@ -2775,15 +2775,15 @@ int purse_recv_ledep(term_ram *ptrm, unsigned char *tm)
 	unsigned char *tmp, nouse, len;
 	acc_ram *pacc;
 	memset(&leflow, 0, sizeof(leflow));
-	if (!(ptrm->pterm->param.term_type & 0x20)) {	// ¶Ï¶ÏÊÇ·ñÎª³öÄÉ»ú
-		// Õâ²»ÊÇ³öÄÉ»ú
+	if (!(ptrm->pterm->param.term_type & 0x20)) {	// æ–­æ–­æ˜¯å¦ä¸ºå‡ºçº³æœº
+		// è¿™ä¸æ˜¯å‡ºçº³æœº
 #ifdef PURSEDBG
 		printk("this is not cash terminal\n");
 #endif
 		usart_delay(20);
 		return 0;
 	}
-	// ÊÕ°ü³¤¶È
+	// æ”¶åŒ…é•¿åº¦
 	len = recv_len(ptrm);
 	if (len == 0xFF)
 		return -1;
@@ -2805,7 +2805,7 @@ int purse_recv_ledep(term_ram *ptrm, unsigned char *tm)
 		ptrm->add_verify += *tmp;
 		tmp++;
 	}
-	// ÊÕ1×Ö½Ú½áËã»ú±àºÅ
+	// æ”¶1å­—èŠ‚ç»“ç®—æœºç¼–å·
 	tmp = (unsigned char *)&leflow.tml_num;
 	for (i = 0; i < sizeof(leflow.tml_num); i++) {
 		ret = recv_data((char *)tmp, ptrm->term_no);
@@ -2822,7 +2822,7 @@ int purse_recv_ledep(term_ram *ptrm, unsigned char *tm)
 		ptrm->dif_verify ^= *tmp;
 		tmp++;
 	}
-	// ÊÕ1×Ö½ÚÇøºÅ
+	// æ”¶1å­—èŠ‚åŒºå·
 	tmp = (unsigned char *)&leflow.areano;
 	for (i = 0; i < sizeof(leflow.areano); i++) {
 		ret = recv_data((char *)tmp, ptrm->term_no);
@@ -2839,7 +2839,7 @@ int purse_recv_ledep(term_ram *ptrm, unsigned char *tm)
 		ptrm->dif_verify ^= *tmp;
 		tmp++;
 	}
-	// ÊÕ2×Ö½ÚPSAM¿¨±àºÅ
+	// æ”¶2å­—èŠ‚PSAMå¡ç¼–å·
 	tmp = (unsigned char *)&leflow.psam_num;
 	for (i = 0; i < 2; i++) {
 		ret = recv_data((char *)tmp, ptrm->term_no);
@@ -2856,7 +2856,7 @@ int purse_recv_ledep(term_ram *ptrm, unsigned char *tm)
 		ptrm->dif_verify ^= *tmp;
 		tmp++;
 	}
-	// ÊÕ4×Ö½ÚPSAM¿¨½»Ò×ĞòºÅ
+	// æ”¶4å­—èŠ‚PSAMå¡äº¤æ˜“åºå·
 	tmp = (unsigned char *)&leflow.psam_trd_num;
 	for (i = 0; i < 4; i++) {
 		ret = recv_data((char *)tmp, ptrm->term_no);
@@ -2941,18 +2941,18 @@ int purse_recv_ledep(term_ram *ptrm, unsigned char *tm)
 		return ret;
 	}
 #ifndef CONFIG_UART_V2
-	// »Ö¸´²ÍÏŞ
+	// æ¢å¤é¤é™
 	if ((pacc->feature & 0xF) != 0xF) {
 		pacc->feature &= 0xF0;
 		pacc->feature |= 0xE;
 	}
-	managefee = fee[pacc->managefee & 0xF];		//¹ÜÀí·Ñ±ÈÂÊ
+	managefee = fee[pacc->managefee & 0xF];		//ç®¡ç†è´¹æ¯”ç‡
 #else
-	managefee = fee[(pacc->flag >> 4) & 0xF];		//¹ÜÀí·Ñ±ÈÂÊ
+	managefee = fee[(pacc->flag >> 4) & 0xF];		//ç®¡ç†è´¹æ¯”ç‡
 #endif
-	managefee = managefee * leflow.consume_sum / 100;	//¼ÆËã¹ÜÀí·Ñ
+	managefee = managefee * leflow.consume_sum / 100;	//è®¡ç®—ç®¡ç†è´¹
 	//printk("pacc->money: %d, managefee: %d\n", pacc->money, managefee);
-	pacc->money += leflow.consume_sum - managefee;		//Óà¶î¼ÓÇ®¼õ¹Ü·Ñ
+	pacc->money += leflow.consume_sum - managefee;		//ä½™é¢åŠ é’±å‡ç®¡è´¹
 	//printk("pacc->money: %d\n", pacc->money);
 
 	ptrm->term_cnt++;
@@ -2967,15 +2967,15 @@ int purse_recv_ledep(term_ram *ptrm, unsigned char *tm)
 	leflow.date.min = *tm++;
 	leflow.date.sec = *tm;
 	leflow.acc_num = pacc->acc_num;
-	// Á÷Ë®ºÅµÄ´¦Àí
+	// æµæ°´å·çš„å¤„ç†
 	leflow.flow_num = maxflowno++;
 	leflow.manage_fee = managefee * (-1);
 	// set ptrm->flow_flag
 	ptrm->flow_flag = ptrm->term_no;
-	// Á÷Ë®ÇøÍ·Î²µÄ´¦Àí
+	// æµæ°´åŒºå¤´å°¾çš„å¤„ç†
 	tail = flowptr.tail;
 	if (tail >= FLOWANUM) {
-		// Á÷Ë®»º´æÇøÂú?
+		// æµæ°´ç¼“å­˜åŒºæ»¡?
 		printk("recv le dep uart 485 flow buffer no space\n");
 		ret = send_ga(ptrm, -1);
 		return -1;
@@ -2992,14 +2992,14 @@ int purse_recv_ledep(term_ram *ptrm, unsigned char *tm)
 	space_remain--;
 	ret = send_ga(ptrm, 0);
 #ifdef CONFIG_RECORD_CASHTERM
-	// ÖÕ¶Ë½ÓÊÕÈ¡¿îÁ÷Ë®, ±£´æ×´Ì¬
+	// ç»ˆç«¯æ¥æ”¶å–æ¬¾æµæ°´, ä¿å­˜çŠ¶æ€
 	if (/*(ptrm->pterm->term_type & 0x20)
 		&&*/ (cashterm_ptr < CASHBUFSZ) && pacc) {
 		//modified by duyy, 2013.6.21
 		for (i = 0; i < CASHBUFSZ; i++){
-			//ÏÈÅĞ¶ÏÏàÍ¬³öÄÉ»úºÅµÄĞÅÏ¢ÊÇ·ñÓĞ´æ´¢
+			//å…ˆåˆ¤æ–­ç›¸åŒå‡ºçº³æœºå·çš„ä¿¡æ¯æ˜¯å¦æœ‰å­˜å‚¨
 			if (ptrm->term_no ==  cashbuf[i].termno){
-				//³öÄÉ»úºÅÏàÍ¬ÔòÊı¾İÖ±½Ó¸²¸Ç´æ´¢
+				//å‡ºçº³æœºå·ç›¸åŒåˆ™æ•°æ®ç›´æ¥è¦†ç›–å­˜å‚¨
 				cashbuf[i].accno = pacc->acc_num;
 				cashbuf[i].cardno = pacc->card_num;
 				cashbuf[i].feature = 0;
@@ -3008,7 +3008,7 @@ int purse_recv_ledep(term_ram *ptrm, unsigned char *tm)
 				cashbuf[i].consume = leflow.consume_sum;
 				cashbuf[i].status = CASH_DEPOFF;
 				cashbuf[i].termno = ptrm->term_no;
-				// Ôö¼ÓÖÕ¶Ë½ğ¶î
+				// å¢åŠ ç»ˆç«¯é‡‘é¢
 				cashbuf[i].term_money = ptrm->term_money;
 				return ret;
 			}
@@ -3021,7 +3021,7 @@ int purse_recv_ledep(term_ram *ptrm, unsigned char *tm)
 		cashbuf[cashterm_ptr].consume = leflow.consume_sum;
 		cashbuf[cashterm_ptr].status = CASH_DEPOFF;
 		cashbuf[cashterm_ptr].termno = ptrm->term_no;
-		// Ôö¼ÓÖÕ¶Ë½ğ¶î
+		// å¢åŠ ç»ˆç«¯é‡‘é¢
 		cashbuf[cashterm_ptr].term_money = ptrm->term_money;
 		cashterm_ptr++;
 		if (cashterm_ptr == CASHBUFSZ){
@@ -3040,13 +3040,13 @@ int purse_recv_letake(term_ram *ptrm, unsigned char *tm)
 	unsigned char *tmp, nouse, len;
 	acc_ram *pacc;
 	memset(&leflow, 0, sizeof(leflow));
-	if (!(ptrm->pterm->param.term_type & 0x20)) {	// ¶Ï¶ÏÊÇ·ñÎª³öÄÉ»ú
-		// Õâ²»ÊÇ³öÄÉ»ú
+	if (!(ptrm->pterm->param.term_type & 0x20)) {	// æ–­æ–­æ˜¯å¦ä¸ºå‡ºçº³æœº
+		// è¿™ä¸æ˜¯å‡ºçº³æœº
 		//printk("this is not cash terminal\n");
 		usart_delay(20);
 		return 0;
 	}
-	// ÊÕ°ü³¤¶È
+	// æ”¶åŒ…é•¿åº¦
 	len = recv_len(ptrm);
 	if (len == 0xFF)
 		return -1;
@@ -3068,7 +3068,7 @@ int purse_recv_letake(term_ram *ptrm, unsigned char *tm)
 		ptrm->add_verify += *tmp;
 		tmp++;
 	}
-	// ÊÕ1×Ö½Ú½áËã»ú±àºÅ
+	// æ”¶1å­—èŠ‚ç»“ç®—æœºç¼–å·
 	tmp = (unsigned char *)&leflow.tml_num;
 	for (i = 0; i < sizeof(leflow.tml_num); i++) {
 		ret = recv_data((char *)tmp, ptrm->term_no);
@@ -3085,7 +3085,7 @@ int purse_recv_letake(term_ram *ptrm, unsigned char *tm)
 		ptrm->dif_verify ^= *tmp;
 		tmp++;
 	}
-	// ÊÕ1×Ö½ÚÇøºÅ
+	// æ”¶1å­—èŠ‚åŒºå·
 	tmp = (unsigned char *)&leflow.areano;
 	for (i = 0; i < sizeof(leflow.areano); i++) {
 		ret = recv_data((char *)tmp, ptrm->term_no);
@@ -3102,7 +3102,7 @@ int purse_recv_letake(term_ram *ptrm, unsigned char *tm)
 		ptrm->dif_verify ^= *tmp;
 		tmp++;
 	}
-	// ÊÕ2×Ö½ÚPSAM¿¨±àºÅ
+	// æ”¶2å­—èŠ‚PSAMå¡ç¼–å·
 	tmp = (unsigned char *)&leflow.psam_num;
 	for (i = 0; i < 2; i++) {
 		ret = recv_data((char *)tmp, ptrm->term_no);
@@ -3119,7 +3119,7 @@ int purse_recv_letake(term_ram *ptrm, unsigned char *tm)
 		ptrm->dif_verify ^= *tmp;
 		tmp++;
 	}
-	// ÊÕ4×Ö½ÚPSAM¿¨½»Ò×ĞòºÅ
+	// æ”¶4å­—èŠ‚PSAMå¡äº¤æ˜“åºå·
 	tmp = (unsigned char *)&leflow.psam_trd_num;
 	for (i = 0; i < 4; i++) {
 		ret = recv_data((char *)tmp, ptrm->term_no);
@@ -3201,7 +3201,7 @@ int purse_recv_letake(term_ram *ptrm, unsigned char *tm)
 		return ret;
 	}
 	//printk("pacc->money: %d, managefee: %d\n", pacc->money, managefee);
-	pacc->money -= leflow.consume_sum;		//Óà¶î¼õÇ®
+	pacc->money -= leflow.consume_sum;		//ä½™é¢å‡é’±
 	if (pacc->money < 0) {
 		printk("account money below zero!\n");
 		pacc->money = 0;
@@ -3220,14 +3220,14 @@ int purse_recv_letake(term_ram *ptrm, unsigned char *tm)
 	leflow.date.min = *tm++;
 	leflow.date.sec = *tm;
 	leflow.acc_num = pacc->acc_num;
-	// Á÷Ë®ºÅµÄ´¦Àí
+	// æµæ°´å·çš„å¤„ç†
 	leflow.flow_num = maxflowno++;
 	// set ptrm->flow_flag
 	ptrm->flow_flag = ptrm->term_no;
-	// Á÷Ë®ÇøÍ·Î²µÄ´¦Àí
+	// æµæ°´åŒºå¤´å°¾çš„å¤„ç†
 	tail = flowptr.tail;
 	if (tail >= FLOWANUM) {
-		// Á÷Ë®»º´æÇøÂú?
+		// æµæ°´ç¼“å­˜åŒºæ»¡?
 		printk("recv le dep uart 485 flow buffer no space\n");
 		ret = send_ga(ptrm, -1);
 		return -1;
@@ -3244,14 +3244,14 @@ int purse_recv_letake(term_ram *ptrm, unsigned char *tm)
 	space_remain--;
 	ret = send_ga(ptrm, 0);
 #ifdef CONFIG_RECORD_CASHTERM
-	// ÖÕ¶Ë½ÓÊÕÈ¡¿îÁ÷Ë®, ±£´æ×´Ì¬
+	// ç»ˆç«¯æ¥æ”¶å–æ¬¾æµæ°´, ä¿å­˜çŠ¶æ€
 	if (/*(ptrm->pterm->term_type & 0x20)
 		&&*/ (cashterm_ptr < CASHBUFSZ) && pacc) {
 		//modified by duyy, 2013.6.21
 		for (i = 0; i < CASHBUFSZ; i++){
-			//ÏÈÅĞ¶ÏÏàÍ¬³öÄÉ»úºÅµÄĞÅÏ¢ÊÇ·ñÓĞ´æ´¢
+			//å…ˆåˆ¤æ–­ç›¸åŒå‡ºçº³æœºå·çš„ä¿¡æ¯æ˜¯å¦æœ‰å­˜å‚¨
 			if (ptrm->term_no ==  cashbuf[i].termno){
-				//³öÄÉ»úºÅÏàÍ¬ÔòÊı¾İÖ±½Ó¸²¸Ç´æ´¢
+				//å‡ºçº³æœºå·ç›¸åŒåˆ™æ•°æ®ç›´æ¥è¦†ç›–å­˜å‚¨
 				cashbuf[i].accno = pacc->acc_num;
 				cashbuf[i].cardno = pacc->card_num;
 				cashbuf[i].feature = 0;
@@ -3260,7 +3260,7 @@ int purse_recv_letake(term_ram *ptrm, unsigned char *tm)
 				cashbuf[i].consume = leflow.consume_sum;
 				cashbuf[i].status = CASH_TAKEOFF;
 				cashbuf[i].termno = ptrm->term_no;
-				// Ôö¼ÓÖÕ¶Ë½ğ¶î
+				// å¢åŠ ç»ˆç«¯é‡‘é¢
 				cashbuf[i].term_money = ptrm->term_money;
 				return ret;
 			}
@@ -3273,7 +3273,7 @@ int purse_recv_letake(term_ram *ptrm, unsigned char *tm)
 		cashbuf[cashterm_ptr].consume = leflow.consume_sum;
 		cashbuf[cashterm_ptr].status = CASH_TAKEOFF;
 		cashbuf[cashterm_ptr].termno = ptrm->term_no;
-		// Ôö¼ÓÖÕ¶Ë½ğ¶î
+		// å¢åŠ ç»ˆç«¯é‡‘é¢
 		cashbuf[cashterm_ptr].term_money = ptrm->term_money;
 		cashterm_ptr++;
 		if (cashterm_ptr == CASHBUFSZ){
@@ -3285,13 +3285,13 @@ int purse_recv_letake(term_ram *ptrm, unsigned char *tm)
 }
 #if 0
 /*
- * ËÑË÷PSAM¿¨¿â
+ * æœç´¢PSAMå¡åº“
  */
 psam_local *search_psam(unsigned short num, struct psam_info *psinfo)
 {
 	psam_local *psl;
 	int cnt, i;
-	// ¼òµ¥µÄ½øĞĞ²ÎÊıÑéÖ¤
+	// ç®€å•çš„è¿›è¡Œå‚æ•°éªŒè¯
 	if (psinfo == NULL)
 		return NULL;
 	cnt = psinfo->cnt;
@@ -3307,24 +3307,24 @@ psam_local *search_psam(unsigned short num, struct psam_info *psinfo)
 	return NULL;
 }
 /*
- * ¿¨Æ¬ÌØÊâÓ¦ÓÃ¹¦ÄÜÆôÓÃ¼°²ÎÊıÏÂÔØ
+ * å¡ç‰‡ç‰¹æ®Šåº”ç”¨åŠŸèƒ½å¯ç”¨åŠå‚æ•°ä¸‹è½½
  * write by wjzhe, June 11 2007
  */
 int purse_startup_newfunc(term_ram *ptrm)
 {
-	// ·¢1×Ö½ÚµØÖ·
-	// ·¢0x34ÃüÁî×Ö
+	// å‘1å­—èŠ‚åœ°å€
+	// å‘0x34å‘½ä»¤å­—
 	/*
-	A:¿¨Ïû·ÑÊ±¼ä£¨²Í´Î£©ÉèÖÃ£»
-	B:¿¨Ïû·Ñ´ÎÊıÏŞÖÆ£»
-	C:¿¨Ïû·ÑÁ÷Ë®ÊÇ·ñ´æ´¢
+	A:å¡æ¶ˆè´¹æ—¶é—´ï¼ˆé¤æ¬¡ï¼‰è®¾ç½®ï¼›
+	B:å¡æ¶ˆè´¹æ¬¡æ•°é™åˆ¶ï¼›
+	C:å¡æ¶ˆè´¹æµæ°´æ˜¯å¦å­˜å‚¨
 	...
 	*/
 	return 0;
 }
 
 /*
- * Ö¸¶¨µØÖ·¶ÎÄÚ´æ´¢µÄºÚÃûµ¥Êı¾İ
+ * æŒ‡å®šåœ°å€æ®µå†…å­˜å‚¨çš„é»‘åå•æ•°æ®
  * write by wjzhe, June 11 2007
  */
 int purse_update_data(term_ram *ptrm, int addr, void *data, int n)
@@ -3333,7 +3333,7 @@ int purse_update_data(term_ram *ptrm, int addr, void *data, int n)
 }
 
 /*
- * Ö¸¶¨Ê±¼ä¶ÎÁ÷Ë®»òÎ´ÉÏ´«Á÷Ë®ÉÏ´«
+ * æŒ‡å®šæ—¶é—´æ®µæµæ°´æˆ–æœªä¸Šä¼ æµæ°´ä¸Šä¼ 
  * write by wjzhe, June 11 2007
  */
 int purse_get_flow(term_ram *ptrm, unsigned char *tm_s, unsigned char *tm_e)

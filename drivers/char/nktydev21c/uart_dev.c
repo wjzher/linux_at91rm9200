@@ -34,7 +34,7 @@ short uart_poll(volatile unsigned int * reg, unsigned long bit)
 	return (loop_cntr > 0);
 }
 /*******************************************
- *	选择485接收端口
+ *	閫夋嫨485鎺ユ敹绔彛
 ********************************************/
 static void channel_select(unsigned char channel_number)		
 {

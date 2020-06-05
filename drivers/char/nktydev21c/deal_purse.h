@@ -1,16 +1,16 @@
 /*
  * Copyright (c) 2007, NKTY Company
  * All rights reserved.
- * ÎÄ¼þÃû³Æ£ºdeal_purse.h
- * Õª    Òª£º¶¨Òå´¦ÀíÐÂPOSÃüÁî×ÖºÍËùÓÃµ½µÄº¯Êý
+ * æ–‡ä»¶åç§°ï¼šdeal_purse.h
+ * æ‘˜    è¦ï¼šå®šä¹‰å¤„ç†æ–°POSå‘½ä»¤å­—å’Œæ‰€ç”¨åˆ°çš„å‡½æ•°
  * 			 
- * µ±Ç°°æ±¾£º1.0
- * ×÷    Õß£ºwjzhe
- * Íê³ÉÈÕÆÚ£º2007Äê6ÔÂ14ÈÕ
+ * å½“å‰ç‰ˆæœ¬ï¼š1.0
+ * ä½œ    è€…ï¼šwjzhe
+ * å®Œæˆæ—¥æœŸï¼š2007å¹´6æœˆ14æ—¥
  *
- * È¡´ú°æ±¾£º
- * Ô­×÷Õß  £º
- * Íê³ÉÈÕÆÚ£º
+ * å–ä»£ç‰ˆæœ¬ï¼š
+ * åŽŸä½œè€…  ï¼š
+ * å®Œæˆæ—¥æœŸï¼š
  */
 #ifndef _DEAL_PURSE_H
 #define _DEAL_PURSE_H
@@ -42,17 +42,17 @@
 #define PURSE_GET_TNO 0x47
 #define PURSE_RET_TNO 0x48
 
-#define PURSE_RECV_CARDNO 0x51	// ÊÕµ½¹âµç¿¨·¢ËÍ¿¨ºÅÃüÁî
-#define PURSE_SEND_CARDNO 0x52	// ·µ»Ø¹âµç¿¨·¢ËÍ¿¨ºÅÃüÁî
-#define PURSE_RECV_LEFLOW 0x53	// ½ÓÊÕ¹âµç¿¨Á÷Ë®ÃüÁî
-#define PURSE_RECV_DEP	  0x54	// ½ÓÊÕ¹âµç¿¨´æ¿îÁ÷Ë®ÃüÁî
-#define PURSE_RECV_TAKE	  0x55	// ½ÓÊÕ¹âµç¿¨È¡¿îÁ÷Ë®ÃüÁî
+#define PURSE_RECV_CARDNO 0x51	// æ”¶åˆ°å…‰ç”µå¡å‘é€å¡å·å‘½ä»¤
+#define PURSE_SEND_CARDNO 0x52	// è¿”å›žå…‰ç”µå¡å‘é€å¡å·å‘½ä»¤
+#define PURSE_RECV_LEFLOW 0x53	// æŽ¥æ”¶å…‰ç”µå¡æµæ°´å‘½ä»¤
+#define PURSE_RECV_DEP	  0x54	// æŽ¥æ”¶å…‰ç”µå¡å­˜æ¬¾æµæ°´å‘½ä»¤
+#define PURSE_RECV_TAKE	  0x55	// æŽ¥æ”¶å…‰ç”µå¡å–æ¬¾æµæ°´å‘½ä»¤
 
 //added by duyy,2012.2.13
-#define PURSE_REQ_PARNMF 0x61  //ÇëÇóÉÏµç²ÎÊýÃüÁî£¬²»º¬¹ÜÀí·ÑÏµÊý
-#define PURSE_RET_PARNMF 0x62  //ÏòÖÕ¶Ë·¢ËÍÉÏµç²ÎÊý£¬²»º¬¹ÜÀí·ÑÏµÊý
-#define PURSE_REQ_MF 0x63  //ÇëÇó¹ÜÀí·ÑÏµÊý
-#define PURSE_RET_MF 0x64  //ÖÕ¶Ë·¢ËÍ¹ÜÀí·ÑÏµÊý
+#define PURSE_REQ_PARNMF 0x61  //è¯·æ±‚ä¸Šç”µå‚æ•°å‘½ä»¤ï¼Œä¸å«ç®¡ç†è´¹ç³»æ•°
+#define PURSE_RET_PARNMF 0x62  //å‘ç»ˆç«¯å‘é€ä¸Šç”µå‚æ•°ï¼Œä¸å«ç®¡ç†è´¹ç³»æ•°
+#define PURSE_REQ_MF 0x63  //è¯·æ±‚ç®¡ç†è´¹ç³»æ•°
+#define PURSE_RET_MF 0x64  //ç»ˆç«¯å‘é€ç®¡ç†è´¹ç³»æ•°
 
 extern AT91PS_USART uart_ctl0;
 extern AT91PS_USART uart_ctl2;

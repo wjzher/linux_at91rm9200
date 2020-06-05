@@ -55,11 +55,11 @@ extern int ctoutm(usr_time *putm, char *tm);
 int new_reg(acc_ram *acc);
 
 #ifdef CONFIG_UART_V2
-// ¼ÆËãÒ»ÌìÖĞµÄÊ±¼ä£¬ÊäÈë6×Ö½ÚÊ±¼ä
+// è®¡ç®—ä¸€å¤©ä¸­çš„æ—¶é—´ï¼Œè¾“å…¥6å­—èŠ‚æ—¶é—´
 static inline int _cal_itmofday(unsigned char *tm)
 {
 	int itm;
-	// ½«¶Áµ½µÄÊ±¼ä»»ËãÎªÕûÊı
+	// å°†è¯»åˆ°çš„æ—¶é—´æ¢ç®—ä¸ºæ•´æ•°
 	itm = BCD2BIN(tm[5]);
 	itm += BCD2BIN(tm[4]) * 60;
 	itm += BCD2BIN(tm[3]) * 3600;
