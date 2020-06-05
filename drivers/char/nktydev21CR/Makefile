@@ -1,0 +1,11 @@
+#
+# Makefile for NKTY DEV drivers
+#
+
+obj-$(CONFIG_AT91_UART) += at91_uart.o deal_data.o uart_dev.o deal_purse.o at91_oldrtc.o
+obj-$(CONFIG_AT91_USRI2C) += at91_usri2c.o
+obj-$(CONFIG_AT91_GPIOB) += at91_gpiob.o
+obj-$(CONFIG_AT91_SED1335) += at91_sed1335.o
+obj-$(CONFIG_AT91_DATAFLASH) += dataflash.o
+obj-$(CONFIG_AT91_FLASH) += at91_flash.o
+#obj-$(CONFIG_AT91_TTY) += tiny_tty.o

@@ -1,0 +1,56 @@
+#
+# NKTY all dev configuration
+#
+
+menu "NKTY devices 21c_s"
+
+config NKTYDEV21C_S
+	bool "NKTY devices 21c_s"
+
+config AT91_UART
+	bool "AT91 485 driver"
+	depends on ARCH_AT91RM9200 && NKTYDEV21C_S
+	default y
+	help
+	  The 485 driver gives 485 COM
+
+config UART_INT
+	bool "UART485 INT MODE"
+	depends on ARCH_AT91RM9200 && NKTYDEV21C_S && AT91_UART
+	default n
+
+config AT91_USRI2C
+	bool "AT91 user i2c interface"
+	depends on ARCH_AT91RM9200 && NKTYDEV21C_S
+	default y
+	help
+	  The user i2c interface gives support for FRAM and ds137
+	  on AT91RM9200
+
+config USRI2C_INT
+    bool "USRI2C INT MODE"
+    depends on ARCH_AT91RM9200 && NKTYDEV21C_S && AT91_USRI2C
+    default n
+    help
+      The user i2c interface use interrupt mode
+
+config AT91_GPIOB
+	bool "AT91 GPIOB driver"
+	depends on ARCH_AT91RM9200 && NKTYDEV21C_S
+	default y
+	help
+	  The GPIOB driver gives key interface on AT91RM9200
+
+config AT91_DATAFLASH
+	bool "AT91 DATAFLASH driver"
+	depends on ARCH_AT91RM9200 && NKTYDEV21C_S
+	default y
+	help
+	  The DATAFLASH driver gives AT45DB642 on AT91RM9200
+
+config AT91_FLASH
+	bool "AT91_FLASH driver"
+	depends on ARCH_AT91RM9200 && NKTYDEV21C_S
+	default n
+
+endmenu

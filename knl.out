@@ -1,0 +1,181 @@
+  CHK     include/linux/version.h
+make[1]: `arch/arm/kernel/asm-offsets.s' is up to date.
+make[1]: `include/asm-arm/mach-types.h' is up to date.
+  CHK     include/linux/compile.h
+  CHK     usr/initramfs_list
+  CC      drivers/char/tprtctrl/at91_uart.o
+drivers/char/tprtctrl/at91_uart.c:64:23: data_arch.h: No such file or directory
+drivers/char/tprtctrl/at91_uart.c:67:23: deal_data.h: No such file or directory
+drivers/char/tprtctrl/at91_uart.c:68:24: deal_purse.h: No such file or directory
+drivers/char/tprtctrl/at91_uart.c:89: error: parse error before "tprt_ram"
+drivers/char/tprtctrl/at91_uart.c:89: warning: no semicolon at end of struct or union
+drivers/char/tprtctrl/at91_uart.c:90: warning: type defaults to `int' in declaration of `par'
+drivers/char/tprtctrl/at91_uart.c:90: warning: data definition has no type or storage class
+drivers/char/tprtctrl/at91_uart.c:98: error: parse error before '}' token
+drivers/char/tprtctrl/at91_uart.c:98: warning: type defaults to `int' in declaration of `tprt_data'
+drivers/char/tprtctrl/at91_uart.c:98: warning: data definition has no type or storage class
+drivers/char/tprtctrl/at91_uart.c:100: error: parse error before "tprtdata"
+drivers/char/tprtctrl/at91_uart.c:100: warning: type defaults to `int' in declaration of `tprtdata'
+drivers/char/tprtctrl/at91_uart.c:100: warning: data definition has no type or storage class
+drivers/char/tprtctrl/at91_uart.c:101: error: parse error before "termpkg"
+drivers/char/tprtctrl/at91_uart.c:101: warning: type defaults to `int' in declaration of `termpkg'
+drivers/char/tprtctrl/at91_uart.c:101: warning: data definition has no type or storage class
+drivers/char/tprtctrl/at91_uart.c:102: error: parse error before '*' token
+drivers/char/tprtctrl/at91_uart.c:102: warning: type defaults to `int' in declaration of `ptermram'
+drivers/char/tprtctrl/at91_uart.c:102: warning: data definition has no type or storage class
+drivers/char/tprtctrl/at91_uart.c:103: error: parse error before '*' token
+drivers/char/tprtctrl/at91_uart.c:103: warning: type defaults to `int' in declaration of `pterminal'
+drivers/char/tprtctrl/at91_uart.c:103: warning: data definition has no type or storage class
+drivers/char/tprtctrl/at91_uart.c: In function `chk_space':
+drivers/char/tprtctrl/at91_uart.c:153: error: `flowptr' undeclared (first use in this function)
+drivers/char/tprtctrl/at91_uart.c:153: error: (Each undeclared identifier is reported only once
+drivers/char/tprtctrl/at91_uart.c:153: error: for each function it appears in.)
+drivers/char/tprtctrl/at91_uart.c:156: error: `FLOWANUM' undeclared (first use in this function)
+drivers/char/tprtctrl/at91_uart.c: In function `uart_call':
+drivers/char/tprtctrl/at91_uart.c:173: error: `tprt_ram' undeclared (first use in this function)
+drivers/char/tprtctrl/at91_uart.c:173: error: `prterm' undeclared (first use in this function)
+drivers/char/tprtctrl/at91_uart.c:174: error: `term_pkg' undeclared (first use in this function)
+drivers/char/tprtctrl/at91_uart.c:174: error: `pkg' undeclared (first use in this function)
+drivers/char/tprtctrl/at91_uart.c:180: error: `rcd_info' undeclared (first use in this function)
+drivers/char/tprtctrl/at91_uart.c:197: error: `flowptr' undeclared (first use in this function)
+drivers/char/tprtctrl/at91_uart.c:259: warning: implicit declaration of function `tprt_recv_packet_aftercmd'
+drivers/char/tprtctrl/at91_uart.c:264: warning: implicit declaration of function `tprt_rsend_conf'
+drivers/char/tprtctrl/at91_uart.c:276: warning: implicit declaration of function `tprt_recv_flow'
+drivers/char/tprtctrl/at91_uart.c:294: error: `ONEBYTETM' undeclared (first use in this function)
+drivers/char/tprtctrl/at91_uart.c:169: warning: unused variable `tm'
+drivers/char/tprtctrl/at91_uart.c:170: warning: unused variable `allow'
+drivers/char/tprtctrl/at91_uart.c: In function `uart_open':
+drivers/char/tprtctrl/at91_uart.c:361: error: `maxflowno' undeclared (first use in this function)
+drivers/char/tprtctrl/at91_uart.c: At top level:
+drivers/char/tprtctrl/at91_uart.c:366: error: parse error before '*' token
+drivers/char/tprtctrl/at91_uart.c:367: warning: function declaration isn't a prototype
+drivers/char/tprtctrl/at91_uart.c: In function `destory_tprtram':
+drivers/char/tprtctrl/at91_uart.c:370: error: `p' undeclared (first use in this function)
+drivers/char/tprtctrl/at91_uart.c:376: warning: implicit declaration of function `free'
+drivers/char/tprtctrl/at91_uart.c: At top level:
+drivers/char/tprtctrl/at91_uart.c:378: error: parse error before '*' token
+drivers/char/tprtctrl/at91_uart.c:379: warning: function declaration isn't a prototype
+drivers/char/tprtctrl/at91_uart.c: In function `partoterm':
+drivers/char/tprtctrl/at91_uart.c:380: error: `ptpar' undeclared (first use in this function)
+drivers/char/tprtctrl/at91_uart.c:380: error: request for member `num' in something not a structure or union
+drivers/char/tprtctrl/at91_uart.c:381: error: request for member `val' in something not a structure or union
+drivers/char/tprtctrl/at91_uart.c:382: error: request for member `dif' in something not a structure or union
+drivers/char/tprtctrl/at91_uart.c:383: error: request for member `ctrl' in something not a structure or union
+drivers/char/tprtctrl/at91_uart.c:384: error: request for member `cival' in something not a structure or union
+drivers/char/tprtctrl/at91_uart.c:385: error: request for member `bak' in something not a structure or union
+drivers/char/tprtctrl/at91_uart.c:386: error: request for member `sival' in something not a structure or union
+drivers/char/tprtctrl/at91_uart.c: At top level:
+drivers/char/tprtctrl/at91_uart.c:390: error: parse error before '*' token
+drivers/char/tprtctrl/at91_uart.c:391: warning: function declaration isn't a prototype
+drivers/char/tprtctrl/at91_uart.c: In function `init_uart_data':
+drivers/char/tprtctrl/at91_uart.c:394: error: `tprt_ram' undeclared (first use in this function)
+drivers/char/tprtctrl/at91_uart.c:394: error: `prterm' undeclared (first use in this function)
+drivers/char/tprtctrl/at91_uart.c:395: error: `tprt_term' undeclared (first use in this function)
+drivers/char/tprtctrl/at91_uart.c:395: error: `ptpar' undeclared (first use in this function)
+drivers/char/tprtctrl/at91_uart.c:396: warning: ISO C90 forbids mixed declarations and code
+drivers/char/tprtctrl/at91_uart.c:397: error: `arg' undeclared (first use in this function)
+drivers/char/tprtctrl/at91_uart.c:403: error: invalid operands to binary *
+drivers/char/tprtctrl/at91_uart.c:403: warning: left-hand operand of comma expression has no effect
+drivers/char/tprtctrl/at91_uart.c:403: error: too few arguments to function `kmalloc'
+drivers/char/tprtctrl/at91_uart.c:416: error: `tpdata' undeclared (first use in this function)
+drivers/char/tprtctrl/at91_uart.c: At top level:
+drivers/char/tprtctrl/at91_uart.c:451: error: parse error before '*' token
+drivers/char/tprtctrl/at91_uart.c:451: error: parse error before "tprt_ram"
+drivers/char/tprtctrl/at91_uart.c:452: warning: return type defaults to `int'
+drivers/char/tprtctrl/at91_uart.c:452: warning: function declaration isn't a prototype
+drivers/char/tprtctrl/at91_uart.c: In function `__find_term':
+drivers/char/tprtctrl/at91_uart.c:454: error: `tprt_ram' undeclared (first use in this function)
+drivers/char/tprtctrl/at91_uart.c:454: error: `p' undeclared (first use in this function)
+drivers/char/tprtctrl/at91_uart.c:456: error: `termno' undeclared (first use in this function)
+drivers/char/tprtctrl/at91_uart.c:456: error: `prtm' undeclared (first use in this function)
+drivers/char/tprtctrl/at91_uart.c: At top level:
+drivers/char/tprtctrl/at91_uart.c:464: error: parse error before '*' token
+drivers/char/tprtctrl/at91_uart.c:464: error: parse error before "tprt_ram"
+drivers/char/tprtctrl/at91_uart.c:465: warning: return type defaults to `int'
+drivers/char/tprtctrl/at91_uart.c:465: warning: function declaration isn't a prototype
+drivers/char/tprtctrl/at91_uart.c: In function `find_term':
+drivers/char/tprtctrl/at91_uart.c:466: error: `tprt_ram' undeclared (first use in this function)
+drivers/char/tprtctrl/at91_uart.c:466: error: `p' undeclared (first use in this function)
+drivers/char/tprtctrl/at91_uart.c:468: error: `termno' undeclared (first use in this function)
+drivers/char/tprtctrl/at91_uart.c:468: error: `prtm' undeclared (first use in this function)
+drivers/char/tprtctrl/at91_uart.c: At top level:
+drivers/char/tprtctrl/at91_uart.c:476: error: parse error before '*' token
+drivers/char/tprtctrl/at91_uart.c:477: warning: function declaration isn't a prototype
+drivers/char/tprtctrl/at91_uart.c: In function `change_term_param':
+drivers/char/tprtctrl/at91_uart.c:478: error: `tprt_term' undeclared (first use in this function)
+drivers/char/tprtctrl/at91_uart.c:478: error: `p' undeclared (first use in this function)
+drivers/char/tprtctrl/at91_uart.c:480: error: request for member `num' in something not a structure or union
+drivers/char/tprtctrl/at91_uart.c:480: error: `pdata' undeclared (first use in this function)
+drivers/char/tprtctrl/at91_uart.c: In function `iorecv_term_flow':
+drivers/char/tprtctrl/at91_uart.c:492: error: `tprt_flow' undeclared (first use in this function)
+drivers/char/tprtctrl/at91_uart.c:492: error: parse error before "flow"
+drivers/char/tprtctrl/at91_uart.c:493: error: `tprt_ram' undeclared (first use in this function)
+drivers/char/tprtctrl/at91_uart.c:493: error: `p' undeclared (first use in this function)
+drivers/char/tprtctrl/at91_uart.c:494: warning: ISO C90 forbids mixed declarations and code
+drivers/char/tprtctrl/at91_uart.c:500: error: request for member `pterm' in something not a structure or union
+drivers/char/tprtctrl/at91_uart.c:500: error: request for member `n' in something not a structure or union
+drivers/char/tprtctrl/at91_uart.c:505: warning: implicit declaration of function `tprt_req_data'
+drivers/char/tprtctrl/at91_uart.c:505: error: `flow' undeclared (first use in this function)
+drivers/char/tprtctrl/at91_uart.c: In function `iorecv_term_aflow':
+drivers/char/tprtctrl/at91_uart.c:516: error: `tprt_ram' undeclared (first use in this function)
+drivers/char/tprtctrl/at91_uart.c:516: error: `ptrm' undeclared (first use in this function)
+drivers/char/tprtctrl/at91_uart.c:516: error: request for member `pterm' in something not a structure or union
+drivers/char/tprtctrl/at91_uart.c:517: error: request for member `n' in something not a structure or union
+drivers/char/tprtctrl/at91_uart.c:517: warning: ISO C90 forbids mixed declarations and code
+drivers/char/tprtctrl/at91_uart.c:519: error: `tprt_flow' undeclared (first use in this function)
+drivers/char/tprtctrl/at91_uart.c:519: error: `pflow' undeclared (first use in this function)
+drivers/char/tprtctrl/at91_uart.c:521: error: parse error before ')' token
+drivers/char/tprtctrl/at91_uart.c: In function `ioset_term_param':
+drivers/char/tprtctrl/at91_uart.c:546: error: `tprt_ram' undeclared (first use in this function)
+drivers/char/tprtctrl/at91_uart.c:546: error: `p' undeclared (first use in this function)
+drivers/char/tprtctrl/at91_uart.c:547: warning: ISO C90 forbids mixed declarations and code
+drivers/char/tprtctrl/at91_uart.c:548: error: request for member `pterm' in something not a structure or union
+drivers/char/tprtctrl/at91_uart.c:548: error: request for member `n' in something not a structure or union
+drivers/char/tprtctrl/at91_uart.c:553: warning: implicit declaration of function `tprt_update_conf'
+drivers/char/tprtctrl/at91_uart.c: In function `ioset_term_aparam':
+drivers/char/tprtctrl/at91_uart.c:564: error: `tprt_ram' undeclared (first use in this function)
+drivers/char/tprtctrl/at91_uart.c:564: error: `p' undeclared (first use in this function)
+drivers/char/tprtctrl/at91_uart.c:564: error: request for member `pterm' in something not a structure or union
+drivers/char/tprtctrl/at91_uart.c:565: error: request for member `n' in something not a structure or union
+drivers/char/tprtctrl/at91_uart.c:565: warning: ISO C90 forbids mixed declarations and code
+drivers/char/tprtctrl/at91_uart.c: In function `ioset_term_sparam':
+drivers/char/tprtctrl/at91_uart.c:579: error: `tprt_ram' undeclared (first use in this function)
+drivers/char/tprtctrl/at91_uart.c:579: error: parse error before "tpram"
+drivers/char/tprtctrl/at91_uart.c:580: error: `tprt_term' undeclared (first use in this function)
+drivers/char/tprtctrl/at91_uart.c:581: error: `term_pkg' undeclared (first use in this function)
+drivers/char/tprtctrl/at91_uart.c:583: error: `term' undeclared (first use in this function)
+drivers/char/tprtctrl/at91_uart.c:589: error: `tpram' undeclared (first use in this function)
+drivers/char/tprtctrl/at91_uart.c:590: error: `pkg' undeclared (first use in this function)
+drivers/char/tprtctrl/at91_uart.c: In function `uart_ioctl':
+drivers/char/tprtctrl/at91_uart.c:609: error: `terminal' undeclared (first use in this function)
+drivers/char/tprtctrl/at91_uart.c:609: error: `ptem' undeclared (first use in this function)
+drivers/char/tprtctrl/at91_uart.c:610: error: `term_ram' undeclared (first use in this function)
+drivers/char/tprtctrl/at91_uart.c:610: error: `ptrm' undeclared (first use in this function)
+drivers/char/tprtctrl/at91_uart.c:608: warning: unused variable `i'
+drivers/char/tprtctrl/at91_uart.c:608: warning: unused variable `flow_head'
+drivers/char/tprtctrl/at91_uart.c:608: warning: unused variable `flow_tail'
+drivers/char/tprtctrl/at91_uart.c: In function `uart_read':
+drivers/char/tprtctrl/at91_uart.c:717: error: `net_rterm' undeclared (first use in this function)
+drivers/char/tprtctrl/at91_uart.c:717: error: `pterm_info' undeclared (first use in this function)
+drivers/char/tprtctrl/at91_uart.c:718: warning: ISO C90 forbids mixed declarations and code
+drivers/char/tprtctrl/at91_uart.c:719: error: `tprt_ram' undeclared (first use in this function)
+drivers/char/tprtctrl/at91_uart.c:719: error: `ptrm' undeclared (first use in this function)
+drivers/char/tprtctrl/at91_uart.c:719: error: request for member `pterm' in something not a structure or union
+drivers/char/tprtctrl/at91_uart.c:720: warning: ISO C90 forbids mixed declarations and code
+drivers/char/tprtctrl/at91_uart.c:726: error: parse error before ')' token
+drivers/char/tprtctrl/at91_uart.c:731: error: `term_info' undeclared (first use in this function)
+drivers/char/tprtctrl/at91_uart.c: In function `ioset_term_aparam':
+drivers/char/tprtctrl/at91_uart.c:566: warning: value computed is not used
+drivers/char/tprtctrl/at91_uart.c: In function `uart_read':
+drivers/char/tprtctrl/at91_uart.c:732: warning: value computed is not used
+make[3]: *** [drivers/char/tprtctrl/at91_uart.o] Error 1
+make[2]: *** [drivers/char/tprtctrl] Error 2
+make[1]: *** [drivers/char] Error 2
+make: *** [drivers] Error 2
+linux.bin:	 50.7% -- replaced with linux.bin.gz
+Image Name:   linux-2.6.12
+Created:      Thu Aug 28 15:40:04 2008
+Image Type:   ARM Linux Kernel Image (gzip compressed)
+Data Size:    1009013 Bytes = 985.36 kB = 0.96 MB
+Load Address: 0x20008000
+Entry Point:  0x20008000

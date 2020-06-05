@@ -1,0 +1,125 @@
+#
+# NKTY all dev configuration
+#
+
+menu "NKTY devices"
+
+config NKTYDEV
+	bool "NKTY devices"
+        default y
+
+config AT91_UART
+	bool "AT91 485 driver"
+	depends on ARCH_AT91RM9200 && NKTYDEV
+	default y
+	help
+	  The 485 driver gives 485 COM
+
+config ACCSW_USE_HASH
+	bool "Account area use hash table"
+    select AT91_HASHTAB
+    select NKTYCOMMON
+	depends on ARCH_AT91RM9200 && NKTYDEV && AT91_UART
+	default y
+
+config FORCE_DISC
+    bool "all term force discount enable"
+    depends on ARCH_AT91RM9200 && NKTYDEV && AT91_UART
+    default y
+
+
+config SUBCNT
+    bool "sub cnt version enable"
+    depends on ARCH_AT91RM9200 && NKTYDEV && AT91_UART
+    default n
+
+config ZLYY
+    bool "zlyy version"
+    depends on ARCH_AT91RM9200 && NKTYDEV && AT91_UART
+    default n
+
+config RECORD_CASHTERM
+	bool "Record cash terminal status"
+	depends on ARCH_AT91RM9200 && NKTYDEV && AT91_UART
+	default y
+
+config CNTVER
+	bool "CNTVER Version Support"
+	depends on ARCH_AT91RM9200 && NKTYDEV && AT91_UART
+	default n
+
+config UART_WATER
+	bool "Support water control"
+	depends on ARCH_AT91RM9200 && NKTYDEV && AT91_UART
+	default n
+	help
+	  support water control terminal
+
+config QH_WATER
+	bool "Support QingHua Water control"
+	depends on ARCH_AT91RM9200 && NKTYDEV && AT91_UART && UART_WATER
+	default n
+	help
+	  support water control terminal, QH version
+config HAIYIN
+    bool "Support Haiyin H-ID Card"
+    depends on ARCH_AT91RM9200 && NKTYDEV && AT91_UART
+    default n
+
+config RDFZ
+    bool "Support RDFZ Cash Terminal"
+    depends on ARCH_AT91RM9200 && NKTYDEV && AT91_UART
+    default y
+
+config REFUND
+    bool "Support Refund POS"
+    depends on ARCH_AT91RM9200 && NKTYDEV && AT91_UART
+    default n
+
+config AT91_USRI2C
+	bool "AT91 user i2c interface"
+	depends on ARCH_AT91RM9200 && NKTYDEV
+	default n
+	help
+	  The user i2c interface gives support for FRAM and ds137
+	  on AT91RM9200
+
+config AT91_USRI2C_GPIO
+    bool "AT91 user i2c interface, use gpio"
+    depends on ARCH_AT91RM9200 && NKTYDEV && !AT91_USRI2C
+    default y
+    help
+        The i2c interface use gpio
+
+config AT91_SED1335
+	bool "AT91 LCD driver (sed1335)"
+	depends on ARCH_AT91RM9200 && NKTYDEV
+	default y
+	help
+	  The LCD driver support epson sed1335 on AT91RM9200
+
+config AT91_GPIOB
+	bool "AT91 GPIOB driver"
+	depends on ARCH_AT91RM9200 && NKTYDEV
+	default y
+	help
+	  The GPIOB driver gives key interface on AT91RM9200
+
+config OLDHALTCHK
+	bool "Use old mode halt system"
+	depends on ARCH_AT91RM9200 && NKTYDEV && AT91_GPIOB
+	default n
+
+config AT91_DATAFLASH
+	bool "AT91 DATAFLASH driver"
+	depends on ARCH_AT91RM9200 && NKTYDEV
+	default y
+	help
+	  The DATAFLASH driver gives AT45DB642 on AT91RM9200
+
+config AT91_TTY
+	bool "AT91 TTY test driver"
+	depends on ARCH_AT91RM9200 && NKTYDEV
+	default n
+
+endmenu

@@ -1,0 +1,30 @@
+  CHK     include/linux/version.h
+make[1]: `arch/arm/kernel/asm-offsets.s' is up to date.
+make[1]: `include/asm-arm/mach-types.h' is up to date.
+  CHK     include/linux/compile.h
+  CHK     usr/initramfs_list
+  CC      arch/arm/mach-at91rm9200/gpio.o
+  LD      arch/arm/mach-at91rm9200/built-in.o
+  GEN     .version
+  CHK     include/linux/compile.h
+  UPD     include/linux/compile.h
+  CC      init/version.o
+  LD      init/built-in.o
+  LD      .tmp_vmlinux1
+  KSYM    .tmp_kallsyms1.S
+  AS      .tmp_kallsyms1.o
+  LD      .tmp_vmlinux2
+  KSYM    .tmp_kallsyms2.S
+  AS      .tmp_kallsyms2.o
+  LD      vmlinux
+  SYSMAP  System.map
+  SYSMAP  .tmp_System.map
+  OBJCOPY arch/arm/boot/Image
+  Kernel: arch/arm/boot/Image is ready
+linux.bin:	 50.7% -- replaced with linux.bin.gz
+Image Name:   
+Created:      Fri Mar 30 16:35:05 2007
+Image Type:   ARM Linux Kernel Image (gzip compressed)
+Data Size:    964734 Bytes = 942.12 kB = 0.92 MB
+Load Address: 0x20008000
+Entry Point:  0x20008000
