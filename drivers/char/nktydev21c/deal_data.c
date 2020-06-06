@@ -164,6 +164,7 @@ acc_ram *search_id(const unsigned int cardno)
 
 #ifdef CONFIG_UART_V2
 
+#if 0
 // 三字节减法
 static inline void _sub_byte3(u8 *src, int val)
 {
@@ -189,6 +190,7 @@ static inline void _add_byte3(u8 *src, int val)
 	memcpy(src, &tmp, 3);
 	return;
 }
+#endif
 
 /* 当餐餐次餐限处理函数 */
 int sub_money(acc_ram *pacc, int money)
@@ -351,7 +353,8 @@ static int _check_limit(acc_ram *pacc, int t_money)
 	}
 	return 0;
 #endif
-	//增加了无限模式，modified by duyy, 2014.2.17
+	//增加了无限模式，modified by duyy, 2014.2.17
+
 	if (pacc->times_life == 0xFF){
 		if ((pacc->money_life == 0xFFFF) || (t_money <= pacc->money_life)){
 			return 0;
@@ -384,7 +387,8 @@ static int _check_limit_sub(acc_ram *pacc, int t_money)
 	}
 	return 0;
 #endif
-	//增加了无限模式，modified by duyy, 2014.2.17
+	//增加了无限模式，modified by duyy, 2014.2.17
+
 	if (pacc->stimes_life == 0xFF) {
 		if ((pacc->smoney_life == 0xFFFF) || (t_money <= pacc->smoney_life)){
 			return 0;
@@ -884,7 +888,7 @@ int recv_leid_double(term_ram *ptrm, int allow, int itm)
 	int i, ret;
 	u32 passwd = 0xFFFFFFFF;
 	int proportion = 0, sproportion = 0;
-	int dif_money = 0, d_money = 0;
+	int dif_money = 0;//, d_money = 0;
 	int termmoney = 0;
 	ptrm->_con_flag = 0;
 	
@@ -1032,13 +1036,7 @@ int recv_leid_double(term_ram *ptrm, int allow, int itm)
 	//现金帐户余额
 	money = pacc->money;
 	//补贴帐户余额
-	memcpy(&smoney, pacc->sub_money, sizeof(pacc->sub_money));
-	if (pacc->sub_money[2] & 0x80){//补贴金额为负时作相应转化
-		smoney = ~smoney;
-		smoney += 1;
-		smoney = smoney & 0xFFFFFF;
-		smoney = -smoney;
-	}
+	smoney = pacc->sub_money;
 	//printk("pacc->money is %d\n", pacc->money);
 	//printk("pacc: money is %d, smoney is %d\n", money, smoney);
 	//printk("%x: st_limit is %x\n", cardno, pacc->st_limit);
@@ -1885,7 +1883,7 @@ int recv_leflow_double(term_ram *ptrm, unsigned char *tm)
 			csmoney = smoney;
 		}
 		sub_smoney(pacc, csmoney);
-		_sub_byte3(pacc->sub_money, csmoney);
+		pacc->sub_money -= csmoney;
 	}	
 	
 	pr_debug("double flow %x: cm = %ld, sm = %d, m %d, %02x%02x%02x\n", pacc->card_num,
@@ -2020,7 +2018,7 @@ int recv_leid_double_ticket(term_ram *ptrm, int allow, int itm, unsigned char *t
 	int i, ret;
 	u32 passwd = 0xFFFFFFFF;
 	int proportion = 0, sproportion = 0;
-	int dif_money = 0, d_money = 0;
+	int dif_money = 0;//, d_money = 0;
 	int termmoney = 0;
 	unsigned long acc = 0;//write by duyy, 20174.6.6
 	char name[12] = {0};//write by duyy, 2014.6.6
@@ -2173,13 +2171,7 @@ int recv_leid_double_ticket(term_ram *ptrm, int allow, int itm, unsigned char *t
 	//现金帐户余额
 	money = pacc->money;
 	//补贴帐户余额
-	memcpy(&smoney, pacc->sub_money, sizeof(pacc->sub_money));
-	if (pacc->sub_money[2] & 0x80){//补贴金额为负时作相应转化
-		smoney = ~smoney;
-		smoney += 1;
-		smoney = smoney & 0xFFFFFF;
-		smoney = -smoney;
-	}
+	smoney = pacc->sub_money;
 	//printk("pacc->money is %d\n", pacc->money);
 	//printk("pacc: money is %d, smoney is %d\n", money, smoney);
 	//printk("%x: st_limit is %x\n", cardno, pacc->st_limit);
@@ -4616,7 +4608,7 @@ int deal_money(money_flow *pnflow/* , acc_ram *pacc_m, acc_ram *pacc_s, struct r
 			// 计入补贴账户
 			//printk("sub money is %d, pnflow money is %d\n", pacc->sub_money, pnflow->Money);
 			//printk("pacc->smoney_life is %d, pacc->stimes_life is %d\n", pacc->smoney_life, pacc->stimes_life);
-			_add_byte3(pacc->sub_money, pnflow->Money);
+			pacc->sub_money += pnflow->Money;
 			//pacc->sub_money += pnflow->Money;
 			if (pnflow->LimitType && is_current_tmsg(pnflow->time)) {
 				if (pnflow->Money < 0){

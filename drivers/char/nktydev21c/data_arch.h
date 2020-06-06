@@ -171,7 +171,8 @@ typedef struct __le_flow {
 	long consume_sum;				// 消费金额
 	usr_time date;					// 交易日期时间: year, mon, day, hour, min, sec (20 06 06 08 10 00 05)
 	long manage_fee;				// 管理费
-	unsigned char tml_num;			// 终端号
+	unsigned char tml_num;			// 终端号
+
 	unsigned char areano;			// 区号
 	unsigned long card_num;			// 卡号
 	long acc_num;			// 账户
@@ -237,7 +238,7 @@ typedef struct __account {
 									//bit5=1:优先消费现金帐户;bit5=0：优先消费补贴帐户
 
 	/* 补贴账户信息 */
-	unsigned char sub_money[3];		// 补贴金额sub money
+	int sub_money;					// 补贴金额sub money, char[3] to int
 	unsigned short smoney_limit;	// 当餐补贴消费上限
 	unsigned char stimes_limit;		// 当餐次数消费上限
 	unsigned char spower_id;		// 补贴账户身份类型
