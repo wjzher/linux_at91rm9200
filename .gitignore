@@ -94,3 +94,5 @@ x509.genkey
 
 *.old
 uImage*
+Image
+compile.h

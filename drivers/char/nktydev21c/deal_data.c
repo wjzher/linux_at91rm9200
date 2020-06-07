@@ -1781,7 +1781,6 @@ int recv_leflow_double(term_ram *ptrm, unsigned char *tm)
 {
 	le_flow leflow;
 	int smoney = 0;
-	int csmoney = 0;
 	int ret, i;
 	int tail;
 	unsigned char *tmp;
@@ -1862,6 +1861,7 @@ int recv_leflow_double(term_ram *ptrm, unsigned char *tm)
 	#endif
 	// 调整现金帐户餐次餐限
 	if (leflow.consume_sum) {
+		int csmoney = 0;
 		if (leflow.consume_sum == 0xFFFFFF){
 			csmoney = 0;
 		} else {
@@ -1877,6 +1877,7 @@ int recv_leflow_double(term_ram *ptrm, unsigned char *tm)
 		
 	//调整补贴帐户餐次餐限
 	if (smoney) {
+		int csmoney = 0;
 		if (smoney == 0xFFFFFF){
 			csmoney = 0;
 		} else {
