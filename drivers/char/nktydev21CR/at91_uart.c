@@ -79,7 +79,7 @@
 
 //#define DISCALL_INT
 
-#define DBGCALL
+//#define DBGCALL
 
 //#define U485INT
 
@@ -107,11 +107,31 @@ unsigned int fee[16];
 acc_ram paccsw[MAXSWACC];
 flow pflow[FLOWANUM];
 int maxflowno = 0;
+unsigned char pfbdseg[28] = {0};//add by duyy,2013.3.26
+unsigned char ptmnum[16][16];//add by duyy,2013.3.26,timenum[身份][终端]
+term_tmsg term_time[7];//write by duyy, 2013.3.26
+char feetable[16][64];//added by duyy, 2013.10.28,feetable[终端类型][消费卡类型]
+char feenum = 0;//added by duyy, 2013.11.19,管理费收取方式：0表示内扣，1表示外扣
+char forbidflag[16][64];//added by duyy, 2013.10.28,forbidflag[终端类型][消费卡类型]
+/*三个表单各自的版本号变量，write by duyy, 2013.11.18*/
+long managefee_flag = 0;
+long forbid_flag = 0;
+long timeseg_flag = 0;
+int update_fee = 0;//更新管理费提示，write by duyy, 2013.11.20
+int update_frdflag = 0;//更新禁止消费启用标志提示，write by duyy, 2013.11.20
+int update_frdseg = 0;//更新禁止时段提示，write by duyy, 2013.11.20
+unsigned char uptermdata[256] = {0};//记录使用的终端机号，用于数据更新，write by duyy, 2013.11.20
 
 term_ram * ptermram = NULL;
 terminal *pterminal = NULL;
 acc_ram *paccmain = NULL;
 //flow *pflow = NULL;
+#ifdef CONFIG_RECORD_CASHTERM
+// 定义记录出纳机状态的变量
+const int cashterm_n = CASHBUFSZ;
+int cashterm_ptr = 0;				// 存储指针
+struct cash_status cashbuf[CASHBUFSZ];	// 保存状态空间
+#endif
 
 #if 0
 // 定义PSAM卡信息
@@ -305,7 +325,7 @@ out:
 	AT91_SYS->PIOC_SODR |= 0x00001000;
 	//uart_ctl0->US_CR = AT91C_US_RXEN;
 	udelay(1);
-	return 0;
+	return ret;//0;modified by duyy,2012.9.10
 }
 
 /*
@@ -731,7 +751,7 @@ static int uart_call(void)
 		AT91_SYS->ST_CR = AT91C_ST_WDRST;	/* Pat the watchdog */
 #endif
 		// 叫一圈
-		for (i = 0; i < rcd_info.term_all; i++, prterm++) {
+		for (i = 0; i < rcd_info.term_all; i++, prterm++, udelay(ONEBYTETM)) {
 			if (chk_space() < 0) {
 				printk("tail is %d, head is %d\n", flowptr.tail, flowptr.head);
 				goto out;
@@ -778,6 +798,32 @@ static int uart_call(void)
 				continue;
 			}
 			if (!(rdata & 0x80)) {		// no command
+#if 0//def QHFB
+#define TM1S (5 * 3600 + 0 * 60)
+#define TM1E (20 * 3600 + 0 * 60)
+#define TM2S (0 * 3600 + 0 * 60)
+#define TM2E (0 * 3600 + 0 * 60)
+#define TM3S (0 * 3600 + 0 * 60)
+#define TM3E (0 * 3600 + 0 * 60)
+#if 0
+#define TM1S (6 * 3600 + 20 * 60)
+#define TM1E (9 * 3600 + 30 * 60)
+#define TM2S (10 * 3600 + 30 * 60)
+#define TM2E (14 * 3600 + 0 * 60)
+#define TM3S (16 * 3600 + 30 * 60)
+#define TM3E (20 * 3600 + 0 * 60)
+#endif
+				static int itm;
+				itm = BCD2BIN(tm[6]);
+				itm += BCD2BIN(tm[5]) * 60;
+				itm += BCD2BIN(tm[4]) * 3600;
+				if ((itm >= TM1S && itm <= TM1E)
+					|| (itm >= TM2S && itm <= TM2E)
+					|| (itm >= TM3S && itm <= TM3E)) {
+					prterm->status = TNORMAL;
+					continue;	// 此时段内不更新任何数据
+				}
+#endif
 				// 回号正确, 但没有命令
 				// 在此要进行主动交互, 实时下发黑名单
 				if (prterm->key_flag == 0) {
@@ -795,6 +841,32 @@ static int uart_call(void)
 #ifdef CALLDEBUG
 					printk("real-time send black list failed\n");
 #endif
+				}
+				//进行管理费、禁止消费标志、禁止消费时段信息更新，write by duyy, 2013.11.20
+				if(uptermdata[prterm->term_no] & 0x01){
+					//printk("uptermdata[%d] is %x\n", prterm->term_no, uptermdata[prterm->term_no]);
+					if (purse_update_magfeetable(prterm) < 0){
+						printk("termno %d send magfee failed\n", prterm->term_no);
+						continue;
+					}
+					uptermdata[prterm->term_no] &= 0xFE;//管理费更新后清除标志位
+				}
+				if(uptermdata[prterm->term_no] & 0x02){
+					//printk("uptermdata[%d] is %x\n", prterm->term_no, uptermdata[prterm->term_no]);
+					if (purse_update_forbidflag(prterm) < 0){
+						printk("termno %d send forbid flag failed\n", prterm->term_no);
+						continue;
+					}
+					uptermdata[prterm->term_no] &= 0xFD;//禁止消费标志更新后清除标志位
+				}
+				if(uptermdata[prterm->term_no] & 0x04){
+					printk("uptermdata[%d] is %x\n", prterm->term_no, uptermdata[prterm->term_no]);
+					if (purse_update_noconsumetime(prterm, pfbdseg) < 0){
+						printk("termno %d send forbid seg failed\n", prterm->term_no);
+						continue;
+					}
+					uptermdata[prterm->term_no] &= 0xFB;//禁止消费时段更新后清除标志位
+					printk("after uptermdata[%d] is %x\n", prterm->term_no, uptermdata[prterm->term_no]);
 				}
 				//prterm->black_flag = 1;
 				prterm->status = TNORMAL;
@@ -851,6 +923,18 @@ static int uart_call(void)
 				break;
 #endif/* TS11 */
 #ifdef QINGHUA
+			/* 支持打小票功能 */
+			case SENDLETICKET:
+				if ((net_status == 0) && (le_allow == 0)) {
+					allow = 0;
+				} else {
+					allow = 1;
+				}
+				ret = recv_le_id2(prterm, allow);
+				break;
+			case RECVLETICKET:
+				ret = recv_leflow2(prterm, tm);
+				break;
 			/* 清华需要加TS11 POS机 */
 			case SENDLEIDIFNO:
 				if ((net_status == 0) && (le_allow == 0)) {
@@ -858,7 +942,7 @@ static int uart_call(void)
 				} else {
 					allow = 1;
 				}
-				ret = recv_le_id(prterm, allow);
+				ret = recv_le_id(prterm, allow, tm);
 				break;
 			case SENDRUNDATA:
 				ret = send_run_data(prterm);
@@ -874,6 +958,14 @@ static int uart_call(void)
 				//space_remain--;
 				ret = recv_dep_money(prterm, tm);
 				break;
+			case RECVLEHEXFLOW:
+				//space_remain--;
+				ret = recv_leflow(prterm, 0, tm);
+				break;
+			case RECVLEBCDFLOW:
+				//space_remain--;
+				ret = recv_leflow(prterm, 1, tm);
+				break;
 			case NOCMD:
 				break;
 #endif
@@ -883,15 +975,27 @@ static int uart_call(void)
 				} else {
 					allow = 1;
 				}
-				ret = purse_recv_leid(prterm, allow);
+				ret = purse_recv_leid(prterm, allow, tm);
+				break;
+			case PURSE_RECV_CARDNO2:
+				if ((net_status == 0) && (le_allow == 0)) {
+					allow = 0;
+				} else {
+					allow = 1;
+				}
+				ret = purse_recv_leid2(prterm, allow, tm);
 				break;
 			case PURSE_RECV_LEFLOW:
 				ret = purse_recv_leflow(prterm, tm);
+				break;
+			case PURSE_RECV_LEFLOW2:
+				ret = purse_recv_leflow2(prterm, tm);
 				break;
 			case PURSE_REQ_PAR:
 				prterm->black_flag = 0;
 				prterm->key_flag = 0;
 				memset(&prterm->blkinfo, 0, sizeof(prterm->blkinfo));
+				prterm->psam_trd_num = 0;	// new terminal
 				ret = purse_send_conf(prterm, tm, &blkinfo);
 #ifdef CALLDEBUG
 				printk("purse_send conf return %d\n", ret);
@@ -914,6 +1018,15 @@ static int uart_call(void)
 				break;
 			case PURSE_REQ_TIME:
 				ret = purse_send_time(prterm, tm);
+				break;
+			case PURSE_REQ_NCTM://write by duyy, 2013.5.20
+				ret = purse_send_noconsumetime(prterm, pfbdseg);
+				break;
+			case PURSE_REQ_MAGFEE://write by duyy, 2013.11.19
+				ret = purse_send_magfeetable(prterm);
+				break;
+			case PURSE_REQ_FORBIDTABLE://write by duyy, 2013.11.19
+				ret = purse_send_forbidflag(prterm);
 				break;
 			case PURSE_RMD_BKIN:
 				ret = purse_recv_btno(prterm);
@@ -942,7 +1055,7 @@ static int uart_call(void)
 			if (prterm->status == STATUSUNSET)
 				prterm->status = TNORMAL;
 			//prterm++;
-			udelay(ONEBYTETM);
+			//udelay(ONEBYTETM);
 			if (space_remain <= 0) {
 				total += flow_sum;
 				goto out;
@@ -1053,6 +1166,9 @@ static int uart_open(struct inode *inode, struct file *filp)
 	flowptr.head = flowptr.tail = 0;
 	memset(&rcd_info, 0, sizeof(rcd_info));
 	lapnum = LAPNUM;
+	// 置为接收状态, wjzhe, 2010-12-10
+	//AT91_SYS->PIOC_CODR &= (!0x00001000);
+	//AT91_SYS->PIOC_SODR |= 0x00001000;
 	return 0;
 }
 
@@ -1065,14 +1181,16 @@ static int uart_ioctl(struct inode* inode, struct file* file, unsigned int cmd, 
 	int i, flow_head, flow_tail;//, flow_total;
 	terminal *ptem;
 	term_ram *ptrm;
+	unsigned char feedata[1025] = {0};//write by duyy, 2013.11.19
+
 #ifdef FORBIDDOG
 	unsigned long wtdreg;
 #endif
 	struct uart_ptr ptr;
 	no_money_flow no_m_flow;
-	money_flow m_flow;
+	money_flow m_flow, *pmflow = NULL;
 	struct get_flow pget;
-
+	long tabledata[3] = {0};
 #if LOCKUART
 	spin_lock(&uart_lock);
 #else
@@ -1165,7 +1283,7 @@ static int uart_ioctl(struct inode* inode, struct file* file, unsigned int cmd, 
 			break;
 		// 初使化黑名单
 		memcpy(&blkinfo, &ptr.blkinfo, sizeof(blkinfo));
-		if (pblack == NULL) {
+		if (pblack) {
 			vfree(pblack);
 			pblack = NULL;
 		}
@@ -1181,6 +1299,75 @@ static int uart_ioctl(struct inode* inode, struct file* file, unsigned int cmd, 
 			break;
 		}
 		ret = copy_from_user(pblack, ptr.pbacc, sizeof(black_acc) * blkinfo.count);
+		//blkinfo.count = 0;	// blk count = 0, for test
+		break;
+	case SETFORBIDTIME://初始化终端禁止消费时段,added by duyy, 2013.3.26
+		if ((ret = copy_from_user(pfbdseg, (unsigned char*)arg, sizeof(pfbdseg))) < 0)
+			break;
+	#if 0
+		for (i = 0; i < 28; i++){
+			printk("kernel ptermtm[%d]:%d\n", i, pfbdseg[i]);
+		}
+	#endif
+		term_time[0].begin = pfbdseg[1] * 3600 + pfbdseg[0] * 60;
+		term_time[0].end = pfbdseg[3] * 3600 + pfbdseg[2] * 60;
+		term_time[1].begin = pfbdseg[5] * 3600 + pfbdseg[4] * 60;
+		term_time[1].end = pfbdseg[7] * 3600 + pfbdseg[6] * 60;
+		term_time[2].begin = pfbdseg[9] * 3600 + pfbdseg[8] * 60;
+		term_time[2].end = pfbdseg[11] * 3600 + pfbdseg[10] * 60;
+		term_time[3].begin = pfbdseg[13] * 3600 + pfbdseg[12] * 60;
+		term_time[3].end = pfbdseg[15] * 3600 + pfbdseg[14] * 60;
+		term_time[4].begin = pfbdseg[17] * 3600 + pfbdseg[16] * 60;
+		term_time[4].end = pfbdseg[19] * 3600 + pfbdseg[18] * 60;
+		term_time[5].begin = pfbdseg[21] * 3600 + pfbdseg[20] * 60;
+		term_time[5].end = pfbdseg[23] * 3600 + pfbdseg[22] * 60;
+		term_time[6].begin = pfbdseg[25] * 3600 + pfbdseg[24] * 60;
+		term_time[6].end = pfbdseg[27] * 3600 + pfbdseg[26] * 60;
+#if 0
+	printk("kernel time 1: begin time=%u, end time=%u\n", term_time[0].begin, term_time[0].end);
+	printk("kernel time 2: begin time=%u, end time=%u\n", term_time[1].begin, term_time[1].end);
+	printk("kernel time 3: begin time=%u, end time=%u\n", term_time[2].begin, term_time[2].end);
+	printk("kernel time 4: begin time=%u, end time=%u\n", term_time[3].begin, term_time[3].end);
+#endif
+		break;
+	case SETTIMENUM:		// 设置身份、终端类型匹配时段序号,added by duyy, 2013.3.26
+		//bug,原来是一个if判断语句，小于０则break，大于０则继续往下进行，会致使脱机不能断网消费,modified by duyy, 2013.7.18
+		ret = copy_from_user(ptmnum, (unsigned char*)arg, sizeof(ptmnum));
+		break;
+	case SETFEETABLE:		// 设置消费卡类型~终端类型~管理费系数表单,added by duyy, 2013.10.28
+		ret = copy_from_user(feedata, (unsigned char*)arg, sizeof(feedata));
+		memset(feetable, 0, sizeof(feetable));
+		memcpy(feetable, feedata, sizeof(feetable));
+		feenum = feedata[1024];
+		break;
+	case SETFORBIDFLAG:		// 设置消费卡类型~终端类型~禁止消费时段启用标志表单,added by duyy, 2013.10.28
+		memset(forbidflag, 0, sizeof(forbidflag));
+		ret = copy_from_user(forbidflag, (unsigned char*)arg, sizeof(forbidflag));
+		break;
+	case GETTABLEFALG:	//读取三个表单版本号，write by duyy, 2013.11.19
+		tabledata[0] = managefee_flag;
+		tabledata[1] = forbid_flag;
+		tabledata[2] = timeseg_flag;
+		ret = copy_to_user((long *)arg, tabledata, sizeof(tabledata));
+		break;
+	case UPDATEFEE:		// 管理费数据有更新，write by duyy, 2013.11.20
+		update_fee = (int)arg;
+		for (i = 0; i < 256; i++){
+			uptermdata[i] |= (1 << 0);//bit0置位，表示管理费要更新
+		}
+		break;
+	case UPDATEFLAG:		//禁止消费启用标志数据有更新，write by duyy, 2013.11.20
+		update_frdflag = (int)arg;
+		for (i = 0; i < 256; i++){
+			uptermdata[i] |= (1 << 1);//bit0置位，表示数据要更新
+		}
+
+		break;
+	case UPDATESEG:		// 禁止消费时段数据有更新，write by duyy, 2013.11.20
+		update_frdseg = (int)arg;
+		for (i = 0; i < 256; i++){
+			uptermdata[i] |= (1 << 2);//bit0置位，表示数据要更新
+		}
 		break;
 	case SETLEALLOW:		// 设置光电卡能否断网时消费
 		ret = copy_from_user(&le_allow, (void *)arg, sizeof(le_allow));
@@ -1247,15 +1434,37 @@ static int uart_ioctl(struct inode* inode, struct file* file, unsigned int cmd, 
 		//ret = 0;
 		break;
 	case CHGACC:
-		// 处理异区现金流水
-		if ((ret = copy_from_user(&m_flow, (money_flow *)arg,
-			sizeof(money_flow))) < 0) {
-			printk("UART: copy from user money flow failed\n");
+		// 先拷贝出流水数量
+		ret = copy_from_user(&i, (int *)arg, sizeof(int));
+		if (ret < 0) {
+			printk("UART: copy from user money flow count failed\n");
 			break;
 		}
-		// 进行数据处理
-		if ((ret = deal_money(&m_flow, paccmain, paccsw, &rcd_info)) < 0) {
-			printk("UART: deal money flow error\n");
+		if (i <= 0) {
+			printk("UART: money flow count below zero\n");
+			break;
+		}
+		arg += sizeof(int);
+		// 再得到流水指针
+		ret = copy_from_user(&pmflow, (money_flow *)arg, sizeof(pmflow));
+		if (ret < 0) {
+			printk("UART: copy from user money flow ptr failed\n");
+			break;
+		}
+		// 顺次处理
+		while (i) {
+			// 处理异区现金流水
+			if ((ret = copy_from_user(&m_flow, (money_flow *)pmflow,
+				sizeof(money_flow))) < 0) {
+				printk("UART: copy from user money flow failed\n");
+				break;
+			}
+			// 进行数据处理
+			if ((ret = deal_money(&m_flow, paccmain, paccsw, &rcd_info)) < 0) {
+				printk("UART: deal money flow error\n");
+			}
+			pmflow += 1;
+			i--;
 		}
 		break;
 	case GETFLOWPTR:// 慎用, 得到内部流水指针
@@ -1302,7 +1511,7 @@ static int uart_ioctl(struct inode* inode, struct file* file, unsigned int cmd, 
 			sizeof(acc_ram) * rcd_info.account_main)) < 0)
 			break;
 		// 读取帐户信息后将帐户空间清除
-		if ((rcd_info.account_main * sizeof(acc_ram)) > (4 * 1024))
+		if ((rcd_info.account_main * sizeof(acc_ram)) > (SZ_128K))
 			vfree(paccmain);
 		else
 			kfree(paccmain);
@@ -1408,6 +1617,34 @@ static int uart_ioctl(struct inode* inode, struct file* file, unsigned int cmd, 
 	case GETFLOWTOTAL:
 		ret = copy_to_user((int *)arg, &total, sizeof(total));
 		break;
+#ifdef CONFIG_RECORD_CASHTERM
+	case GETCASHBUF:
+		//if (cashterm_ptr) {
+			ret = copy_to_user((void *)arg, cashbuf,
+				sizeof(struct cash_status) * CASHBUFSZ);
+			if (ret < 0) {
+				printk("Uart ioctl GETCASHBUF copy_to_user error\n");
+			} else {
+				ret = CASHBUFSZ;//cashterm_ptr;//modified by duyy, 2013.4.7
+			}
+		#if 0//modified by duyy, 2013.4.7
+			//write by duyy, 2012.3.14
+			for(i = 0; i < cashterm_ptr; i++){
+				cashbuf[i].termno = 0;
+				cashbuf[i].status = 0;
+				cashbuf[i].feature = 0; 
+				cashbuf[i].accno = 0;
+				cashbuf[i].cardno = 0;
+				cashbuf[i].money = 0;
+				cashbuf[i].consume = 0;
+				cashbuf[i].managefee = 0;
+				cashbuf[i].term_money = 0;
+			}
+			cashterm_ptr = 0;
+		#endif
+		//}
+		break;
+#endif
 	default:
 		printk("485 has no cmd %02x\n", cmd);
 		ret = -1;
@@ -1466,7 +1703,7 @@ static int uart_read(struct file *file, char *buff, size_t count, loff_t *offp)
 	unsigned int cnt;
 	if (count % sizeof(term_info) != 0 || buff == NULL)
 		return -EINVAL;
-	if (count == 0) {
+	if (count == 0 || ptrm == NULL) {
 		return 0;
 	}
 	pterm_info = (term_info *)kmalloc(count, GFP_KERNEL);

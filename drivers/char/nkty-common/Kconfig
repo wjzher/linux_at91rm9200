@@ -1,0 +1,55 @@
+#
+# NKTY all dev configuration
+#
+menu "NKTY common device driver"
+
+
+config NKTYCOMMON
+	bool "NKTY common device driver"
+	depends on ARCH_AT91RM9200
+	default n
+
+config AT91_HASHTAB
+    bool "NKTY common hash tab lib"
+    depends on ARCH_AT91RM9200 && NKTYCOMMON
+
+config AT91_USRI2C_COMMON
+	bool "AT91 user i2c interface"
+	depends on ARCH_AT91RM9200 && NKTYCOMMON
+	default n
+	help
+	  The user i2c interface gives support for FRAM and ds137 and ZLG7290 on AT91RM9200
+
+config ZLG_7290B
+	bool "Support LED Ctrl ZLG_7290B"
+	depends on ARCH_AT91RM9200 && NKTYCOMMON && AT91_USRI2C_COMMON
+	default n
+
+config AT91_SED1335_COMMON
+	bool "AT91 LCD driver (sed1335)"
+	depends on ARCH_AT91RM9200 && NKTYCOMMON
+	default n
+	help
+	  The LCD driver support epson sed1335 on AT91RM9200
+
+config AT91_GPIOB_COMMON
+	bool "AT91 GPIOB driver"
+	depends on ARCH_AT91RM9200 && NKTYCOMMON
+	default n
+	help
+	  The GPIOB driver gives key interface on AT91RM9200
+
+config AT91_DATAFLASH_COMMON
+	bool "AT91 DATAFLASH driver"
+	depends on ARCH_AT91RM9200 && NKTYCOMMON
+	default n
+	help
+	  The DATAFLASH driver gives AT45DB642 on AT91RM9200
+
+config AT91_FLASH_COMMON
+        bool "AT91 FLASH  driver"
+        depends on ARCH_AT91RM9200 && NKTYCOMMON
+        default n
+
+
+endmenu

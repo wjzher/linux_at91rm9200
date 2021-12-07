@@ -26,8 +26,17 @@
 #include "dataflash.h"
 #include "pdccfg.h"
 //#define FLOWPERPAGE 21
+#ifdef QINGHUA
+#define TICKETBIT (1 << 7)
+#define TICKETMONEY (1 << 31)
+#define DEPBIT (1 << 4)
+#endif
 
 #define SENDLEIDIFNO 0x10	// 发送光电卡账户信息
+#ifdef QINGHUA
+#define SENDLETICKET 0x1A	// 打小票, 发送光电卡账户信息
+#define RECVLETICKET 0x1B	// 打小票, 接收光电卡流水
+#endif
 #define SENDRUNDATA 0x20	// 发送上电参数
 #define RECVNO 0x40			// 
 #define RECVLEHEXFLOW 0xF	// 接收光电卡流水(HEX)
@@ -47,6 +56,9 @@
 #define RECVFLOWOVER 0x54	// 终端回传流水完毕
 #define NOCMD 0x80
 
+#ifdef QINGHUA
+#define TPLOCKBIT (1 << 4)	// 用于流水类型, 锁卡流水标识
+#endif
 #define LECONSUME (0x1 << 5)
 #define LECHARGE (0x2 << 5)
 #define LETAKE (0x3 << 5)
@@ -117,7 +129,9 @@ BakReg		BYTE	2	HEX	待扩展
 FlowStatus	BYTE	1	HEX	状态：0xFF未上传，0xFE已上传
 */
 typedef struct __m1_flow {
-	unsigned char flow_type;		// Bit0正常流水、Bit1失败流水、Bit2强制售饭流水、Bit3-Bit7为钱包类型
+	unsigned char flow_type;		// Bit0正常流水、Bit1失败流水、
+									// Bit2强制售饭流水、Bit3-Bit7为钱包类型
+									// Bit3补贴流水
 	long flow_num;					// 流水号, 由UART驱动生成
 	long consume_sum;				// 消费金额-->交易金额, 单位分
 	usr_time date;					// 消费时间, 秒...年
@@ -130,16 +144,26 @@ typedef struct __m1_flow {
 	unsigned char areano;			// 区号
 	unsigned long card_num;			// 卡号
 	long acc_num;					// 账号
+#ifdef QINGHUA
+	unsigned char psam_num[3];
+#else
 	unsigned short psam_num;		// PSAM卡编号
+#endif
 	long psam_trd_num;		// PSAM卡交易序号
 	unsigned short walt_num;		// 钱包交易序号
 	long remain_money;				// 钱包余额
 	unsigned char food_grp_num;		// 菜品分组
+#ifndef QINGHUA
 	unsigned char deal_type;		// 交易类型
+#endif
 #ifndef QINGHUA
 	unsigned short tac_code;		// TAC code
 #endif
+#ifndef QINGHUA
 	long money_sum;					// 当天消费总额
+#else
+	unsigned int asn;				// 清华去掉消费总额, 加ASN
+#endif
 #ifdef QINGHUA
 	int qh_tac;
 #endif
@@ -204,7 +228,8 @@ typedef struct __account {			// 12-byte
 typedef struct __account {			// 12-byte
 	unsigned long acc_num;			// account number
 	unsigned long card_num;			// card number
-	unsigned char feature;			// flag, figure, limit of meal
+	unsigned char feature;			// flag, figure,limit of meal 
+	unsigned char id_type;			// ID type，16 类,added by duyy, 2013.3.26
 #ifdef COMPLEX_S
 	union {
 #endif
@@ -251,12 +276,14 @@ typedef struct __acc_ram {
 	unsigned long acc_num;
 	unsigned long card_num;			// card number
 	long money;			// money
-	unsigned char feature;			// flag, figure, limit of meal
+	unsigned char feature;			// flag, figure,limit of meal 
+	unsigned char id_type;			// ID type，16 类,added by duyy, 2013.3.26
 	int managefee;					// 0-15
 } /*__attribute__ ((packed))*/ acc_ram;
 
 struct tradenum {
 	int num;				//
+	/*deleted by duyy, 2013.10.24
 	union {
 		unsigned char tm[5];	//YYMDH
 		struct {
@@ -267,12 +294,13 @@ struct tradenum {
 			unsigned char hour;
 		} __attribute__ ((packed)) s_tm;
 	} __attribute__ ((packed)) ;
+	*/
 } __attribute__ ((packed)) ; 
 
 typedef struct __black_acc {
 	unsigned long card_num;		// 卡号
 	struct tradenum t_num;				// 记录号
-	__s8 opt;					// 1-->挂失, 0-->解挂
+	//__s8 opt;					// 1-->挂失, 0-->解挂,deleted by duyy, 2013.10.24
 } __attribute__ ((packed)) black_acc;
 
 struct black_info {// 24字节
@@ -283,7 +311,11 @@ struct black_info {// 24字节
 	unsigned char pwd[3];	// 3字节PSAM卡密码
 #endif
 };
-
+//终端禁止消费时段转换数据结构，write by duyy, 2012.4.26
+typedef struct __term_tmsg {
+	u32 begin;					// 开始时间
+	u32 end;					// 结束时间
+} term_tmsg;
 struct time_term {
 	unsigned char smin;
 	unsigned char shour;
@@ -366,8 +398,35 @@ typedef struct __money_flow
 } money_flow;
 #endif
 
+struct uart_mon {
+	int cnt;
+	void *data;
+};
 
 #define FLOWPERPAGE (BYTEOFDFPAGE / sizeof(flow))
+#ifdef CONFIG_RECORD_CASHTERM
+// 定义记录出纳机状态的变量
+struct cash_status {
+	unsigned char termno;		// 终端号
+	unsigned char status;		// 卡或消费状态
+	unsigned char feature;		// 此帐号标识
+	unsigned int accno;			// 帐号
+	unsigned int cardno;		// 卡号
+	int money;					// 余额
+	int consume;				// 此次消费额
+	int managefee;				// 管理费
+	int term_money;				// 出纳机当前总金额
+};
+#define CASH_NORMAL 0		// 通常状态
+#define CASH_CARDIN 1		// 卡插入
+#define CASH_CARDOFF 2		// 卡拔走
+#define CASH_TAKEOFF 3		// 完成取钱
+#define CASH_DEPOFF 4		// 完成存钱
+#define CASHBUFSZ 16
+extern const int cashterm_n;
+extern int cashterm_ptr;				// 存储指针
+extern struct cash_status cashbuf[CASHBUFSZ];	// 保存状态空间
+#endif
 
 #if 0
 typedef struct {

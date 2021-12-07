@@ -1,0 +1,65 @@
+#
+# NKTY all dev configuration
+#
+
+menu "NKTY devices RD"
+
+config NKTYDEV_RD
+	bool "NKTY devices RD"
+
+config AT91_UART
+	bool "AT91 485 driver"
+	depends on ARCH_AT91RM9200 && NKTYDEV_RD
+	default y
+	help
+	  The 485 driver gives 485 COM
+
+config RECORD_CASHTERM
+	bool "Record cash terminal status"
+	depends on ARCH_AT91RM9200 && NKTYDEV_RD && AT91_UART
+	default n
+
+config AT91_USRI2C
+	bool "AT91 user i2c interface"
+	depends on ARCH_AT91RM9200 && NKTYDEV_RD
+	default y
+	help
+	  The user i2c interface gives support for FRAM and ds137
+	  on AT91RM9200
+
+#config ZLG_7290B
+#	bool "Support ZLG_7290B?"
+#	depends on ARCH_AT91RM9200 && NKTYDEV_RD && AT91_USRI2C
+#	default y
+	
+config AT91_USRI2C_GPIO
+	bool "AT91 user i2c interface, use gpio"
+	depends on ARCH_AT91RM9200 && NKTYDEV_RD && !AT91_USRI2C
+
+#config I2C_DISABLEIRQ
+#	bool "Disable irq on writing or reading data"
+#	depends on ARCH_AT91RM9200 && NKTYDEV_RD && AT91_USRI2C
+#	default n
+
+config AT91_SED1335
+	bool "AT91 LCD driver (sed1335)"
+	depends on ARCH_AT91RM9200 && NKTYDEV_RD
+	default y
+	help
+	  The LCD driver support epson sed1335 on AT91RM9200
+
+config AT91_GPIOB
+	bool "AT91 GPIOB driver"
+	depends on ARCH_AT91RM9200 && NKTYDEV_RD
+	default n
+	help
+	  The GPIOB driver gives key interface on AT91RM9200
+
+config AT91_DATAFLASH
+	bool "AT91 DATAFLASH driver"
+	depends on ARCH_AT91RM9200 && NKTYDEV_RD
+	default n
+	help
+	  The DATAFLASH driver gives AT45DB642 on AT91RM9200
+
+endmenu

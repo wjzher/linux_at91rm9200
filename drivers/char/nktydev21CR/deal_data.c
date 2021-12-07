@@ -48,8 +48,8 @@ unsigned long binl2bcd(unsigned long val)
 	int i;
 	unsigned long tmp = 0;
 	if (val >= 100000000) {
-		printk("binl2bcd parameter error!\n");
-		return -1;
+		printk("binl2bcd parameter %d error!\n", (int)val);
+		return /* -1 */0;
 	}
 	for (i = 0; i < sizeof(val) * 2; i++) {
 		tmp |= (val % 10) << (i * 4);
@@ -71,6 +71,19 @@ acc_ram *search_no(unsigned long cardno, acc_ram *pacc, int cnt)
 	int i;
 	for (i = 0; i < cnt; i++) {
 		if (pacc[i].card_num == cardno) {
+			pacc += i;
+			goto end;
+		}
+	}
+	pacc = NULL;
+end:
+	return pacc;
+}
+acc_ram *search_acc(unsigned long accno, acc_ram *pacc, int cnt)
+{
+	int i;
+	for (i = 0; i < cnt; i++) {
+		if (pacc[i].acc_num == accno) {
 			pacc += i;
 			goto end;
 		}
@@ -213,7 +226,7 @@ int recv_le_id(term_ram *ptrm, int allow)
 	// if exist, then deal with data
 	if (pacc == NULL) {
 		// not find
-		feature = 1;
+		feature = 1;//feature=1表示禁止消费
 	} else {
 		//printk("find!\n");
 		feature = 4;
@@ -255,6 +268,7 @@ int recv_le_id(term_ram *ptrm, int allow)
 ///////////////////////////////////////////////////////////////////////////////////
 	}
 	// 判断是否允许脱机使用光电卡
+#if	0//modified by duyy, 2013.4.19
 	if (!allow) {
 #ifdef DEBUG
 		printk("not allow: %d\n", cardno);
@@ -262,6 +276,7 @@ int recv_le_id(term_ram *ptrm, int allow)
 		feature = 1;
 		money = 0;
 	}
+#endif
 	if ((ret = send_byte(feature, ptrm->term_no)) < 0) {
 		ptrm->status = NOCOM;
 		return -1;
@@ -581,10 +596,10 @@ int recv_leflow(term_ram *ptrm, int flag, unsigned char *tm)
 		return 0;
 	}
 	// adjust money limit
-	limit = pacc->feature & 0xF;
+   	limit = pacc->feature & 0xF;
 	if ((limit != 0xF) && limit) {
 		// 需要调整餐限
-		limit -= leflow.consume_sum / 100 + 1;
+		limit -= leflow.consume_sum / 100 + 1;//除100是因为消费金额保留了小数点后的角和分
 		if (!(leflow.consume_sum % 100)) {// 刚好满100时, 认为是一次
 			limit++;
 		}
@@ -600,7 +615,7 @@ int recv_leflow(term_ram *ptrm, int flag, unsigned char *tm)
 		pacc->money = 0;
 	}
 	pacc->feature &= 0xF0;
-	pacc->feature |= limit;
+	pacc->feature |= limit; 
 	ptrm->term_cnt++;
 	ptrm->term_money += leflow.consume_sum;
 	// init leflow
@@ -1127,10 +1142,11 @@ int send_run_data(term_ram *ptrm)
 	// 单品种多品种判断
 	// 因为只有出纳机, 所以没有品种之分
 	// first send 1-byte terminal type (HEX)
+	//printk("%d type %02x\n", ptrm->term_no, ptrm->pterm->param.term_type);
 	tmp = ptrm->pterm->param.term_type;
-	tmp &= ~(1 << MESS_TERMINAL_FLAG);
-	tmp |= (1 << CASH_TERMINAL_FLAG);
-	ptrm->pterm->param.term_type |= (1 << CASH_TERMINAL_FLAG);
+	//tmp &= ~(1 << MESS_TERMINAL_FLAG);
+	//tmp |= (1 << CASH_TERMINAL_FLAG);
+	//ptrm->pterm->param.term_type |= (1 << CASH_TERMINAL_FLAG);
 	ret = send_data((char *)&tmp, 1, ptrm->term_no);
 	if (ret < 0) {		// timeout
 		printk("send run data time out!\n");
@@ -1146,11 +1162,18 @@ int send_run_data(term_ram *ptrm)
 	}
 	ptrm->dif_verify ^= (unsigned char)tmp;
 	ptrm->add_verify += (unsigned char)tmp;
-	// 4 字节的终端密码
-	code[0] = ptrm->pterm->param.term_passwd[0];// & 0xF;
-	//code[1] = (ptrm->pterm->param.term_passwd[0] & 0xF0) >> 4;
-	code[1] = ptrm->pterm->param.term_passwd[1];// & 0xF;
-	//code[3] = (ptrm->pterm->param.term_passwd[1] & 0xF0) >> 4;
+	if (ptrm->pterm->param.term_type & (1 << CASH_TERMINAL_FLAG)) {
+		// 4 字节的终端密码
+		code[0] = ptrm->pterm->param.term_passwd[0];// & 0xF;
+		//code[1] = (ptrm->pterm->param.term_passwd[0] & 0xF0) >> 4;
+		code[1] = ptrm->pterm->param.term_passwd[1];// & 0xF;
+		//printk("cash terminal %d: passwd %02x%02x, original %02x%02x\n", ptrm->term_no, code[0], code[1],
+		//	ptrm->pterm->param.term_passwd[0], ptrm->pterm->param.term_passwd[1]);
+		//code[3] = (ptrm->pterm->param.term_passwd[1] & 0xF0) >> 4;
+	} else {
+		// 打小票机器
+		memcpy(code, ptrm->pterm->price, sizeof(code));
+	}
 	ret = send_data((char *)code/*ptrm->pterm->price*/, 32, ptrm->term_no);
 	if (ret < 0) {		// timeout
 		return ret;
@@ -1170,14 +1193,17 @@ int send_run_data(term_ram *ptrm)
 	return 0;
 }
 
-int recv_le_id(term_ram *ptrm, int allow)
+int recv_le_id(term_ram *ptrm, int allow, unsigned char *tm)
 {
+	static int itm;//write by duyy, 2013.3.26
 	unsigned long cardno;
 	acc_ram *pacc;
 	unsigned char feature = 0;
+	unsigned char timenum = 0;//write by duyy, 2013.3.26
 	int money = 0;
 	unsigned char *tmp = (unsigned char *)&cardno;
 	int i, ret;
+	itm = _cal_itmofday(&tm[1]);//write by duyy, 2013.3.26
 	tmp += 3;
 	for (i = 0; i < 4; i++) {			// receive 4-byte card number
 		ret = recv_data(tmp, ptrm->term_no);
@@ -1201,7 +1227,7 @@ int recv_le_id(term_ram *ptrm, int allow)
 		// not find
 		feature = 1;
 	} else {
-		//printk("find!\n");
+		//printk("recv_le_id find!\n");
 		feature = 4;
 		//if (ptrm->pterm->term_type & 0x20) {
 		//	feature = 0;
@@ -1212,12 +1238,21 @@ int recv_le_id(term_ram *ptrm, int allow)
 			// 这是挂失卡
 			feature |= 1 << 5;
 		}
-		if ((pacc->feature & 0xC0) == 0x40 || (pacc->feature & 0xF) == 0) {
+#if 0
+		// 这里判断打小票
+		if (pacc->managefee & TICKETBIT) {
+			// 这个账户是福利
+			money = 1000;
+			goto over;
+		}
+#endif
+		if ((pacc->feature & 0xC0) == 0x40 || (pacc->feature & 0xF) == 0) { 
 			// 此卡达到餐限
 			// 此卡要输密码
 			feature |= 1 << 3;
 		}
 ///////////////////////////////////////////////////////////////////////////////////
+	#if 0//deleted by duyy, 2013.3.26
 		if ( (ptrm->pterm->power_id == 0xF0) ||
 			 ((pacc->feature & 0x30) == 0) ||
 			 ((ptrm->pterm->power_id & 0x0F) == ((pacc->feature & 0x30) >> 4))
@@ -1233,6 +1268,46 @@ int recv_le_id(term_ram *ptrm, int allow)
 		} else {
 			feature = 1;
 		}
+	#endif
+//////////////////////////////////////////////////////////////////////////////////		
+		//write by duyy, 2013.3.26
+		if (pacc->money < 0) {
+			money = 0;
+		} else {
+			money = (unsigned long)pacc->money & 0xFFFFF;
+		}
+		if (!(ptrm->pterm->param.term_type & 0x20)) {	//出纳机不判断时段、身份类型匹配，禁止消费问题
+			timenum = ptmnum[pacc->id_type][ptrm->pterm->power_id];
+			//printk("cardno:%ld timenum = %x\n", cardno, timenum);
+			if (timenum & 0x80){//modified by duyy, 2013.3.28,最高位bit7表示禁止消费，其余为允许消费，判断禁止时段
+				feature = 1;
+				//printk("whole day prohibit\n");
+				goto over;
+			}
+			else {
+				for (i = 0; i < 7; i++){
+					if (timenum & 0x1){
+						if(itm >= term_time[i].begin && itm <= term_time[i].end){
+							feature = 1;
+							//printk("term_time[%d] is prohibited, begin %d,end %d\n", i, term_time[i].begin, term_time[i].end);
+							goto over;
+						}
+					}
+					timenum = timenum >> 1;
+					//printk("timenum is %x\n", timenum);
+				}
+				//printk("continue consume\n");
+			}
+		}
+/////////////////////////////////////////////////////////////////////////////////
+		// 出纳机, 禁止某些人存款
+		if ((ptrm->pterm->param.term_type & 0x20)
+			&& (pacc->managefee & DEPBIT)) {		
+			if (ptrm->term_no != 10) {
+				// 非10号终端才做限制
+				feature = 1;
+			}
+		}
 		if (money > 999999) {
 			printk("money is too large!\n");
 			feature = 1;
@@ -1240,11 +1315,14 @@ int recv_le_id(term_ram *ptrm, int allow)
 		}
 ///////////////////////////////////////////////////////////////////////////////////
 	}
+over:
 	// 判断是否允许脱机使用光电卡
+#if 0//modified by duyy, 2013.4.19
 	if (!allow) {
 		feature = 1;
 		money = 0;
 	}
+#endif
 	if ((ret = send_byte(feature, ptrm->term_no)) < 0) {
 		ptrm->status = NOCOM;
 		return -1;
@@ -1265,6 +1343,415 @@ int recv_le_id(term_ram *ptrm, int allow)
 	ptrm->flow_flag = 0;		// 允许终端接收流水
 	// if not exist then send 1 and remain money 0
 	// next check dis_verify, send 0 if right, send 0xF if wrong
+#ifdef CONFIG_RECORD_CASHTERM
+	// 终端可以接收流水了, 保存状态
+	if ((ptrm->pterm->param.term_type & 0x20)
+		&& (cashterm_ptr < CASHBUFSZ)) { //modified by duyy, 2013.4.7
+		for (i = 0; i < CASHBUFSZ; i++){
+			//先判断相同出纳机号的信息是否有存储
+			if (ptrm->term_no ==  cashbuf[i].termno){
+				//出纳机号相同则数据直接覆盖存储
+				cashbuf[i].feature = feature;
+				cashbuf[i].consume = 0;
+				cashbuf[i].status = CASH_CARDIN;
+				cashbuf[i].termno = ptrm->term_no;
+				cashbuf[i].cardno = cardno;
+				if (pacc) {
+					cashbuf[i].accno = pacc->acc_num;
+					cashbuf[i].cardno = pacc->card_num;
+					cashbuf[i].managefee = fee[pacc->managefee & 0xF];
+					cashbuf[i].money = pacc->money;
+				}
+				// 这时候写入终端金额吗?
+				cashbuf[i].term_money = ptrm->term_money;
+				return 0;
+			}
+		}
+		// 记录非法卡
+		cashbuf[cashterm_ptr].feature = feature;
+		cashbuf[cashterm_ptr].consume = 0;
+		cashbuf[cashterm_ptr].status = CASH_CARDIN;
+		cashbuf[cashterm_ptr].termno = ptrm->term_no;
+		cashbuf[cashterm_ptr].cardno = cardno;
+		if (pacc) {
+			cashbuf[cashterm_ptr].accno = pacc->acc_num;
+			cashbuf[cashterm_ptr].cardno = pacc->card_num;
+			cashbuf[cashterm_ptr].managefee = fee[pacc->managefee & 0xF];
+			cashbuf[cashterm_ptr].money = pacc->money;
+		}
+		// 这时候写入终端金额吗?
+		cashbuf[cashterm_ptr].term_money = ptrm->term_money;
+		cashterm_ptr++;
+		if (cashterm_ptr == CASHBUFSZ){
+			cashterm_ptr = 0;
+		}
+	}
+#endif
+	return 0;
+}
+// 打小票发账户信息
+int recv_le_id2(term_ram *ptrm, int allow)
+{
+	unsigned long cardno;
+	acc_ram *pacc;
+	unsigned char feature = 0;
+	int money = 0;
+	unsigned char *tmp = (unsigned char *)&cardno;
+	int i, ret;
+	tmp += 3;
+	for (i = 0; i < 4; i++) {			// receive 4-byte card number
+		ret = recv_data(tmp, ptrm->term_no);
+		if (ret < 0) {
+			if (ret == -1) {
+				ptrm->status = -1;
+			}
+			if (ret == -2) {
+				ptrm->status = -2;
+				usart_delay(4 - i);
+			}
+			return ret;
+		}
+		ptrm->dif_verify ^= *tmp;
+		ptrm->add_verify += *tmp;
+		tmp--;
+	}
+	// search id
+	pacc = search_id(cardno);
+	// if exist, then deal with data
+	if (pacc == NULL) {
+		// not find
+		feature = 1;
+	} else {
+		//printk("find!\n");
+		feature = 4;
+		if ((pacc->feature & 0xC0) == 0x80) {
+			// 这是挂失卡
+			feature |= 1 << 5;
+		}
+		// 这里判断打小票
+		if (pacc->managefee & TICKETBIT) {
+			// 这个账户是福利
+			money = 1000;
+		} else {
+			feature = 1;
+		}
+	}
+	// 判断是否允许脱机使用光电卡
+#if 0//modified by duyy, 2013.4.19
+	if (!allow) {
+		feature = 1;
+		money = 0;
+	}
+#endif
+	if ((ret = send_byte(feature, ptrm->term_no)) < 0) {
+		ptrm->status = NOCOM;
+		return -1;
+	}
+	ptrm->dif_verify ^= feature;
+	ptrm->add_verify += feature;
+	//printk("feature is %02x\n", feature);
+	money = binl2bcd(money) & 0xFFFFFF;
+	tmp = (unsigned char *)&money;
+	tmp += 2;
+	for (i = 0; i < 3; i++) {
+		if (send_byte(*tmp, ptrm->term_no) < 0)
+			return -1;
+		ptrm->dif_verify ^= *tmp;
+		ptrm->add_verify += *tmp;
+		tmp--;
+	}
+	if (verify_all(ptrm, CHKALL) < 0)
+		return -1;
+	ptrm->flow_flag = 0;		// 允许终端接收流水
+	// if not exist then send 1 and remain money 0
+	// next check dis_verify, send 0 if right, send 0xF if wrong
+#ifdef CONFIG_RECORD_CASHTERM
+	// 终端可以接收流水了, 保存状态
+	if ((ptrm->pterm->param.term_type & 0x20)
+		&& (cashterm_ptr < CASHBUFSZ)) {
+		for (i = 0; i < CASHBUFSZ; i++){
+			//先判断相同出纳机号的信息是否有存储
+			if (ptrm->term_no ==  cashbuf[i].termno){
+				//出纳机号相同则数据直接覆盖存储
+				cashbuf[i].feature = feature;
+				cashbuf[i].consume = 0;
+				cashbuf[i].status = CASH_CARDIN;
+				cashbuf[i].termno = ptrm->term_no;
+				cashbuf[i].cardno = cardno;
+				if (pacc) {
+					cashbuf[i].accno = pacc->acc_num;
+					cashbuf[i].cardno = pacc->card_num;
+					cashbuf[i].managefee = fee[pacc->managefee & 0xF];
+					cashbuf[i].money = pacc->money;
+				}
+				// 这时候写入终端金额吗?
+				cashbuf[i].term_money = ptrm->term_money;
+				return 0;
+			}
+		}
+		// 记录非法卡
+		cashbuf[cashterm_ptr].feature = feature;
+		cashbuf[cashterm_ptr].consume = 0;
+		cashbuf[cashterm_ptr].status = CASH_CARDIN;
+		cashbuf[cashterm_ptr].termno = ptrm->term_no;
+		cashbuf[cashterm_ptr].cardno = cardno;
+		if (pacc) {
+			cashbuf[cashterm_ptr].accno = pacc->acc_num;
+			cashbuf[cashterm_ptr].cardno = pacc->card_num;
+			cashbuf[cashterm_ptr].managefee = fee[pacc->managefee & 0xF];
+			cashbuf[cashterm_ptr].money = pacc->money;
+		}
+		// 这时候写入终端金额吗?
+		cashbuf[cashterm_ptr].term_money = ptrm->term_money;
+		cashterm_ptr++;
+		if (cashterm_ptr == CASHBUFSZ){
+			cashterm_ptr = 0;
+		}
+	}
+#endif
+	return 0;
+}
+
+/*
+ * receive le card flow, flag is 0 or 1; if flag is 0, consum is HEX; or is BCD
+ * but store into flow any data is HEX
+ * 打小票收流水
+ */
+int recv_leflow2(term_ram *ptrm, unsigned char *tm)
+{
+	le_flow leflow;
+	int ret, i;
+	int tail;
+	unsigned char *tmp;
+	acc_ram *pacc;
+	memset(&leflow, 0, sizeof(leflow));
+	// first recv 4-byte card number
+	tmp = (unsigned char *)&leflow.card_num;
+	tmp += 3;//sizeof(leflow.card_num) - 1;		// tmp point lenum high byte
+	for (i = 0; i < 4; i++) {
+		ret = recv_data((char *)tmp, ptrm->term_no);
+		if (ret < 0) {
+			if (ret == -1) {		// timeout, pos is not exist
+				ptrm->status = NOTERMINAL;
+			}
+			if (ret == -2) {		// other errors
+				ptrm->status = NOCOM;
+			}
+			return ret;
+		}
+		ptrm->dif_verify ^= *tmp;
+		ptrm->add_verify += *tmp;
+		tmp--;
+	}
+	// second recv 2-byte consume money
+	tmp = (unsigned char *)&leflow.consume_sum;
+	tmp += 1;		//sizeof(leflow.consume_sum) - 1;
+	for (i = 0; i < 2; i++) {
+		ret = recv_data((char *)tmp, ptrm->term_no);
+		if (ret < 0) {
+			if (ret == -1) {		// timeout, pos is not exist
+				ptrm->status = NOTERMINAL;
+			}
+			if (ret == -2) {		// other errors
+				ptrm->status = NOCOM;
+			}
+			return ret;
+		}
+		ptrm->dif_verify ^= *tmp;
+		ptrm->add_verify += *tmp;
+		tmp--;
+	}
+	// third check NXOR
+	if (verify_all(ptrm, CHKALL) < 0) {
+		return -1;
+	}
+	// check if receive the flow
+	if (ptrm->flow_flag)
+		return 0;
+	// save flow...
+	space_remain--;
+	// search id
+	pacc = search_id(leflow.card_num);
+	if (pacc == NULL) {
+		printk("no cardno: %08x", (unsigned int)leflow.card_num);
+		return 0;
+	}
+	// 打小票分析
+	leflow.notused[0] = 1;		// not used [0] 标识打小票
+	pacc->managefee &= ~TICKETBIT;
+	leflow.consume_sum = TICKETMONEY;
+	ptrm->term_cnt++;
+	// init leflow
+	leflow.flow_type = LECONSUME;
+	leflow.acc_num = pacc->acc_num;
+	leflow.date.hyear = *tm++;
+	leflow.date.lyear = *tm++;
+	leflow.date.mon = *tm++;
+	leflow.date.mday = *tm++;
+	leflow.date.hour = *tm++;
+	leflow.date.min = *tm++;
+	leflow.date.sec = *tm++;
+	leflow.tml_num = ptrm->term_no;
+	// 流水号的处理
+	//flow_no = maxflowno;
+	leflow.flow_num = maxflowno++;
+	//maxflowno = flow_no;
+	// set ptrm->flow_flag
+	ptrm->flow_flag = ptrm->term_no;
+	// 流水区头尾的处理
+	tail = flowptr.tail;
+	if (tail >= FLOWANUM) {
+		// 流水缓存区满?
+		printk("uart 485 flow buffer no space\n");
+		return -1;
+	}
+	//printk("recv le flow tail: %d\n", tail);
+	memcpy(pflow + tail, &leflow, sizeof(flow));
+	tail++;
+	//if (tail == FLOWANUM)
+	//	tail = 0;
+	flowptr.tail = tail;
+	flow_sum++;
+	return 0;
+}
+
+/*
+ * receive le card flow, flag is 0 or 1; if flag is 0, consum is HEX; or is BCD
+ * but store into flow any data is HEX
+ */
+int recv_leflow(term_ram *ptrm, int flag, unsigned char *tm)
+{
+	le_flow leflow;
+	int ret, i;
+	int limit, tail;
+	unsigned char *tmp;
+	acc_ram *pacc;
+	memset(&leflow, 0, sizeof(leflow));
+	// first recv 4-byte card number
+	tmp = (unsigned char *)&leflow.card_num;
+	tmp += 3;//sizeof(leflow.card_num) - 1;		// tmp point lenum high byte
+	for (i = 0; i < 4; i++) {
+		ret = recv_data((char *)tmp, ptrm->term_no);
+		if (ret < 0) {
+			if (ret == -1) {		// timeout, pos is not exist
+				ptrm->status = NOTERMINAL;
+			}
+			if (ret == -2) {		// other errors
+				ptrm->status = NOCOM;
+			}
+			return ret;
+		}
+		ptrm->dif_verify ^= *tmp;
+		//ptrm->add_verify += *tmp;
+		tmp--;
+	}
+	// second recv 2-byte consume money
+	tmp = (unsigned char *)&leflow.consume_sum;
+	tmp += 1;		//sizeof(leflow.consume_sum) - 1;
+	for (i = 0; i < 2; i++) {
+		ret = recv_data((char *)tmp, ptrm->term_no);
+		if (ret < 0) {
+			if (ret == -1) {		// timeout, pos is not exist
+				ptrm->status = NOTERMINAL;
+			}
+			if (ret == -2) {		// other errors
+				ptrm->status = NOCOM;
+			}
+			return ret;
+		}
+		ptrm->dif_verify ^= *tmp;
+		//ptrm->add_verify += *tmp;
+		tmp--;
+	}
+	//leflow.consume_sum &= 0xFFFF;
+	if (flag)		// if BCD then convert BIN
+		leflow.consume_sum = bcdl2bin(leflow.consume_sum);
+	// third check NXOR
+	if (flag) {
+		if (verify_all(ptrm, CHKXOR) < 0) {
+			return -1;
+		}
+	} else {
+		if (verify_all(ptrm, CHKNXOR) < 0) {
+			return -1;
+		}
+	}
+/*	if (verify_all(ptrm, CHKNXOR) < 0)
+		return -1;
+*/
+	// check if receive the flow
+	if (ptrm->flow_flag)
+		return 0;
+	// save flow...
+	space_remain--;
+	// search id
+	pacc = search_id(leflow.card_num);
+	if (pacc == NULL) {
+		printk("no cardno: %08x", (unsigned int)leflow.card_num);
+		return 0;
+	}
+	// 打小票分析
+	if (pacc->managefee & TICKETBIT) {
+		leflow.notused[0] = 1;		// not used [0] 标识打小票
+		pacc->managefee &= ~TICKETBIT;
+		leflow.consume_sum = TICKETMONEY;
+		goto over;
+	}
+	// adjust money limit
+	limit = pacc->feature & 0xF;
+	if ((limit != 0xF) && limit) { 
+		// 需要调整餐限
+		limit -= leflow.consume_sum / 100 + 1;//modified by duyy,2012.2.22
+		if (!(leflow.consume_sum % 100)) {// 刚好满100时, 认为是一次
+			limit++;
+		}
+		if (limit < 0)
+			limit = 0;
+	}
+	//if (leflow.consume_sum < 0) {
+	//	printk("error!!!!!!!!\n");
+	//}
+	pacc->money -= leflow.consume_sum;
+	if (pacc->money < 0) {
+		printk("account money below zero!!!\n");
+		pacc->money = 0;
+	}
+	pacc->feature &= 0xF0;
+	pacc->feature |= limit; 
+	ptrm->term_money += leflow.consume_sum;
+over:
+	ptrm->term_cnt++;
+	// init leflow
+	leflow.flow_type = LECONSUME;
+	leflow.acc_num = pacc->acc_num;
+	leflow.date.hyear = *tm++;
+	leflow.date.lyear = *tm++;
+	leflow.date.mon = *tm++;
+	leflow.date.mday = *tm++;
+	leflow.date.hour = *tm++;
+	leflow.date.min = *tm++;
+	leflow.date.sec = *tm++;
+	leflow.tml_num = ptrm->term_no;
+	// 流水号的处理
+	//flow_no = maxflowno;
+	leflow.flow_num = maxflowno++;
+	//maxflowno = flow_no;
+	// set ptrm->flow_flag
+	ptrm->flow_flag = ptrm->term_no;
+	// 流水区头尾的处理
+	tail = flowptr.tail;
+	if (tail >= FLOWANUM) {
+		// 流水缓存区满?
+		printk("uart 485 flow buffer no space\n");
+		return -1;
+	}
+	//printk("recv le flow tail: %d\n", tail);
+	memcpy(pflow + tail, &leflow, sizeof(flow));
+	tail++;
+	//if (tail == FLOWANUM)
+	//	tail = 0;
+	flowptr.tail = tail;
+	flow_sum++;
 	return 0;
 }
 
@@ -1501,6 +1988,44 @@ int recv_take_money(term_ram *ptrm, unsigned char *tm)
 	flowptr.tail = tail;
 	flow_sum++;
 	space_remain--;
+#ifdef CONFIG_RECORD_CASHTERM
+	// 终端接收取款流水, 保存状态
+	if (/*(ptrm->pterm->term_type & 0x20)
+		&&*/ (cashterm_ptr < CASHBUFSZ) && pacc) {
+		//modified by duyy, 2013.4.7
+		for (i = 0; i < CASHBUFSZ; i++){
+			//先判断相同出纳机号的信息是否有存储
+			if (ptrm->term_no ==  cashbuf[i].termno){
+				//出纳机号相同则数据直接覆盖存储
+				cashbuf[i].accno = pacc->acc_num;
+				cashbuf[i].cardno = pacc->card_num;
+				cashbuf[i].feature = 0;
+				cashbuf[i].managefee = leflow.manage_fee;
+				cashbuf[i].money = pacc->money;
+				cashbuf[i].consume = leflow.consume_sum;
+				cashbuf[i].status = CASH_TAKEOFF;
+				cashbuf[i].termno = ptrm->term_no;
+				// 增加终端金额
+				cashbuf[i].term_money = ptrm->term_money;
+				return 0;
+			}
+		}
+		cashbuf[cashterm_ptr].accno = pacc->acc_num;
+		cashbuf[cashterm_ptr].cardno = pacc->card_num;
+		cashbuf[cashterm_ptr].feature = 0;
+		cashbuf[cashterm_ptr].managefee = leflow.manage_fee;
+		cashbuf[cashterm_ptr].money = pacc->money;
+		cashbuf[cashterm_ptr].consume = leflow.consume_sum;
+		cashbuf[cashterm_ptr].status = CASH_TAKEOFF;
+		cashbuf[cashterm_ptr].termno = ptrm->term_no;
+		// 增加终端金额
+		cashbuf[cashterm_ptr].term_money = ptrm->term_money;
+		cashterm_ptr++;
+		if (cashterm_ptr == CASHBUFSZ){
+			cashterm_ptr = 0;
+		}	
+	}
+#endif
 	return 0;
 }
 
@@ -1614,6 +2139,44 @@ int recv_dep_money(term_ram *ptrm, unsigned char *tm)
 	flowptr.tail = tail;
 	flow_sum++;
 	space_remain--;
+#ifdef CONFIG_RECORD_CASHTERM
+	// 终端接收取款流水, 保存状态
+	if (/*(ptrm->pterm->term_type & 0x20)
+		&&*/ (cashterm_ptr < CASHBUFSZ) && pacc) {
+		//modified by duyy, 2013.4.7
+		for (i = 0; i < CASHBUFSZ; i++){
+			//先判断相同出纳机号的信息是否有存储
+			if (ptrm->term_no ==  cashbuf[i].termno){
+				//出纳机号相同则数据直接覆盖存储
+				cashbuf[i].accno = pacc->acc_num;
+				cashbuf[i].cardno = pacc->card_num;
+				cashbuf[i].feature = 0;
+				cashbuf[i].managefee = leflow.manage_fee;
+				cashbuf[i].money = pacc->money;
+				cashbuf[i].consume = leflow.consume_sum;
+				cashbuf[i].status = CASH_DEPOFF;
+				cashbuf[i].termno = ptrm->term_no;
+				// 增加终端金额
+				cashbuf[i].term_money = ptrm->term_money;
+				return 0;
+			}
+		}
+		cashbuf[cashterm_ptr].accno = pacc->acc_num;
+		cashbuf[cashterm_ptr].cardno = pacc->card_num;
+		cashbuf[cashterm_ptr].feature = 0;
+		cashbuf[cashterm_ptr].managefee = leflow.manage_fee;
+		cashbuf[cashterm_ptr].money = pacc->money;
+		cashbuf[cashterm_ptr].consume = leflow.consume_sum;
+		cashbuf[cashterm_ptr].status = CASH_DEPOFF;
+		cashbuf[cashterm_ptr].termno = ptrm->term_no;
+		// 增加终端金额
+		cashbuf[cashterm_ptr].term_money = ptrm->term_money;
+		cashterm_ptr++;
+		if (cashterm_ptr == CASHBUFSZ){
+			cashterm_ptr = 0;
+		}
+	}
+#endif
 	return 0;
 }
 #endif/* QINGHUA TS11 */
@@ -1625,6 +2188,7 @@ int recv_dep_money(term_ram *ptrm, unsigned char *tm)
 int deal_money(money_flow *pnflow, acc_ram *pacc_m, acc_ram *pacc_s, struct record_info *prcd)
 {
 	acc_ram *pacc = NULL;
+	unsigned long accno = 0;		// 换卡标志
 	if (pnflow == NULL || pacc_m == NULL || prcd == NULL) {
 		return -1;
 	}
@@ -1633,7 +2197,10 @@ int deal_money(money_flow *pnflow, acc_ram *pacc_m, acc_ram *pacc_s, struct reco
 		// 找到了, 但不清楚是不是换过的卡
 		if ((pacc->feature & 0xC0) == 0xC0) {
 			// 卡片是换过的, 还需要搜索换卡区
+#if 0
 			printk("card is changed!\n");
+#endif
+			accno = pacc->acc_num;
 			pacc = NULL;
 			goto find2;
 		}
@@ -1647,10 +2214,43 @@ find2:
 		}
 	}
 	if (pacc == NULL) {
+		if (accno) {
+			// 需要找到新卡的位置, 按账号查找
+			pacc = search_acc(accno, pacc_s, prcd->account_sw);
+			if (pacc)
+				goto end;
+		}
 		printk("can not find card no: %08x\n", (unsigned int)pnflow->CardNo);
 		return 0;
 	}
-	pacc->money += pnflow->Money;//=================
+end:
+#ifdef QINGHUA
+	// 打小票账户特殊处理
+	if (/*(pacc->managefee & TICKETBIT) && */(pnflow->Money == TICKETMONEY)) {
+		pacc->managefee &= ~TICKETBIT;
+	} else {
+#endif
+		pacc->money += pnflow->Money;//=================
+		if (pnflow->Money < 0) {
+			int limit;
+			pnflow->Money = 0 - pnflow->Money;
+			limit = pacc->feature & 0xF;
+			if ((limit != 0xF) && limit) {
+				// 需要调整餐限
+				limit -= pnflow->Money / 100 + 1;
+				if (!(pnflow->Money % 100)) {// 刚好满100时, 认为是一次
+					limit++;
+				}
+				if (limit < 0) {
+					limit = 0;
+				}
+				pacc->feature &= 0xF0;
+				pacc->feature |= limit;
+			}
+		}
+#ifdef QINGHUA
+	}
+#endif
 	return 0;
 }
 
@@ -1784,6 +2384,7 @@ find23:
 			return 0;
 		}
 		oldacc.feature = pacc->feature;
+		oldacc.id_type = pacc->id_type;//write by duyy, 2013.3.26
 		oldacc.acc_num = pacc->acc_num;
 		oldacc.card_num = pnflow->NewCardId;
 		oldacc.managefee = pacc->managefee;// - 1;
@@ -1816,8 +2417,9 @@ find23:
 		oldacc.managefee = pnflow->ManageId;// - 1;
 		oldacc.money = pnflow->RemainMoney;
 		tmp = pnflow->UpLimitMoney & 0xF;
-		pnflow->PowerId --;
-		tmp |= (pnflow->PowerId & 0x3) << ACCOUNTCLASS;// 身份
+		pnflow->PowerId--;
+		oldacc.id_type = pnflow->PowerId;//modified by duyy, 2013.3.26
+		//tmp |= (pnflow->PowerId & 0x3) << ACCOUNTCLASS;// 身份
 		switch (pnflow->Flag) {
 		case 1:
 			tmp |= 0x10 << ACCOUNTFLAG;
@@ -1887,6 +2489,18 @@ find28:
 		}
 #endif
 		break;
+	case NOM_MANAGEFEETABLE://write by duyy, 2013.11.18
+		managefee_flag = pnflow->AccountId;
+		printk("pnflow->Type is %d, pnflow->AccountId is %ld\n", pnflow->Type, pnflow->AccountId);
+		break;
+	case NOM_FORBIDTABLE://write by duyy, 2013.11.18
+		forbid_flag = pnflow->AccountId;
+		printk("pnflow->Type is %d, pnflow->AccountId is %ld\n", pnflow->Type, pnflow->AccountId);
+		break;
+	case NOM_FORBIDSEG://write by duyy, 2013.11.18
+		timeseg_flag = pnflow->AccountId;
+		printk("pnflow->Type is %d, pnflow->AccountId is %ld\n", pnflow->Type, pnflow->AccountId);
+		break;
 	default:
 		break;
 	}
@@ -1916,10 +2530,11 @@ int sort_sw(acc_ram *pacc_s, acc_ram *pacc, int cnt)
  */
 int nomtoblk(black_acc *pbacc, no_money_flow *pnflow)
 {
-	usr_time tm;
+//	usr_time tm;
 	memset(pbacc, 0, sizeof(black_acc));
 	// 为了提高效率不做参数正确性验证
 	pbacc->card_num = pnflow->CardId;
+#if 0//deleted by duyy, 2013.11.20
 	pbacc->opt = pnflow->BLTypeId;
 	if (ctoutm(&tm, pnflow->FlowTime) < 0)
 		printk("blk time error: %s\n", pnflow->FlowTime);
@@ -1928,6 +2543,7 @@ int nomtoblk(black_acc *pbacc, no_money_flow *pnflow)
 	pbacc->t_num.s_tm.mon = tm.mon;
 	pbacc->t_num.s_tm.day = tm.mday;
 	pbacc->t_num.s_tm.hour = tm.hour;
+#endif
 	memcpy(&pbacc->t_num.num, &pnflow->BlackFlowId, sizeof(pbacc->t_num.num));
 	return 0;
 }

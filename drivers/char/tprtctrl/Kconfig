@@ -1,0 +1,28 @@
+#
+# NKTY all dev configuration
+#
+
+menu "NKTY Wen Kong driver"
+
+config NKTYWENKONG
+	bool "NKTY Wen Kong driver"
+	depends on ARCH_AT91RM9200
+	default y
+
+config AT91_WKUART
+	bool "AT91 Wen Kong Uart driver"
+	depends on ARCH_AT91RM9200 && NKTYWENKONG
+	default y
+	help
+	  Wen Kong Uart driver
+config WENKONG_DEBUG
+	bool "Wen Kong debug?"
+	depends on ARCH_AT91RM9200 && NKTYWENKONG
+	default n
+
+config TPRT_NC
+	bool "Support new power control"
+	depends on ARCH_AT91RM9200 && NKTYWENKONG
+	default n
+
+endmenu

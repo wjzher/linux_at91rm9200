@@ -21,11 +21,14 @@ extern int recv_dep_money(term_ram *ptrm, unsigned char *tm);
 
 #ifdef QINGHUA
 extern int send_run_data(term_ram *ptrm);
-extern int recv_le_id(term_ram *ptrm, int allow);
+extern int recv_le_id(term_ram *ptrm, int allow, unsigned char *tm);//modified by duyy, 2013.3.26
 extern int ret_no_only(term_ram *ptrm);
 extern int verify_all(term_ram *ptrm, unsigned char n);
 extern int recv_take_money(term_ram *ptrm, unsigned char *tm);
 extern int recv_dep_money(term_ram *ptrm, unsigned char *tm);
+extern int recv_leflow(term_ram *ptrm, int flag, unsigned char *tm);
+int recv_le_id2(term_ram *ptrm, int allow);
+int recv_leflow2(term_ram *ptrm, unsigned char *tm);
 #endif
 
 #ifdef CPUCARD

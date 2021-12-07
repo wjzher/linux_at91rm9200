@@ -15,8 +15,20 @@
  */
 #include "pdccfg.h"
 #include "deal_purse.h"
- 
+#include "uart.h"
 //#define DEBUG
+#define E485COM 485102010
+/*
+ * 打印输出struct tradenum, 仅在错误输出时调用, 当前文件使用
+ */
+#ifdef DEBUG
+static void out_tnum(struct tradenum *t_num)
+{
+	printk("%02x%02x %02x, %02x %02x: %d\n",
+		t_num->s_tm.hyear, t_num->s_tm.lyear, t_num->s_tm.mon,
+		t_num->s_tm.day, t_num->s_tm.hour, t_num->num);
+}
+#endif
 
 /*
  * 计算校验值
@@ -33,7 +45,7 @@ static int com_verify(term_ram *ptrm, unsigned char *buf, int cnt)
 /*
  * 打印输出struct tradenum, 仅在错误输出时调用, 当前文件使用
  */
-#if 1
+#if 0
 static void out_tnum(struct tradenum *t_num)
 {
 	printk("%02x%02x %02x, %02x %02x: %d\n",
@@ -45,14 +57,14 @@ static void out_tnum(struct tradenum *t_num)
  * 计算是否有黑名单操作需求, 返回需要下发的条数
  * write by wjzhe, June 12, 2007
  */
-#define DEBUG
+//#define DEBUG
 int compute_blk(term_ram *ptrm, struct black_info *pblkinfo)
 {
 	//int ret;
 	// 判断是否存在正确的交易号和版本号
-	// 只在交易号年有错误或者交易号为0的情况主动攻取交易号和版本号
-	if ((ptrm->blkinfo.trade_num.s_tm.hyear != 0x20)
-		|| (ptrm->blkinfo.edition == 0)
+	// 只在交易号非法或者版本号为0的情况主动攻取交易号和版本号
+	if (/*(ptrm->blkinfo.trade_num.s_tm.hyear != 0x20)
+		|| */(ptrm->blkinfo.edition == 0)
 		/* && (ptrm->blkinfo.trade_num.num == 0)*/) {
 		//if (ptrm->blkinfo.trade_num.s_tm.hyear == 0x20) {
 		//}
@@ -65,7 +77,7 @@ int compute_blk(term_ram *ptrm, struct black_info *pblkinfo)
 #ifdef DEBUG
 			printk("purse_get_edition failed\n");
 #endif
-			return -1;
+			return -E485COM;
 		}
 	}
 #if 0
@@ -92,7 +104,7 @@ int compute_blk(term_ram *ptrm, struct black_info *pblkinfo)
 #endif
 	return pblkinfo->trade_num.num - ptrm->blkinfo.trade_num.num;
 }
-#undef DEBUG
+
 /*
  * 折半查找黑名单, 比对交易号大小
  * write by wjzhe, June 12, 2007
@@ -192,6 +204,7 @@ static int send_data2(char *buf, size_t count, term_ram *ptrm)	// attention: can
 static int send_blkacc(term_ram *ptrm, black_acc *pbacc, int cnt)
 {
 	int i, ret;
+	char opt = 0;//modified by duyy, 2013.11.21
 	if (cnt == 0)
 		return 0;
 	if (pbacc == NULL)
@@ -202,7 +215,7 @@ static int send_blkacc(term_ram *ptrm, black_acc *pbacc, int cnt)
 		if (ret < 0)
 			goto send_blkacc_failed;
 		// 发送一字节操作记录
-		ret = send_data2((char *)&pbacc[i].opt, 1, ptrm);
+		ret = send_data2((char *)&opt, 1, ptrm);//modified by duyy, 2013.11.21
 		if (ret < 0)
 			goto send_blkacc_failed;
 	}
@@ -219,12 +232,14 @@ send_blkacc_failed:
 static int send_trade_num(struct tradenum *t_num, term_ram *ptrm)
 {
 	int ret;
+	unsigned char tm[5] = {0};//write by duyy, 2013.11.21
 	// 发4字节记录号
 	ret =  send_data2((char *)&t_num->num, sizeof(t_num->num), ptrm);
 	if (ret < 0)
 		return -1;
 	// 发5字节时间
-	ret = send_data2((char *)t_num->tm, sizeof(t_num->tm), ptrm);
+//	ret = send_data2((char *)t_num->tm, sizeof(t_num->tm), ptrm);//modified by duyy, 2013.11.20
+	ret = send_data2((char *)tm, 5, ptrm);
 	if (ret < 0)
 		return -1;
 	return 0;
@@ -237,6 +252,7 @@ static int send_trade_num(struct tradenum *t_num, term_ram *ptrm)
 static int recv_trade_num(struct tradenum *t_num, term_ram *ptrm)
 {
 	unsigned char *tmp;
+	unsigned char tm[5] = {0};//write by duyy, 2013.11.21
 	int i, ret;
 	tmp = (unsigned char *)&t_num->num;
 	// 先收4字节记录号
@@ -252,8 +268,9 @@ static int recv_trade_num(struct tradenum *t_num, term_ram *ptrm)
 		tmp++;
 	}
 	// 再收5字节时间
-	tmp = (unsigned char *)t_num->tm;
-	for (i = 0; i < sizeof(t_num->tm); i++) {
+//	tmp = (unsigned char *)t_num->tm;
+	tmp = tm;//write by duyy, 2013.11.21
+	for (i = 0; i < 5; /*sizeof(t_num->tm);*/ i++) {//modified by duyy, 2013.11.20
 		ret = recv_data(tmp, ptrm->term_no);
 		if (ret < 0) {
 			printk("recv %d termblk.trade_num.tm error, ret:%d\n", i, ret);
@@ -350,6 +367,7 @@ unsigned char recv_len(term_ram *ptrm)
 	ptrm->add_verify += len;
 	return len;
 }
+//#define TESTCODE
 
 /*
 0x88:(1)数据接收正确(2)当命令字需要操作时表接收与操作均成功；
@@ -429,7 +447,12 @@ static int recv_ga(term_ram *ptrm)
 		if (ret == -2) {
 			ptrm->status = -2;
 		}
+		// test code
+#ifdef TESTCODE
+		goto next;
+#else
 		return ret;
+#endif
 	}
 	if ((recvno & 0x7F) != (ptrm->term_no & 0x7F)) {
 		printk("recv ga termno error, %d: %d\n", recvno, ptrm->term_no);
@@ -437,6 +460,9 @@ static int recv_ga(term_ram *ptrm)
 		usart_delay(1);
 		return -1;
 	}
+#ifdef TESTCODE
+next:
+#endif
 	ptrm->add_verify += recvno;
 	ptrm->dif_verify ^= recvno;
 	// 收GA
@@ -449,8 +475,15 @@ static int recv_ga(term_ram *ptrm)
 		if (ret == -2) {
 			ptrm->status = -2;
 		}
+#ifdef TESTCODE
+		goto next1;
+#else
 		return ret;
+#endif
 	}
+#ifdef TESTCODE
+next1:
+#endif
 	switch (ga) {
 		case 0x88:
 		case 0x99:
@@ -459,10 +492,14 @@ static int recv_ga(term_ram *ptrm)
 		case 0xAA:
 		case 0xBB:
 			usart_delay(4);
+#ifdef TESTCODE
 			return -1;
+#endif
 		default:
 			usart_delay(4);
+#ifdef TESTCODE
 			return -1;
+#endif
 	}
 	ptrm->add_verify += ga;
 	ptrm->dif_verify ^= ga;
@@ -470,10 +507,20 @@ static int recv_ga(term_ram *ptrm)
 	len = recv_len(ptrm);
 	if (len == 0xFF) {
 		printk("purse_send_time: recv len failed\n");
+#ifdef TESTCODE
+		goto next2;
+#else
 		return -1;
+#endif
 	}
+#ifdef TESTCODE
+next2:
+#endif
 	// 收校验
 	ret = chk_verify(ptrm);
+#ifdef TESTCODE
+	//printk("term %d GA: %d, 0x%02x, %d\n", ptrm->term_no, recvno, ga, len);
+#endif
 	return ret;
 }
 
@@ -542,6 +589,10 @@ int purse_send_conf(term_ram *ptrm, unsigned char *tm, struct black_info *blkinf
 		return -1;
 	// save terminal black info.
 	memcpy(&ptrm->blkinfo, &termblk, sizeof(termblk));
+	// 如果黑名单版本号不一致则将交易号清零, 20100307
+	if (ptrm->blkinfo.edition != blkinfo->edition) {
+		ptrm->blkinfo.trade_num.num = 0;
+	}
 #if 0
 	// 此时要进行搜索PSAM卡库, 将对应的密码填入终端参数中
 	psl = search_psam(psamno, psinfo);
@@ -624,6 +675,209 @@ send_failed:
 }
 
 /*
+ * 发送上电参数，不含管理费系数
+ * write by duyy, 2012.1.31
+ */
+int purse_send_confnmf(term_ram *ptrm, unsigned char *tm, struct black_info *blkinfo)
+{
+	struct black_info termblk;
+	int ret, i;
+	unsigned char len;
+	unsigned short psamno;
+	unsigned char *tmp = (unsigned char *)&termblk.edition;
+	//unsigned char verify;
+	memset(&termblk, 0, sizeof(termblk));
+	// 收1字节包长度
+	len = recv_len(ptrm);
+	if (len == 0xFF) {
+		printk("purse_send_confnmf: recv len failed\n");
+		return -1;
+	}
+	// 收4字节黑名单版本号
+	for (i = 0; i < sizeof(termblk.edition); i++) {
+		ret = recv_data(tmp, ptrm->term_no);
+		if (ret < 0) {
+			printk("recv %d termblk.edition error, ret:%d\n", i, ret);
+			if (ret == -1) {
+				ptrm->status = -1;
+			}
+			if (ret == -2) {
+				ptrm->status = -2;
+			}
+			return ret;
+		}
+		ptrm->dif_verify ^= *tmp;
+		ptrm->add_verify += *tmp;
+		tmp++;
+	}
+	// 收9字节交易号
+	ret = recv_trade_num(&termblk.trade_num, ptrm);
+	if (ret < 0)
+		return -1;
+	// 收PSAM卡编号
+	tmp = (unsigned char *)&psamno;
+	for (i = 0; i < sizeof(psamno); i++) {
+		ret = recv_data(tmp, ptrm->term_no);
+		if (ret < 0) {
+			printk("recv %d PSAM NO. error, ret:%d\n", i, ret);
+			if (ret == -1) {
+				ptrm->status = -1;
+			}
+			if (ret == -2) {
+				ptrm->status = -2;
+			}
+			return ret;
+		}
+		ptrm->dif_verify ^= *tmp;
+		ptrm->add_verify += *tmp;
+		tmp++;
+	}
+	// 收2字节校验和
+	ret = chk_verify(ptrm);
+	if (ret < 0)
+		return -1;
+	// save terminal black info.
+	memcpy(&ptrm->blkinfo, &termblk, sizeof(termblk));
+	// 如果黑名单版本号不一致则将交易号清零, 20100307
+	if (ptrm->blkinfo.edition != blkinfo->edition) {
+		ptrm->blkinfo.trade_num.num = 0;
+	}
+#if 0
+	// 此时要进行搜索PSAM卡库, 将对应的密码填入终端参数中
+	psl = search_psam(psamno, psinfo);
+	if (psl) {// 如果有正确的数据则保存终端PSAM卡密码
+		memcpy(ptrm->pterm->param.psam_passwd, psl->pwd, sizeof(psl->pwd));
+	}
+#endif
+#if BWT_66J10
+	udelay(BWT_66J10);
+#endif
+	// 清空校验
+	ptrm->add_verify = 0;
+	ptrm->dif_verify = 0;
+	// 发1字节终端号
+	ret = send_byte(ptrm->term_no, ptrm->term_no);
+	if (ret < 0) {
+		goto send_failed;
+	}
+	ptrm->add_verify += ptrm->term_no;
+	ptrm->dif_verify ^= ptrm->term_no;
+	// 发命令字0x62
+	ret = send_byte(PURSE_RET_PARNMF, ptrm->term_no);
+	if (ret < 0) {
+		goto send_failed;
+	}
+	ptrm->add_verify += PURSE_RET_PARNMF;
+	ptrm->dif_verify ^= PURSE_RET_PARNMF;
+	// 发1字节包长度
+	len = 45;
+	ret = send_data2((char *)&len, sizeof(len), ptrm);
+	if (ret < 0)
+		goto send_failed;
+	// 发送配置数据45 (时间7＋配置参数包16＋餐次设置16＋新黑名单版本号4)
+	ret = send_data2(tm, 7, ptrm);
+	if (ret < 0) {
+		goto send_failed;
+	}
+	ret = send_data2((char *)&ptrm->pterm->param, sizeof(ptrm->pterm->param), ptrm);
+	if (ret < 0) {
+		goto send_failed;
+	}
+	ret = send_data2((char *)&ptrm->pterm->tmsg, sizeof(ptrm->pterm->tmsg), ptrm);
+	if (ret < 0) {
+		goto send_failed;
+	}
+	ret = send_data2((char *)&blkinfo->edition, sizeof(blkinfo->edition), ptrm);
+	if (ret < 0) {
+		goto send_failed;
+	}
+	// 发校验和
+	ret = send_verify(ptrm);
+	if (ret < 0)
+		goto send_failed;
+#ifdef DEBUG
+	printk("send %d\n", 7+sizeof(ptrm->pterm->param)+sizeof(ptrm->pterm->tmsg)+sizeof(blkinfo->edition)+2);
+	printk("send confnmf recv all data\n");
+#endif
+	return 0;
+send_failed:
+	ptrm->status = NOCOM;
+	return -1;
+}
+
+/*
+ * 发送管理费系数
+ * write by duyy, 2012.1.31
+ */
+int purse_send_managefee(term_ram *ptrm)
+{
+	int ret;
+	unsigned char len;
+	// 收包长度
+	len = recv_len(ptrm);
+	if (len == 0xFF) {
+		printk("purse_send_managefee: recv len failed\n");
+		return -1;
+	}
+	// 收2字节校验和
+	ret = chk_verify(ptrm);
+	if (ret < 0) {
+		printk("purse send managefee chk error\n");
+		return -1;
+	}
+#if BWT_66J10
+	udelay(BWT_66J10);
+#endif
+	ptrm->add_verify = 0;
+	ptrm->dif_verify = 0;
+	// 发终端号
+	ret = send_byte(ptrm->term_no, ptrm->term_no);
+	if (ret < 0) {
+		goto send_failed;
+	}
+	ptrm->add_verify += ptrm->term_no;
+	ptrm->dif_verify ^= ptrm->term_no;
+	// 发命令字0x64
+	ret = send_byte(PURSE_RET_MF, ptrm->term_no);
+	if (ret < 0) {
+		goto send_failed;
+	}
+	ptrm->add_verify += PURSE_RET_MF;
+	ptrm->dif_verify ^= PURSE_RET_MF;
+	// 发送包长度
+#ifndef QINGHUA
+	len = 2 * ptrm->pterm->fee_n + 2;
+#else
+	len = ptrm->pterm->fee_n + 2;
+#endif
+	ret = send_data2((char *)&len, sizeof(len), ptrm);
+	if (ret < 0) {
+		goto send_failed;
+	}
+	// 2N: 管理费系数, N对应人员类型数
+#ifndef QINGHUA
+	for (i = 0; i < ptrm->pterm->fee_n; i++) {
+		ret = send_data2(ptrm->pterm->mfee(i), 2, ptrm);
+		if (ret < 0) {
+			goto send_failed;
+		}
+	}
+#else
+	ret = send_data2((char *)ptrm->pterm->managefee, ptrm->pterm->fee_n, ptrm);
+	if (ret < 0) {
+		goto send_failed;
+	}
+#endif
+	// 发2字节校验
+	ret = send_verify(ptrm);
+	if (ret < 0)
+		goto send_failed;
+	return 0;
+send_failed:
+	ptrm->status = NOCOM;
+	return -1;
+}
+/*
  * 发送当前时间(YY, YY, MM, DD, HH, MM, SS)
  * write by wjzhe, June 8 2007
  */
@@ -682,7 +936,520 @@ send_time_failed:
 	ptrm->status = NOCOM;
 	return -1;
 }
+/*
+ * 发送禁止消费时间(HH, MM)
+ * write by duyy, 2013.5.20
+ */
+int purse_send_noconsumetime(term_ram *ptrm, unsigned char *nocmtm)
+{
+	int ret, i, j;
+	unsigned char len;
+	unsigned char nctime[28] = {0};
+	unsigned char timenum = 0;
+	// 收包长度
+	len = recv_len(ptrm);
+	if (len == 0xFF) {
+		printk("purse_send_time: recv len failed\n");
+		return -1;
+	}
+	// 收2字节校验和
+	ret = chk_verify(ptrm);
+	if (ret < 0) {
+		printk("purse send time chk error\n");
+		return -1;
+	}
+#if BWT_66J10
+	udelay(BWT_66J10);
+#endif
+	if (!(ptrm->pterm->param.term_type & 0x20)) {	//出纳机不判断时段、身份类型匹配，禁止消费问题,modified 2013.4.2
+		for(i = 0; i < 16; i++){//16类身份对应的禁止消费时段判断
+			timenum = ptmnum[i][ptrm->pterm->power_id];
+			if (timenum & 0x80){//modified by duyy, 2013.5.20,最高位bit7置1表示禁止消费，其余为允许消费，判断禁止时段
+				memcpy(nctime, nocmtm, 28);
+				goto over;
+			}
+			else {
+				for (j = 0; j < 7; j++){
+					if (timenum & 0x1){
+						memcpy(nctime, nocmtm, 28);
+						goto over;
+					}
+					timenum = timenum >> 1;
+				}
+			}
+		}
+		for(i = 0; i < 64; i++){//64类消费卡对应的禁止消费时段判断
+			timenum = forbidflag[ptrm->pterm->power_id][i];
+			if (timenum & 0x80){//modified by duyy, 2013.5.20,最高位bit7置1表示禁止消费，其余为允许消费，判断禁止时段
+				memcpy(nctime, nocmtm, 28);
+				goto over;
+			}
+			else {
+				for (j = 0; j < 7; j++){
+					if (timenum & 0x1){
+						memcpy(nctime, nocmtm, 28);
+						goto over;
+					}
+					timenum = timenum >> 1;
+				}
+			}
+		}
+	
+	}
+over:
+	ptrm->add_verify = 0;
+	ptrm->dif_verify = 0;
+	// 发终端号
+	ret = send_byte(ptrm->term_no, ptrm->term_no);
+	if (ret < 0) {
+		goto send_time_failed;
+	}
+	ptrm->add_verify += ptrm->term_no;
+	ptrm->dif_verify ^= ptrm->term_no;
+	// 发命令字0x16
+	ret = send_byte(PURSE_RET_NCTM, ptrm->term_no);
+	if (ret < 0) {
+		goto send_time_failed;
+	}
+	ptrm->add_verify += PURSE_RET_NCTM;
+	ptrm->dif_verify ^= PURSE_RET_NCTM;
+	// 发送包长度
+	len = 30;
+	ret = send_data2((char *)&len, sizeof(len), ptrm);
+	if (ret < 0) {
+		goto send_time_failed;
+	}
+	// 发禁止消费时间28字节
+	ret = send_data2(nctime, 28, ptrm);
+	if (ret < 0) {
+		goto send_time_failed;
+	}
+	// 发2字节校验
+	ret = send_verify(ptrm);
+	if (ret < 0)
+		goto send_time_failed;
+	return 0;
+send_time_failed:
+	ptrm->status = NOCOM;
+	return -1;
+}
+/*
+ * 发送消费卡管理费信息
+ * write by duyy, 2013.11.19
+ */
+int purse_send_magfeetable(term_ram *ptrm)
+{
+	int ret, i;
+	unsigned char len;
+	// 收包长度
+	len = recv_len(ptrm);
+	if (len == 0xFF) {
+		printk("purse_send_time: recv len failed\n");
+		return -1;
+	}
+	// 收2字节校验和
+	ret = chk_verify(ptrm);
+	if (ret < 0) {
+		printk("purse send time chk error\n");
+		return -1;
+	}
+#if BWT_66J10
+	udelay(BWT_66J10);
+#endif
+	ptrm->add_verify = 0;
+	ptrm->dif_verify = 0;
+	// 发终端号
+	ret = send_byte(ptrm->term_no, ptrm->term_no);
+	if (ret < 0) {
+		goto send_time_failed;
+	}
+	ptrm->add_verify += ptrm->term_no;
+	ptrm->dif_verify ^= ptrm->term_no;
+	// 发命令字0x1D
+	ret = send_byte(PURSE_RET_MAGFEE, ptrm->term_no);
+	if (ret < 0) {
+		goto send_time_failed;
+	}
+	ptrm->add_verify += PURSE_RET_MAGFEE;
+	ptrm->dif_verify ^= PURSE_RET_MAGFEE;
+	// 发送包长度
+	len = 67;
+	ret = send_data2((char *)&len, sizeof(len), ptrm);
+	if (ret < 0) {
+		goto send_time_failed;
+	}
+	// 发管理费收取方式1字节
+	ret = send_data2(&feenum, 1, ptrm);
+	if (ret < 0) {
+		goto send_time_failed;
+	}
+	// 发消费卡管理费64字节
+	for(i = 0; i < 64; i++){
+		ret = send_data2(&feetable[ptrm->pterm->power_id][i], 1, ptrm);
+		if (ret < 0) {
+			goto send_time_failed;
+		}
+	}
+	
+	// 发2字节校验
+	ret = send_verify(ptrm);
+	if (ret < 0)
+		goto send_time_failed;
+	return 0;
+send_time_failed:
+	ptrm->status = NOCOM;
+	return -1;
+}
+/*
+ * 发送禁止消费时段启用标志表单信息
+ * write by duyy, 2013.11.19
+ */
+int purse_send_forbidflag(term_ram *ptrm)
+{
+	int ret, i;
+	unsigned char len;
+	// 收包长度
+	len = recv_len(ptrm);
+	if (len == 0xFF) {
+		printk("purse_send_time: recv len failed\n");
+		return -1;
+	}
+	// 收2字节校验和
+	ret = chk_verify(ptrm);
+	if (ret < 0) {
+		printk("purse send time chk error\n");
+		return -1;
+	}
+#if BWT_66J10
+	udelay(BWT_66J10);
+#endif
+	ptrm->add_verify = 0;
+	ptrm->dif_verify = 0;
+	// 发终端号
+	ret = send_byte(ptrm->term_no, ptrm->term_no);
+	if (ret < 0) {
+		goto send_time_failed;
+	}
+	ptrm->add_verify += ptrm->term_no;
+	ptrm->dif_verify ^= ptrm->term_no;
+	// 发命令字0x1F
+	ret = send_byte(PURSE_RET_FORBIDTABLE, ptrm->term_no);
+	if (ret < 0) {
+		goto send_time_failed;
+	}
+	ptrm->add_verify += PURSE_RET_FORBIDTABLE;
+	ptrm->dif_verify ^= PURSE_RET_FORBIDTABLE;
+	// 发送包长度
+	len = 66;
+	ret = send_data2((char *)&len, sizeof(len), ptrm);
+	if (ret < 0) {
+		goto send_time_failed;
+	}
+	// 发禁止消费时段启用标志表单信息64字节
+	for(i = 0; i < 64; i++){
+		ret = send_data2(&forbidflag[ptrm->pterm->power_id][i], 1, ptrm);
+		if (ret < 0) {
+			goto send_time_failed;
+		}
+	}
+	// 发2字节校验
+	ret = send_verify(ptrm);
+	if (ret < 0)
+		goto send_time_failed;
+	return 0;
+send_time_failed:
+	ptrm->status = NOCOM;
+	return -1;
+}
+/*
+ * 更新消费卡管理费信息
+ * write by duyy, 2013.11.19
+ */
+int purse_update_magfeetable(term_ram *ptrm)
+{
+	int ret, i;
+	unsigned char len;
+	unsigned char sendno, recvno;
+	
+	ptrm->add_verify = 0;
+	ptrm->dif_verify = 0;
+	// 叫号
+	sendno = ptrm->term_no | 0x80;
+	ret = send_addr(sendno, ptrm->term_no);
+	if (ret < 0)
+		goto send_time_failed;
+	com_verify(ptrm, &sendno, sizeof(sendno));
+	// 回号
+	ret = recv_data((char *)&recvno, ptrm->term_no);
+	if (ret < 0) {
+		ptrm->status = ret;
+		return ret;
+	}
+	// 判断机器号是否一致
+	com_verify(ptrm, &recvno, sizeof(recvno));
+	if ((recvno & 0x7F) != (ptrm->term_no & 0x7F)) {
+		printk("update key return term no. error %02x: %02x\n", recvno, ptrm->term_no);
+		ptrm->status = NOCOM;
+		return -1;
+	}
+	//printk("termno %d send managefee\n", ptrm->term_no);
+	// 发终端号
+	ptrm->add_verify = 0;
+	ptrm->dif_verify = 0;
+	ret = send_byte(ptrm->term_no, ptrm->term_no);
+	if (ret < 0) {
+		printk("send termno failed\n");
+		goto send_time_failed;
+	}
+	ptrm->add_verify += ptrm->term_no;
+	ptrm->dif_verify ^= ptrm->term_no;
+	// 发命令字0x3B
+	ret = send_byte(PURSE_UPDATE_MAGFEE, ptrm->term_no);
+	if (ret < 0) {
+		goto send_time_failed;
+	}
+	ptrm->add_verify += PURSE_UPDATE_MAGFEE;
+	ptrm->dif_verify ^= PURSE_UPDATE_MAGFEE;
+	// 发送包长度
+	len = 67;
+	ret = send_data2((char *)&len, sizeof(len), ptrm);
+	if (ret < 0) {
+		printk("send data len failed\n");
+		goto send_time_failed;
+	}
+	// 发管理费收取方式1字节
+	ret = send_data2(&feenum, 1, ptrm);
+	if (ret < 0) {
+		goto send_time_failed;
+	}
+	// 发消费卡管理费64字节
+	for(i = 0; i < 64; i++){
+		ret = send_data2(&feetable[ptrm->pterm->power_id][i], 1, ptrm);
+		if (ret < 0) {
+			printk("send data failed\n");
+			goto send_time_failed;
+		}
+	}
+	
+	// 发2字节校验
+	ret = send_verify(ptrm);
+	if (ret < 0)
+		goto send_time_failed;
+	// 收GA
+	ret = recv_ga(ptrm);
+	if (ret < 0) {
+		printk("purse %d update managefee GA error\n", ptrm->term_no);
+		return -1;
+	}
+#ifdef TESTCODE
+	else {
+		printk("update managefee: recv ga ok\n");
+	}
+#endif
+	return 0;
+send_time_failed:
+	ptrm->status = NOCOM;
+	return -1;
+}
+/*
+ * 更新禁止消费时段启用标志表单信息
+ * write by duyy, 2013.11.19
+ */
+int purse_update_forbidflag(term_ram *ptrm)
+{
+	int ret, i;
+	unsigned char len;
+	unsigned char sendno, recvno;
+	
+	ptrm->add_verify = 0;
+	ptrm->dif_verify = 0;
+	// 叫号
+	sendno = ptrm->term_no | 0x80;
+	ret = send_addr(sendno, ptrm->term_no);
+	if (ret < 0)
+		goto send_time_failed;
+	com_verify(ptrm, &sendno, sizeof(sendno));
+	// 回号
+	ret = recv_data((char *)&recvno, ptrm->term_no);
+	if (ret < 0) {
 
+		ptrm->status = ret;
+		return ret;
+	}
+	// 判断机器号是否一致
+	com_verify(ptrm, &recvno, sizeof(recvno));
+	if ((recvno & 0x7F) != (ptrm->term_no & 0x7F)) {
+		printk("update key return term no. error %02x: %02x\n", recvno, ptrm->term_no);
+		ptrm->status = NOCOM;
+		return -1;
+	}
+
+	ptrm->add_verify = 0;
+	ptrm->dif_verify = 0;
+	// 发终端号
+	ret = send_byte(ptrm->term_no, ptrm->term_no);
+	if (ret < 0) {
+		goto send_time_failed;
+	}
+	ptrm->add_verify += ptrm->term_no;
+	ptrm->dif_verify ^= ptrm->term_no;
+	// 发命令字0x1F
+	ret = send_byte(PURSE_UPDATE_FORBIDTABLE, ptrm->term_no);
+	if (ret < 0) {
+		goto send_time_failed;
+	}
+	ptrm->add_verify += PURSE_UPDATE_FORBIDTABLE;
+	ptrm->dif_verify ^= PURSE_UPDATE_FORBIDTABLE;
+	// 发送包长度
+	len = 66;
+	ret = send_data2((char *)&len, sizeof(len), ptrm);
+	if (ret < 0) {
+		goto send_time_failed;
+	}
+	// 发禁止消费时段启用标志表单信息64字节
+	for(i = 0; i < 64; i++){
+		ret = send_data2(&forbidflag[ptrm->pterm->power_id][i], 1, ptrm);
+		if (ret < 0) {
+			goto send_time_failed;
+		}
+	}
+	// 发2字节校验
+	ret = send_verify(ptrm);
+	if (ret < 0)
+		goto send_time_failed;
+	// 收GA
+	ret = recv_ga(ptrm);
+	if (ret < 0) {
+		printk("purse %d update forbidflag GA error\n", ptrm->term_no);
+		return -1;
+	}
+#ifdef TESTCODE
+	else {
+		printk("update forbidflag: recv ga ok\n");
+	}
+#endif
+	return 0;
+send_time_failed:
+	ptrm->status = NOCOM;
+	return -1;
+}
+/*
+ * 更新禁止消费时间(HH, MM)
+ * write by duyy, 2013.11.22
+ */
+int purse_update_noconsumetime(term_ram *ptrm, unsigned char *nocmtm)
+{
+	int ret, i, j;
+	unsigned char len;
+	unsigned char nctime[28] = {0};
+	unsigned char timenum = 0;
+	unsigned char sendno, recvno;
+	
+	ptrm->add_verify = 0;
+	ptrm->dif_verify = 0;
+	// 叫号
+	sendno = ptrm->term_no | 0x80;
+	ret = send_addr(sendno, ptrm->term_no);
+	if (ret < 0)
+		goto send_time_failed;
+	com_verify(ptrm, &sendno, sizeof(sendno));
+	// 回号
+	ret = recv_data((char *)&recvno, ptrm->term_no);
+	if (ret < 0) {
+
+		ptrm->status = ret;
+		return ret;
+	}
+	// 判断机器号是否一致
+	com_verify(ptrm, &recvno, sizeof(recvno));
+	if ((recvno & 0x7F) != (ptrm->term_no & 0x7F)) {
+		printk("update time seg term no. error %02x: %02x\n", recvno, ptrm->term_no);
+		ptrm->status = NOCOM;
+		return -1;
+	}
+	if (!(ptrm->pterm->param.term_type & 0x20)) {	//出纳机不判断时段、身份类型匹配，禁止消费问题,modified 2013.4.2
+		for(i = 0; i < 16; i++){//16类身份对应的禁止消费时段判断
+			timenum = ptmnum[i][ptrm->pterm->power_id];
+			if (timenum & 0x80){//modified by duyy, 2013.5.20,最高位bit7置1表示禁止消费，其余为允许消费，判断禁止时段
+				memcpy(nctime, nocmtm, 28);
+				goto over;
+			}
+			else {
+				for (j = 0; j < 7; j++){
+					if (timenum & 0x1){
+						memcpy(nctime, nocmtm, 28);
+						goto over;
+					}
+					timenum = timenum >> 1;
+				}
+			}
+		}
+		for(i = 0; i < 64; i++){//64类消费卡对应的禁止消费时段判断
+			timenum = forbidflag[ptrm->pterm->power_id][i];
+			if (timenum & 0x80){//modified by duyy, 2013.5.20,最高位bit7置1表示禁止消费，其余为允许消费，判断禁止时段
+				memcpy(nctime, nocmtm, 28);
+				goto over;
+			}
+			else {
+				for (j = 0; j < 7; j++){
+					if (timenum & 0x1){
+						memcpy(nctime, nocmtm, 28);
+						goto over;
+					}
+					timenum = timenum >> 1;
+				}
+			}
+		}
+	
+	}
+over:
+	ptrm->add_verify = 0;
+	ptrm->dif_verify = 0;
+	// 发终端号
+	ret = send_byte(ptrm->term_no, ptrm->term_no);
+	if (ret < 0) {
+		goto send_time_failed;
+	}
+	ptrm->add_verify += ptrm->term_no;
+	ptrm->dif_verify ^= ptrm->term_no;
+	// 发命令字0x3D
+	ret = send_byte(PURSE_UPDATE_FORBIDSEG, ptrm->term_no);
+	if (ret < 0) {
+		goto send_time_failed;
+	}
+	ptrm->add_verify += PURSE_UPDATE_FORBIDSEG;
+	ptrm->dif_verify ^= PURSE_UPDATE_FORBIDSEG;
+	// 发送包长度
+	len = 30;
+	ret = send_data2((char *)&len, sizeof(len), ptrm);
+	if (ret < 0) {
+		goto send_time_failed;
+	}
+	// 发禁止消费时间28字节
+	ret = send_data2(nctime, 28, ptrm);
+	if (ret < 0) {
+		goto send_time_failed;
+	}
+	// 发2字节校验
+	ret = send_verify(ptrm);
+	if (ret < 0)
+		goto send_time_failed;
+	// 收GA
+	ret = recv_ga(ptrm);
+	if (ret < 0) {
+		printk("purse %d update forbidseg GA error\n", ptrm->term_no);
+		return -1;
+	}
+//#ifdef TESTCODE
+	else {
+		printk("update forbidseg: recv ga ok\n");
+	}
+//#endif
+	return 0;
+send_time_failed:
+	ptrm->status = NOCOM;
+	return -1;
+}
 /*
  * 接收终端机黑名单交易号, 返回通用应答包GA
  * 黑名单交易序列号YYMDHXXXX：YYMDH为年、月、日、时
@@ -756,6 +1523,20 @@ int purse_recv_flow(term_ram *ptrm)
 	}
 	// 接收48字节流水信息
 	// 流水时间
+#ifdef QINGHUA
+	m1flow.date.hyear = 0x20;
+	tmp = (unsigned char *)&m1flow.date.lyear;
+	for (i = 0; i < sizeof(m1flow.date) - 1; i++) {
+		ret = recv_data((char *)tmp, ptrm->term_no);
+		if (ret < 0) {
+			ptrm->status = ret;
+			return ret;
+		}
+		ptrm->dif_verify ^= *tmp;
+		ptrm->add_verify += *tmp;
+		tmp--;
+	}
+#else
 	tmp = (unsigned char *)&m1flow.date.hyear;
 	for (i = 0; i < sizeof(m1flow.date); i++) {
 		ret = recv_data((char *)tmp, ptrm->term_no);
@@ -767,6 +1548,7 @@ int purse_recv_flow(term_ram *ptrm)
 		ptrm->add_verify += *tmp;
 		tmp--;
 	}
+#endif
 	// 卡号
 	tmp = (unsigned char *)&m1flow.card_num;
 	for (i = 0; i < sizeof(m1flow.card_num); i++) {
@@ -856,6 +1638,25 @@ int purse_recv_flow(term_ram *ptrm)
 		tmp++;
 	}
 #else
+	// ASN
+	tmp = (unsigned char *)&m1flow.asn;
+	for (i = 0; i < sizeof(m1flow.asn); i++) {
+		ret = recv_data(tmp, ptrm->term_no);
+		if (ret < 0) {
+			printk("recv %d m1flow.acc_num error, ret:%d\n", i, ret);
+			if (ret == -1) {
+				ptrm->status = -1;
+			}
+			if (ret == -2) {
+				ptrm->status = -2;
+			}
+			return ret;
+		}
+		ptrm->add_verify += *tmp;
+		ptrm->dif_verify ^= *tmp;
+		tmp++;
+	}
+#if 0
 	// 当前餐次消费总额, 清华只有3字节
 	tmp = (unsigned char *)&m1flow.money_sum;
 	for (i = 0; i < 3; i++) {
@@ -874,6 +1675,7 @@ int purse_recv_flow(term_ram *ptrm)
 		ptrm->dif_verify ^= *tmp;
 		tmp++;
 	}
+#endif
 	// 4字节TAC
 	tmp = (unsigned char *)&m1flow.qh_tac;
 	for (i = 0; i < sizeof(m1flow.qh_tac); i++) {
@@ -1056,6 +1858,7 @@ int purse_recv_flow(term_ram *ptrm)
 		tmp++;
 	}
 	// 交易类型标识
+#ifndef QINGHUA
 	tmp = (unsigned char *)&m1flow.deal_type;
 	for (i = 0; i < sizeof(m1flow.deal_type); i++) {
 		ret = recv_data(tmp, ptrm->term_no);
@@ -1073,6 +1876,7 @@ int purse_recv_flow(term_ram *ptrm)
 		ptrm->add_verify += *tmp;
 		tmp++;
 	}
+#endif
 	// 流水类型
 	tmp = (unsigned char *)&m1flow.flow_type;
 	for (i = 0; i < sizeof(m1flow.flow_type); i++) {
@@ -1151,7 +1955,13 @@ int purse_recv_flow(term_ram *ptrm)
 		return 0;
 	}
 	// 非锁卡流水并且为正常流水才有此判断
-	if ((ptrm->psam_trd_num) && (m1flow.deal_type != 0x99)
+#ifndef QINGHUA
+	if ((ptrm->psam_trd_num) && 
+#ifdef QINGHUA
+		!(m1flow.flow_type & TPLOCKBIT)		// 非锁卡流水
+#else
+		(m1flow.deal_type != 0x99)
+#endif
 		&& !(m1flow.flow_type & (1 << 1))) {
 		if (m1flow.psam_trd_num <= ptrm->psam_trd_num) {
 			// 已经上传的流水
@@ -1163,6 +1973,7 @@ int purse_recv_flow(term_ram *ptrm)
 			return 0;
 		}
 	}
+#endif
 #if BWT_66J10
 	udelay(BWT_66J10);
 #endif
@@ -1171,7 +1982,11 @@ int purse_recv_flow(term_ram *ptrm)
 	// term_money plus
 	// 此处没进行TAC码验证, 只是简单的判断是否是正确流水
 	if (!(m1flow.flow_type & (1 << 1))) {
+#ifdef QINGHUA
+		if (m1flow.flow_type & TPLOCKBIT) {
+#else
 		if (m1flow.deal_type == 0x99) {
+#endif
 			// 锁卡流水, 不处理终端金额
 		} else {
 			// 只有正常流水且非锁卡流水才记录终端交易序号
@@ -1242,7 +2057,7 @@ int purse_recv_flow(term_ram *ptrm)
 int purse_send_bkin(term_ram *ptrm, struct black_info *blkinfo, black_acc *blkacc, int flag)
 {
 #ifndef MAXBLKCNT
-#define MAXBLKCNT 20
+#define MAXBLKCNT 6 //10,modified by duyy,2012.2.8	// max 20
 #endif
 	int ret;
 	unsigned char n, len = 0;
@@ -1252,7 +2067,7 @@ int purse_send_bkin(term_ram *ptrm, struct black_info *blkinfo, black_acc *blkac
 		return 0;
 	// 获取要下载黑名单的条数, 只是获得简单的条数
 	ret = compute_blk(ptrm, blkinfo);
-	if (ret < 0) {
+	if (ret == -E485COM) {
 #ifdef DEBUG
 		printk("compute blk error\n");
 #endif
@@ -1276,8 +2091,14 @@ int purse_send_bkin(term_ram *ptrm, struct black_info *blkinfo, black_acc *blkac
 		// 此时终端机中没有任何黑名单
 	//	ret -= blkacc[0].t_num.num - 1;
 	//}
-	// 查找黑名单表
-	if ((ptrm->blkinfo.trade_num.num > 0)
+	if (ret < 0) {
+		// 并不需要下载黑名单, 终端机的交易号比这边还大
+#ifdef DEBUG
+		printk("less than 0 not need black\n");
+#endif
+		phead = NULL;
+		ret = 0;
+	} else if ((ptrm->blkinfo.trade_num.num > 0)
 		// 终端机的版本号一致且交易号>0才会查找黑名单表
 		/*&& (ptrm->blkinfo.edition == blkinfo->edition)*/) {
 		phead = search_blk2(ptrm->blkinfo.trade_num.num, blkacc, blkinfo->count);
@@ -1313,19 +2134,22 @@ int purse_send_bkin(term_ram *ptrm, struct black_info *blkinfo, black_acc *blkac
 #ifdef DEBUG
 	if (phead) {
 		printk("send : phead->no %d\n", phead->card_num);
-		printk("send : phead->opt %02x\n", phead->opt);
+	//	printk("send : phead->opt %02x\n", phead->opt);
 	}
 	printk("send %d black acc, ret %d, blkinfo->count %d, \nblkinfo->trade_num.num %d\n", n & 0x3F, ret, blkinfo->count, blkinfo->trade_num.num);
+	if (n & 0x3F)
+		printk("send bkin: cnt = 0x%02x, trade = %d\n", n, phead[(n & 0x3F) - 1].t_num.num);
 #endif
 	// 叫号
 	sendno = ptrm->term_no | 0x80;
 	ret = send_addr(sendno, ptrm->term_no);
-	if (ret < 0)
+	if (ret < 0) {
 		goto send_bkin_failed;
+	}
 	// 回号
 	ret = recv_data((char *)&recvno, ptrm->term_no);
 	if (ret < 0) {
-#ifdef DEBUG
+#ifdef TESTCODE
 		printk("recv data %d: ret -> %d\n", ptrm->term_no, ret);
 #endif
 		ptrm->status = ret;
@@ -1333,7 +2157,7 @@ int purse_send_bkin(term_ram *ptrm, struct black_info *blkinfo, black_acc *blkac
 	}
 	// 判断机器号是否一致
 	if ((recvno & 0x7F) != (ptrm->term_no & 0x7F)) {
-#ifdef DEBUG
+#ifdef TESTCODE
 		printk("send bkin return term no. error %02x: %02x\n", recvno, ptrm->term_no);
 #endif
 		ptrm->status = NOCOM;
@@ -1341,6 +2165,9 @@ int purse_send_bkin(term_ram *ptrm, struct black_info *blkinfo, black_acc *blkac
 	}
 	ptrm->add_verify = 0;
 	ptrm->dif_verify = 0;
+#if BWR_66J10
+	//udelay(10);
+#endif
 	// 发1字节终端号
 	ret = send_byte(ptrm->term_no, ptrm->term_no);
 	if (ret < 0) {
@@ -1371,12 +2198,14 @@ int purse_send_bkin(term_ram *ptrm, struct black_info *blkinfo, black_acc *blkac
 		goto send_bkin_failed;
 	com_verify(ptrm, &n, sizeof(n));
 	// 发9字节交易号
-	if (phead == NULL) {
+	if (phead == NULL || ((n & 0x3F) == 0)) {
+		// BUG, n == 0, fixed by wjzhe
 		// 对phead进行判断!!!
 		ret = send_trade_num(&blkinfo->trade_num, ptrm);
 		if (ret < 0)
 			goto send_bkin_failed;
 	} else {
+		// BUG, 如果n == 0则segment fault
 		ret = send_trade_num(&phead[(n & 0x3F) - 1].t_num, ptrm);
 		if (ret < 0)
 			goto send_bkin_failed;
@@ -1402,15 +2231,18 @@ int purse_send_bkin(term_ram *ptrm, struct black_info *blkinfo, black_acc *blkac
 	if (ret < 0)
 		goto send_bkin_failed;
 #if BWR_66J10
-	udelay(BWR_66J10);
+	udelay(200);
 #endif
 	// 收GA
-	if (recv_ga(ptrm) < 0) {
-#ifdef DEBUG
+	if ((ret = recv_ga(ptrm)) < 0) {
 		printk("send bkin recv GA error: %d\n", ret);
-#endif
 		return -1;
 	}
+#ifdef TESTCODE
+	else {
+		printk("send bkin: recv ga ok\n");
+	}
+#endif
 	if ((n & 0xC0) && (!ptrm->black_flag)) {
 		ptrm->black_flag = 1;
 #ifdef DEBUG
@@ -1432,7 +2264,7 @@ send_bkin_failed:
 	ptrm->status = NOCOM;
 	return -1;
 }
-#undef DEBUG
+
 #if 0
 /*
  * 定期更新终端机全部黑名单数据, 未完
@@ -1778,6 +2610,9 @@ int purse_update_key(term_ram *ptrm)
 	ptrm->add_verify = 0;
 	ptrm->dif_verify = 0;
 	// 叫号
+#if BWR_66J10
+	//udelay(10);
+#endif
 	sendno = ptrm->term_no | 0x80;
 	ret = send_addr(sendno, ptrm->term_no);
 	if (ret < 0)
@@ -1786,7 +2621,7 @@ int purse_update_key(term_ram *ptrm)
 	// 回号
 	ret = recv_data((char *)&recvno, ptrm->term_no);
 	if (ret < 0) {
-#ifdef DEBUG
+#ifdef TESTCODE
 		printk("purse update key recv no. %d: error %d\n", ptrm->term_no, ret);
 #endif
 		ptrm->status = ret;
@@ -1799,12 +2634,16 @@ int purse_update_key(term_ram *ptrm)
 		ptrm->status = NOCOM;
 		return -1;
 	}
+	//usart_delay(1);
+#if BWR_66J10
+	//udelay(10);
+#endif
 	// 发1字节地址
 	// 发终端号不能 | 0x80
 	sendno = ptrm->term_no;
 	ptrm->add_verify = 0;
 	ptrm->dif_verify = 0;
-	ret = send_addr(sendno, ptrm->term_no);
+	ret = send_byte(sendno, ptrm->term_no);
 	if (ret < 0)
 		goto update_key_failed;
 	ptrm->add_verify += sendno;
@@ -1829,12 +2668,20 @@ int purse_update_key(term_ram *ptrm)
 	ret = send_verify(ptrm);
 	if (ret < 0)
 		goto update_key_failed;
+#if BWR_66J10
+	udelay(200);
+#endif
 	// 收GA
 	ret = recv_ga(ptrm);
 	if (ret < 0) {
-		printk("purse update key recv GA error\n");
+		printk("purse %d update key recv GA error\n", ptrm->term_no);
 		return -1;
 	}
+#ifdef TESTCODE
+	else {
+		printk("update key: recv ga ok\n");
+	}
+#endif
 	return 0;
 update_key_failed:
 	ptrm->status = -1;
@@ -1849,6 +2696,7 @@ int purse_get_edition(term_ram *ptrm)
 {
 	unsigned char sendno, recvno, cmd, *tmp, len;
 	int ret, i;
+	unsigned char tm[5] = {0};//write by duyy, 2013.11.21
 	struct black_info info;
 	memset(&info, 0, sizeof(info));
 	// 发term_num | 0x80
@@ -1962,8 +2810,9 @@ int purse_get_edition(term_ram *ptrm)
 		ptrm->add_verify += *tmp;
 		tmp++;
 	}
-	tmp = info.trade_num.tm;
-	for (i = 0; i < sizeof(info.trade_num.tm); i++) {
+	//tmp = info.trade_num.tm;//modified by duyy, 2013.1120
+	tmp = tm;//modified by duyy, 2013.11.21
+	for (i = 0; i < 5;/*sizeof(info.trade_num.tm);*/ i++) {
 		ret = recv_data(tmp, ptrm->term_no);
 		if (ret < 0) {
 			printk("recv %d ptrm->blkinfo.trade_num.tm error, ret:%d\n", i, ret);
@@ -1993,11 +2842,13 @@ get_edition_failed:
  * 新POS机光电卡交互步骤一
  * write by wjzhe, June 13, 2007
  */
-int purse_recv_leid(term_ram *ptrm, int allow)
+int purse_recv_leid(term_ram *ptrm, int allow, unsigned char *tm)
 {
+	static int itm;//write by duyy, 2012.4.26
 	unsigned long cardno;
 	acc_ram *pacc;
 	unsigned char feature = 0, len = 6;
+	unsigned char timenum = 0;//write by duyy, 2013.3.26
 	int money = 0;
 	unsigned char *tmp = (unsigned char *)&cardno;
 	int i, ret;
@@ -2005,6 +2856,7 @@ int purse_recv_leid(term_ram *ptrm, int allow)
 	int pos_money = 0;
 	len = 9;
 #endif
+	itm = _cal_itmofday(&tm[1]);//2012.4.26
 	//tmp += 3;
 	ret = recv_len(ptrm);
 	if (ret == 0xFF)
@@ -2076,8 +2928,9 @@ int purse_recv_leid(term_ram *ptrm, int allow)
 		m_tmp -= pos_money;
 		if (m_tmp < 0)
 			m_tmp = 0;
+		
 #endif
-		//printk("find!\n");
+		//printk("purse_recv_leid find!\n");
 		feature = 4;
 		//if (ptrm->pterm->term_type & 0x20) {
 		//	feature = 0;
@@ -2091,14 +2944,17 @@ int purse_recv_leid(term_ram *ptrm, int allow)
 #ifdef PRE_REDUCE
 		if (m_tmp == 0)
 			feature |= 1 << 3;
+
 #endif
 		if ((pacc->feature & 0xC0) == 0x40 || (pacc->feature & 0xF) == 0
 			) {
 			// 此卡达到餐限
 			// 此卡要输密码
 			feature |= 1 << 3;
+			//printk("input password\n");//modified,2012.2.22
 		}
 ///////////////////////////////////////////////////////////////////////////////////
+	#if 0//deleted by duyy, 2013.3.26	
 		if ( (ptrm->pterm->power_id == 0xF0) ||
 			 ((pacc->feature & 0x30) == 0) ||
 			 ((ptrm->pterm->power_id & 0x0F) == ((pacc->feature & 0x30) >> 4))
@@ -2111,30 +2967,54 @@ int purse_recv_leid(term_ram *ptrm, int allow)
 			} else {
 				money = (unsigned long)pacc->money;
 			}
+			printk("normal consume\n");//2012.5.2
 		} else {
-#ifdef DEBUG
-			printk("termno %d powerid %02x, card %d feature %02x\n",
-				ptrm->term_no, ptrm->pterm->power_id, pacc->card_num, pacc->feature);
-#endif
 			feature = 1;
 		}
-#if 0
-		if (money > 999999) {
-			printk("money is too large!\n");
-			feature = 1;
+	#endif
+//////////////////////////////////////////////////////////////////////////////////		
+		//write by duyy, 2013.3.26
+		if (pacc->money < 0) {
 			money = 0;
+		} else {
+			money = (unsigned long)pacc->money;
 		}
-#endif
+		if (!(ptrm->pterm->param.term_type & 0x20)) {	//出纳机不判断时段、身份类型匹配，禁止消费问题,modified 2013.4.2
+			timenum = ptmnum[pacc->id_type][ptrm->pterm->power_id];
+			//printk("cardno:%ld timenum = %x\n", cardno, timenum);
+			if (timenum & 0x80){//modified by duyy, 2013.3.28,最高位bit7表示禁止消费，其余为允许消费，判断禁止时段
+				feature = 1;
+				//printk("whole day prohibit\n");
+				goto over;
+			}
+			else {
+				for (i = 0; i < 7; i++){
+					if (timenum & 0x1){
+						if(itm >= term_time[i].begin && itm <= term_time[i].end){
+							feature = 1;
+							//printk("term_time[%d] is prohibited, begin %d,end %d\n", i, term_time[i].begin, term_time[i].end);
+							goto over;
+						}
+					}
+					timenum = timenum >> 1;
+					//printk("timenum is %x\n", timenum);
+				}
+				//printk("continue consume\n");
+			}
+		}
+		
 ///////////////////////////////////////////////////////////////////////////////////
 	}
 	// 判断是否允许脱机使用光电卡
+#if 0//modified by duyy, 2013.4.19
 	if (!allow) {
 #ifdef DEBUG
-		printk("not allow: %d\n", cardno);
+		printk("not allow: %ld\n", cardno);
 #endif
 		feature = 1;
 		money = 0;
 	}
+#endif
 #if 0
 		if (feature == 1) {
 			printk("feature: %02x\n", feature);
@@ -2142,6 +3022,7 @@ int purse_recv_leid(term_ram *ptrm, int allow)
 			money = (unsigned long)pacc->money;
 		}
 #endif
+over:
 	ptrm->add_verify = 0;
 	ptrm->dif_verify = 0;
 	// 发终端号
@@ -2170,6 +3051,7 @@ int purse_recv_leid(term_ram *ptrm, int allow)
 	ptrm->dif_verify ^= len;
 	ptrm->add_verify += len;
 	// 发身份信息
+	//printk("purse_recv_leid feature=%x\n", feature);//added by duyy,2012.4.26
 	if ((ret = send_byte(feature, ptrm->term_no)) < 0) {
 		ptrm->status = NOCOM;
 		return -1;
@@ -2194,6 +3076,50 @@ int purse_recv_leid(term_ram *ptrm, int allow)
 	ptrm->flow_flag = 0;		// 允许终端接收流水
 	// if not exist then send 1 and remain money 0
 	// next check dis_verify, send 0 if right, send 0xF if wrong
+#ifdef CONFIG_RECORD_CASHTERM
+	// 终端可以接收流水了, 保存状态
+	if ((ptrm->pterm->param.term_type & 0x20)
+		&& (cashterm_ptr < CASHBUFSZ)) {
+		for (i = 0; i < CASHBUFSZ; i++){
+			//先判断相同出纳机号的信息是否有存储
+			if (ptrm->term_no ==  cashbuf[i].termno){
+				//出纳机号相同则数据直接覆盖存储
+				cashbuf[i].feature = feature;
+				cashbuf[i].consume = 0;
+				cashbuf[i].status = CASH_CARDIN;
+				cashbuf[i].termno = ptrm->term_no;
+				cashbuf[i].cardno = cardno;
+				if (pacc) {
+					cashbuf[i].accno = pacc->acc_num;
+					cashbuf[i].cardno = pacc->card_num;
+					cashbuf[i].managefee = fee[pacc->managefee & 0xF];
+					cashbuf[i].money = pacc->money;
+				}
+				// 这时候写入终端金额吗?
+				cashbuf[i].term_money = ptrm->term_money;
+				return 0;
+			}
+		}
+		// 记录非法卡
+		cashbuf[cashterm_ptr].feature = feature;
+		cashbuf[cashterm_ptr].consume = 0;
+		cashbuf[cashterm_ptr].status = CASH_CARDIN;
+		cashbuf[cashterm_ptr].termno = ptrm->term_no;
+		cashbuf[cashterm_ptr].cardno = cardno;
+		if (pacc) {
+			cashbuf[cashterm_ptr].accno = pacc->acc_num;
+			cashbuf[cashterm_ptr].cardno = pacc->card_num;
+			cashbuf[cashterm_ptr].managefee = fee[pacc->managefee & 0xF];
+			cashbuf[cashterm_ptr].money = pacc->money;
+		}
+		// 这时候写入终端金额吗?
+		cashbuf[cashterm_ptr].term_money = ptrm->term_money;
+		cashterm_ptr++;
+		if (cashterm_ptr == CASHBUFSZ){
+			cashterm_ptr = 0;
+		}
+	}
+#endif
 	return 0;
 }
 
@@ -2333,6 +3259,10 @@ int purse_recv_leflow(term_ram *ptrm, unsigned char *tm)
 	}
 	ptrm->add_verify += nouse;
 	ptrm->dif_verify ^= nouse;
+#ifdef QINGHUA
+	// 清华需要添加psam卡号
+	//ptrm->psam_trd_num = (int)nouse;
+#endif
 	// recv flow type
 	ret = recv_data((char *)&leflow.flow_type, ptrm->term_no);
 	if (ret < 0) {
@@ -2374,14 +3304,19 @@ int purse_recv_leflow(term_ram *ptrm, unsigned char *tm)
 	}
 	// adjust money limit
 	limit = pacc->feature & 0xF;
+	//printk("feature=%2x\n", pacc->feature);//added by duyy,2012.5.2
+	//printk("leflow limit=%d\n", limit);//added by duyy,2012.5.2
 	if ((limit != 0xF) && limit) {
 		// 需要调整餐限
 		limit -= leflow.consume_sum / 100 + 1;
-		if (!(leflow.consume_sum % 100)) {// 刚好满100时, 认为是一次
+		//printk("consume_sum=%d\n", leflow.consume_sum / 500);//added by duyy,2012.2.22
+		//printk("consume limit=%d\n", limit);//added by duyy,2012.2.22
+		if (!(leflow.consume_sum % 100)) {
 			limit++;
 		}
 		if (limit < 0)
 			limit = 0;
+		//printk("limit=%d\n", limit);//added by duyy,2012.2.22
 	}
 	//if (leflow.consume_sum < 0) {
 	//	printk("error!!!!!!!!\n");
@@ -2393,7 +3328,10 @@ int purse_recv_leflow(term_ram *ptrm, unsigned char *tm)
 		pacc->money = 0;
 	}
 	pacc->feature &= 0xF0;
+	//printk("pacc->feature=%2x\n", pacc->feature);//added by duyy,2012.2.24
 	pacc->feature |= limit;
+	//printk("limit_feature=%2x\n", pacc->feature);//added by duyy,2012.2.24
+
 	// 终端机数据记录
 	ptrm->term_cnt++;
 	ptrm->term_money += leflow.consume_sum;
@@ -2450,6 +3388,7 @@ int purse_recv_ledep(term_ram *ptrm, unsigned char *tm)
 		usart_delay(20);
 		return 0;
 	}
+	
 	// 收包长度
 	len = recv_len(ptrm);
 	if (len == 0xFF)
@@ -2603,6 +3542,14 @@ int purse_recv_ledep(term_ram *ptrm, unsigned char *tm)
 		printk("no cardno: %08x", (unsigned int)leflow.card_num);
 		ret = send_ga(ptrm, 1);
 		return ret;
+	}
+	//modified by duyy, 2013.4.18
+	if (pacc->managefee & DEPBIT) {	//某些人非10号终端不能充值
+		if (ptrm->term_no != 10) {//write by duyy, 2013.4.1
+			// 非10号终端不能做出纳机
+			usart_delay(20);
+			return 0;
+		}	
 	}
 	// 恢复餐限
 	if ((pacc->feature & 0xF) != 0xF) {
@@ -2629,6 +3576,7 @@ int purse_recv_ledep(term_ram *ptrm, unsigned char *tm)
 	leflow.acc_num = pacc->acc_num;
 	// 流水号的处理
 	leflow.flow_num = maxflowno++;
+	leflow.manage_fee = managefee * (-1);
 	// set ptrm->flow_flag
 	ptrm->flow_flag = ptrm->term_no;
 	// 流水区头尾的处理
@@ -2650,6 +3598,44 @@ int purse_recv_ledep(term_ram *ptrm, unsigned char *tm)
 	flow_sum++;
 	space_remain--;
 	ret = send_ga(ptrm, 0);
+#ifdef CONFIG_RECORD_CASHTERM
+	// 终端接收取款流水, 保存状态
+	if (/*(ptrm->pterm->term_type & 0x20)
+		&&*/ (cashterm_ptr < CASHBUFSZ) && pacc) {
+		//modified by duyy, 2013.4.7
+		for (i = 0; i < CASHBUFSZ; i++){
+			//先判断相同出纳机号的信息是否有存储
+			if (ptrm->term_no ==  cashbuf[i].termno){
+				//出纳机号相同则数据直接覆盖存储
+				cashbuf[i].accno = pacc->acc_num;
+				cashbuf[i].cardno = pacc->card_num;
+				cashbuf[i].feature = 0;
+				cashbuf[i].managefee = leflow.manage_fee;
+				cashbuf[i].money = pacc->money;
+				cashbuf[i].consume = leflow.consume_sum;
+				cashbuf[i].status = CASH_DEPOFF;
+				cashbuf[i].termno = ptrm->term_no;
+				// 增加终端金额
+				cashbuf[i].term_money = ptrm->term_money;
+				return ret;
+			}
+		}
+		cashbuf[cashterm_ptr].accno = pacc->acc_num;
+		cashbuf[cashterm_ptr].cardno = pacc->card_num;
+		cashbuf[cashterm_ptr].feature = 0;
+		cashbuf[cashterm_ptr].managefee = leflow.manage_fee;
+		cashbuf[cashterm_ptr].money = pacc->money;
+		cashbuf[cashterm_ptr].consume = leflow.consume_sum;
+		cashbuf[cashterm_ptr].status = CASH_DEPOFF;
+		cashbuf[cashterm_ptr].termno = ptrm->term_no;
+		// 增加终端金额
+		cashbuf[cashterm_ptr].term_money = ptrm->term_money;
+		cashterm_ptr++;
+		if (cashterm_ptr == CASHBUFSZ){
+			cashterm_ptr = 0;
+		}
+	}
+#endif
 	return ret;
 }
 
@@ -2667,6 +3653,7 @@ int purse_recv_letake(term_ram *ptrm, unsigned char *tm)
 		usart_delay(20);
 		return 0;
 	}
+
 	// 收包长度
 	len = recv_len(ptrm);
 	if (len == 0xFF)
@@ -2820,6 +3807,14 @@ int purse_recv_letake(term_ram *ptrm, unsigned char *tm)
 		printk("no cardno: %08x", (unsigned int)leflow.card_num);
 		ret = send_ga(ptrm, 1);
 		return ret;
+	}
+	//modified by duyy, 2013.4.18
+	if (pacc->managefee & DEPBIT) {	//某些人非10号终端不能充值
+		if (ptrm->term_no != 10) {//write by duyy, 2013.4.1
+			// 非10号终端不能做出纳机
+			usart_delay(20);
+			return 0;
+		}	
 	}
 	//printk("pacc->money: %d, managefee: %d\n", pacc->money, managefee);
 	pacc->money -= leflow.consume_sum;		//余额减钱
@@ -2864,6 +3859,44 @@ int purse_recv_letake(term_ram *ptrm, unsigned char *tm)
 	flow_sum++;
 	space_remain--;
 	ret = send_ga(ptrm, 0);
+#ifdef CONFIG_RECORD_CASHTERM
+	// 终端接收取款流水, 保存状态
+	if (/*(ptrm->pterm->term_type & 0x20)
+		&&*/ (cashterm_ptr < CASHBUFSZ) && pacc) {
+		//modified by duyy, 2013.4.7
+		for (i = 0; i < CASHBUFSZ; i++){
+			//先判断相同出纳机号的信息是否有存储
+			if (ptrm->term_no ==  cashbuf[i].termno){
+				//出纳机号相同则数据直接覆盖存储
+				cashbuf[i].accno = pacc->acc_num;
+				cashbuf[i].cardno = pacc->card_num;
+				cashbuf[i].feature = 0;
+				cashbuf[i].managefee = leflow.manage_fee;
+				cashbuf[i].money = pacc->money;
+				cashbuf[i].consume = leflow.consume_sum;
+				cashbuf[i].status = CASH_TAKEOFF;
+				cashbuf[i].termno = ptrm->term_no;
+				// 增加终端金额
+				cashbuf[i].term_money = ptrm->term_money;
+				return ret;
+			}
+		}
+		cashbuf[cashterm_ptr].accno = pacc->acc_num;
+		cashbuf[cashterm_ptr].cardno = pacc->card_num;
+		cashbuf[cashterm_ptr].feature = 0;
+		cashbuf[cashterm_ptr].managefee = leflow.manage_fee;
+		cashbuf[cashterm_ptr].money = pacc->money;
+		cashbuf[cashterm_ptr].consume = leflow.consume_sum;
+		cashbuf[cashterm_ptr].status = CASH_TAKEOFF;
+		cashbuf[cashterm_ptr].termno = ptrm->term_no;
+		// 增加终端金额
+		cashbuf[cashterm_ptr].term_money = ptrm->term_money;
+		cashterm_ptr++;
+		if (cashterm_ptr == CASHBUFSZ){
+			cashterm_ptr = 0;
+		}
+	}
+#endif
 	return ret;
 }
 
@@ -2878,7 +3911,7 @@ static inline int store_gpflow(le_flow *pleflow, int *money, int flowno)
 	int i = 0, num = flowno;
 	// 要一条一条的处理流水数据
 	// 当钱有数据时进行存储数据
-	while ((*money) && (i < 5)) {
+	while (/*(*money) && */(i < 5)) {
 		// 将要处理的数据进行初始化
 		if (pinit != pfw) {
 			memcpy(pfw, pinit, sizeof(le_flow));
@@ -3168,6 +4201,497 @@ int purse_recv_gpflow(term_ram *ptrm, unsigned char *tm)
 	flow_sum += i;
 	space_remain -= i;// 此处在剩余流水不足时会有错误, BUG!!!
 	ret = send_ga(ptrm, 0);
+	return ret;
+}
+
+
+/*
+ * 新POS机光电卡交互步骤一
+ * write by wjzhe, June 13, 2007
+ */
+int purse_recv_leid2(term_ram *ptrm, int allow, unsigned char *tm)
+{
+	static int itm;//write by duyy, 2012.4.26
+	unsigned long cardno;
+	acc_ram *pacc;
+	unsigned char feature = 0, len = 6;
+	unsigned char timenum = 0;//write by duyy, 2013.3.26
+	int money = 0;
+	unsigned char *tmp = (unsigned char *)&cardno;
+	int i, ret;
+#ifdef PRE_REDUCE
+	int pos_money = 0;
+	len = 9;
+#endif
+	itm = _cal_itmofday(&tm[1]);//2012.4.26
+	// receive 4-byte card number
+	for (i = 0; i < 4; i++) {
+		ret = recv_data(tmp, ptrm->term_no);
+		if (ret < 0) {
+			if (ret == -1) {
+				ptrm->status = -1;
+			}
+			if (ret == -2) {
+				ptrm->status = -2;
+				usart_delay(4 - i);
+			}
+			return ret;
+		}
+		ptrm->dif_verify ^= *tmp;
+		ptrm->add_verify += *tmp;
+		tmp++;
+	}
+#ifdef PRE_REDUCE
+	// 收3字节可能消费金额
+	tmp = (unsigned char *)&pos_money;
+	for (i = 0; i < 4; i++) {
+		ret = recv_data(tmp, ptrm->term_no);
+		if (ret < 0) {
+			if (ret == -1) {
+				ptrm->status = -1;
+			}
+			if (ret == -2) {
+				ptrm->status = -2;
+				usart_delay(4 - i);
+			}
+			return ret;
+		}
+		ptrm->dif_verify ^= *tmp;
+		ptrm->add_verify += *tmp;
+		tmp++;
+	}
+#endif
+	ret = chk_verify(ptrm);
+	if (ret < 0) {
+		printk("recv leid chk1 error\n");
+		return -1;
+	}
+	// search id
+	pacc = search_id(cardno);
+#ifdef DEBUG
+	printk("search res: pacc: %p, %d\n",
+		pacc, (pacc) ? pacc->card_num : cardno);
+#endif
+	// if exist, then deal with data
+	if (pacc == NULL) {
+		// not find
+		feature = 1;
+	} else {
+#ifdef PRE_REDUCE
+		int m_tmp = pacc->feature & 0xF;
+		pos_money /= 100;
+		m_tmp -= pos_money;
+		if (m_tmp < 0)
+			m_tmp = 0;
+#endif
+		//printk("purse_recv_leid2 find!\n");//2012.4.26
+		feature = 4;
+		//if (ptrm->pterm->term_type & 0x20) {
+		//	feature = 0;
+		//} else {
+		//	feature = 4;
+		//}
+		if ((pacc->feature & 0xC0) == 0x80) {
+			// 这是挂失卡
+			feature |= 1 << 5;
+		}
+#ifdef PRE_REDUCE
+		if (m_tmp == 0)
+			feature |= 1 << 3;
+#endif
+		if ((pacc->feature & 0xC0) == 0x40 || (pacc->feature & 0xF) == 0
+			) {
+			// 此卡达到餐限
+			// 此卡要输密码
+			feature |= 1 << 3;
+		}
+///////////////////////////////////////////////////////////////////////////////////
+	#if 0//deleted by duyy, 2013.3.26
+		if ( (ptrm->pterm->power_id == 0xF0) ||
+			 ((pacc->feature & 0x30) == 0) ||
+			 ((ptrm->pterm->power_id & 0x0F) == ((pacc->feature & 0x30) >> 4))
+			 ) {
+			//money[0] = pacc->money & 0xFF;// 该终端为1类终端或帐户为1类身份或帐户身份与终端类型对应，则允许其消费
+			//money[1] = (pacc->money >> 8) & 0xFF;
+			//money[2] = (pacc->money >> 16) & 0xF;
+			if (pacc->money < 0) {
+				money = 0;
+			} else {
+				money = (unsigned long)pacc->money;
+			}
+		} else {
+			feature = 1;
+		}
+	#endif
+//////////////////////////////////////////////////////////////////////////////////		
+		//write by duyy, 2013.3.26
+		if (pacc->money < 0) {
+			money = 0;
+		} else {
+			money = (unsigned long)pacc->money;
+		}
+		if (!(ptrm->pterm->param.term_type & 0x20)) {	//出纳机不判断时段、身份类型匹配，禁止消费问题
+			timenum = ptmnum[pacc->id_type][ptrm->pterm->power_id];
+			//printk("cardno:%ld timenum = %x\n", cardno, timenum);
+			if (timenum & 0x80){//modified by duyy, 2013.3.28,最高位bit7表示禁止消费，其余为允许消费，判断禁止时段
+				feature = 1;
+				//printk("whole day prohibit\n");
+				goto over;
+			}
+			else {
+				for (i = 0; i < 7; i++){
+					if (timenum & 0x1){
+						if(itm >= term_time[i].begin && itm <= term_time[i].end){
+							feature = 1;
+							//printk("term_time[%d] is prohibited, begin %d,end %d\n", i, term_time[i].begin, term_time[i].end);
+							goto over;
+						}
+					}
+					timenum = timenum >> 1;
+					//printk("timenum is %x\n", timenum);
+				}
+				//printk("continue consume\n");
+			}
+		}
+///////////////////////////////////////////////////////////////////////////////////
+	}
+	// 判断是否允许脱机使用光电卡
+#if 0//modified by duyy, 2013.4.19
+	if (!allow) {
+#ifdef DEBUG
+		printk("not allow: %d\n", cardno);
+#endif
+		feature = 1;
+		money = 0;
+	}
+#endif
+over:
+	ptrm->add_verify = 0;
+	ptrm->dif_verify = 0;
+	// 发身份信息
+	if ((ret = send_byte(feature, ptrm->term_no)) < 0) {
+		ptrm->status = NOCOM;
+		return -1;
+	}
+	ptrm->dif_verify ^= feature;
+	ptrm->add_verify += feature;
+	//printk("feature is %02x\n", feature);
+	//money = binl2bcd(money) & 0xFFFFFF;
+	tmp = (unsigned char *)&money;
+	//tmp += 2;
+	// 发4字节余额
+	for (i = 0; i < sizeof(money); i++) {
+		if (send_byte(*tmp, ptrm->term_no) < 0)
+			return -1;
+		ptrm->dif_verify ^= *tmp;
+		ptrm->add_verify += *tmp;
+		tmp++;
+	}
+	// 发校验
+	if (send_verify(ptrm) < 0)
+		return -1;
+	ptrm->flow_flag = 0;		// 允许终端接收流水
+	// if not exist then send 1 and remain money 0
+	// next check dis_verify, send 0 if right, send 0xF if wrong
+#ifdef CONFIG_RECORD_CASHTERM
+	// 终端可以接收流水了, 保存状态
+	if ((ptrm->pterm->param.term_type & 0x20)
+		&& (cashterm_ptr < CASHBUFSZ)) {
+		for (i = 0; i < CASHBUFSZ; i++){
+			//先判断相同出纳机号的信息是否有存储
+			if (ptrm->term_no ==  cashbuf[i].termno){
+				//出纳机号相同则数据直接覆盖存储
+				cashbuf[i].feature = feature;
+				cashbuf[i].consume = 0;
+				cashbuf[i].status = CASH_CARDIN;
+				cashbuf[i].termno = ptrm->term_no;
+				cashbuf[i].cardno = cardno;
+				if (pacc) {
+					cashbuf[i].accno = pacc->acc_num;
+					cashbuf[i].cardno = pacc->card_num;
+					cashbuf[i].managefee = fee[pacc->managefee & 0xF];
+					cashbuf[i].money = pacc->money;
+				}
+				// 这时候写入终端金额吗?
+				cashbuf[i].term_money = ptrm->term_money;
+				return 0;
+			}
+		}
+		// 记录非法卡
+		cashbuf[cashterm_ptr].feature = feature;
+		cashbuf[cashterm_ptr].consume = 0;
+		cashbuf[cashterm_ptr].status = CASH_CARDIN;
+		cashbuf[cashterm_ptr].termno = ptrm->term_no;
+		cashbuf[cashterm_ptr].cardno = cardno;
+		if (pacc) {
+			cashbuf[cashterm_ptr].accno = pacc->acc_num;
+			cashbuf[cashterm_ptr].cardno = pacc->card_num;
+			cashbuf[cashterm_ptr].managefee = fee[pacc->managefee & 0xF];
+			cashbuf[cashterm_ptr].money = pacc->money;
+		}
+		// 这时候写入终端金额吗?
+		cashbuf[cashterm_ptr].term_money = ptrm->term_money;
+		cashterm_ptr++;
+		if (cashterm_ptr == CASHBUFSZ){
+			cashterm_ptr = 0;
+		}
+	}
+#endif
+	return 0;
+}
+
+static inline int send_byte3(char buf, unsigned char num)
+{
+	int i;
+	for (i = 0; i < 3; i++) {
+		send_byte(buf, num);
+	}
+	return 0;
+}
+
+/*
+ * receive le card flow
+ * but store into flow any data is HEX
+ */
+int purse_recv_leflow2(term_ram *ptrm, unsigned char *tm)
+{
+	le_flow leflow;
+	int ret, i;
+	int limit, tail;
+	unsigned char *tmp, nouse, len;
+	acc_ram *pacc;
+	memset(&leflow, 0, sizeof(leflow));
+	// recv 4-byte card number
+	tmp = (unsigned char *)&leflow.card_num;
+	//tmp += 3;//sizeof(leflow.card_num) - 1;		// tmp point lenum high byte
+	for (i = 0; i < 4; i++) {
+		ret = recv_data((char *)tmp, ptrm->term_no);
+		if (ret < 0) {
+			if (ret == -1) {		// timeout, pos is not exist
+				ptrm->status = NOTERMINAL;
+			}
+			if (ret == -2) {		// other errors
+				ptrm->status = NOCOM;
+			}
+			return ret;
+		}
+		ptrm->dif_verify ^= *tmp;
+		ptrm->add_verify += *tmp;
+		tmp++;
+	}
+	// 收1字节结算机编号
+	leflow.tml_num = ptrm->term_no;
+	leflow.areano = ptrm->pterm->param.areano;
+#if 0
+	tmp = (unsigned char *)&leflow.tml_num;
+	for (i = 0; i < sizeof(leflow.tml_num); i++) {
+		ret = recv_data((char *)tmp, ptrm->term_no);
+		if (ret < 0) {
+			if (ret == -1) {		// timeout, pos is not exist
+				ptrm->status = NOTERMINAL;
+			}
+			if (ret == -2) {		// other errors
+				ptrm->status = NOCOM;
+			}
+			return ret;
+		}
+		ptrm->add_verify += *tmp;
+		ptrm->dif_verify ^= *tmp;
+		tmp++;
+	}
+	// 收1字节区号
+	tmp = (unsigned char *)&leflow.areano;
+	for (i = 0; i < sizeof(leflow.areano); i++) {
+		ret = recv_data((char *)tmp, ptrm->term_no);
+		if (ret < 0) {
+			if (ret == -1) {		// timeout, pos is not exist
+				ptrm->status = NOTERMINAL;
+			}
+			if (ret == -2) {		// other errors
+				ptrm->status = NOCOM;
+			}
+			return ret;
+		}
+		ptrm->add_verify += *tmp;
+		ptrm->dif_verify ^= *tmp;
+		tmp++;
+	}
+#endif
+#ifndef QINGHUA
+#error "Qinghua recv leflow: not allow recv psam_num..."
+	// 收2字节PSAM卡编号
+	tmp = (unsigned char *)&leflow.psam_num;
+	for (i = 0; i < 2; i++) {
+		ret = recv_data((char *)tmp, ptrm->term_no);
+		if (ret < 0) {
+			if (ret == -1) {		// timeout, pos is not exist
+				ptrm->status = NOTERMINAL;
+			}
+			if (ret == -2) {		// other errors
+				ptrm->status = NOCOM;
+			}
+			return ret;
+		}
+		ptrm->add_verify += *tmp;
+		ptrm->dif_verify ^= *tmp;
+		tmp++;
+	}
+	// 收4字节PSAM卡交易序号
+	tmp = (unsigned char *)&leflow.psam_trd_num;
+	for (i = 0; i < 4; i++) {
+		ret = recv_data((char *)tmp, ptrm->term_no);
+		if (ret < 0) {
+			if (ret == -1) {		// timeout, pos is not exist
+				ptrm->status = NOTERMINAL;
+			}
+			if (ret == -2) {		// other errors
+				ptrm->status = NOCOM;
+			}
+			return ret;
+		}
+		ptrm->add_verify += *tmp;
+		ptrm->dif_verify ^= *tmp;
+		tmp++;
+	}
+#endif
+	// recv 4-byte consume money
+	tmp = (unsigned char *)&leflow.consume_sum;
+	//tmp += 1;		//sizeof(leflow.consume_sum) - 1;
+	for (i = 0; i < 4; i++) {
+		ret = recv_data((char *)tmp, ptrm->term_no);
+		if (ret < 0) {
+			if (ret == -1) {		// timeout, pos is not exist
+				ptrm->status = NOTERMINAL;
+			}
+			if (ret == -2) {		// other errors
+				ptrm->status = NOCOM;
+			}
+			return ret;
+		}
+		ptrm->dif_verify ^= *tmp;
+		ptrm->add_verify += *tmp;
+		tmp++;
+	}
+	// recv one no used byte
+	ret = recv_data((char *)&nouse, ptrm->term_no);
+	if (ret < 0) {
+		if (ret == -1) {		// timeout, pos is not exist
+			ptrm->status = NOTERMINAL;
+		}
+		if (ret == -2) {		// other errors
+			ptrm->status = NOCOM;
+		}
+		return ret;
+	}
+	ptrm->add_verify += nouse;
+	ptrm->dif_verify ^= nouse;
+#ifdef QINGHUA
+	// 清华需要添加psam卡号
+	//ptrm->psam_trd_num = (int)nouse;
+#endif
+	leflow.flow_type = 1;
+#if 0
+	// recv flow type
+	ret = recv_data((char *)&leflow.flow_type, ptrm->term_no);
+	if (ret < 0) {
+		if (ret == -1) {		// timeout, pos is not exist
+			ptrm->status = NOTERMINAL;
+		}
+		if (ret == -2) {		// other errors
+			ptrm->status = NOCOM;
+		}
+		return ret;
+	}
+	ptrm->add_verify += leflow.flow_type;
+	ptrm->dif_verify ^= leflow.flow_type;
+#endif
+	ret = chk_verify(ptrm);
+	if (ret < 0) {
+		printk("recv le flow verify error\n");
+		if (ret == ERRVERIFY) {
+			ret = send_byte3(0x0, ptrm->term_no);
+			//ret = send_ga(ptrm, ret);
+		}
+		return -1;
+	}
+	// check if receive the flow
+	if (ptrm->flow_flag) {
+		//ret = send_ga(ptrm, 0);
+		ret = send_byte3(0x55, ptrm->term_no);
+		return ret;
+	}
+	//printk("purse_recv_leflow2\n");//2012.5.2
+	// search id
+	pacc = search_id(leflow.card_num);
+	if (pacc == NULL) {
+		printk("no cardno: %08x", (unsigned int)leflow.card_num);
+		//ret = send_ga(ptrm, 1);
+		ret = send_byte3(0x0, ptrm->term_no);
+		return ret;
+	}
+	// adjust money limit
+	limit = pacc->feature & 0xF;
+	if ((limit != 0xF) && limit) {
+		// 需要调整餐限
+		limit -= leflow.consume_sum / 100 + 1;
+		if (!(leflow.consume_sum % 100)) {// 刚好满100时, 认为是一次
+			limit++;
+		}
+		if (limit < 0)
+			limit = 0;
+	}
+	//if (leflow.consume_sum < 0) {
+	//	printk("error!!!!!!!!\n");
+	//}
+	// 账户库改写
+	pacc->money -= leflow.consume_sum;
+	if (pacc->money < 0) {
+		printk("account money below zero!!!\n");
+		pacc->money = 0;
+	}
+	pacc->feature &= 0xF0;
+	pacc->feature |= limit;
+	// 终端机数据记录
+	ptrm->term_cnt++;
+	ptrm->term_money += leflow.consume_sum;
+	// init leflow
+	leflow.flow_type |= LECONSUME;
+	leflow.date.hyear = *tm++;
+	leflow.date.lyear = *tm++;
+	leflow.date.mon = *tm++;
+	leflow.date.mday = *tm++;
+	leflow.date.hour = *tm++;
+	leflow.date.min = *tm++;
+	leflow.date.sec = *tm;
+	//leflow.tml_num = ptrm->term_no;
+	leflow.acc_num = pacc->acc_num;
+	// 流水号的处理
+	//flow_no = maxflowno;
+	leflow.flow_num = maxflowno++;
+	//maxflowno = flow_no;
+	// set ptrm->flow_flag
+	ptrm->flow_flag = ptrm->term_no;
+	// 流水区头尾的处理
+	tail = flowptr.tail;
+	if (tail >= FLOWANUM) {
+		// 流水缓存区满?
+		printk("uart 485 flow buffer no space\n");
+		//ret = send_ga(ptrm, -1);
+		ret = send_byte3(0x0, ptrm->term_no);
+		return -1;
+	}
+	//printk("recv le flow tail: %d\n", tail);
+	memcpy(&pflow[tail], &leflow, sizeof(flow));
+	tail++;
+#if 0
+	if (tail == FLOWANUM)
+		tail = 0;
+#endif
+	flowptr.tail = tail;
+	flow_sum++;
+	space_remain--;
+	//ret = send_ga(ptrm, 0);
+	ret = send_byte3(0x55, ptrm->term_no);
 	return ret;
 }
 
