@@ -849,6 +849,7 @@ static int uart_call(void)
 		AT91_SYS->ST_CR = AT91C_ST_WDRST;	/* Pat the watchdog */
 		// 叫一圈
 		for (i = 0; i < rcd_info.term_all; i++, prterm++, udelay(ONEBYTETM)) {
+			AT91_SYS->ST_CR = AT91C_ST_WDRST;	/* Pat the watchdog */
 			if (chk_space() < 0) {
 				printk("tail is %d, head is %d\n", flowptr.tail, flowptr.head);
 				goto out;
